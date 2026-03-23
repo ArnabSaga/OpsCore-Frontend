@@ -8,8 +8,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-import AppField from "@/components/forms/AppField";
-import AppSubmitButton from "@/components/forms/AppSubmitButton";
+import AppField from "@/components/form/AppField";
+import AppSubmitButton from "@/components/form/AppSubmitButton";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { useResendVerificationCode } from "../hooks/useVerifyEmail";
 

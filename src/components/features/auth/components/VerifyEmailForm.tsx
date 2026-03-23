@@ -8,8 +8,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import AppField from "@/components/forms/AppField";
-import AppSubmitButton from "@/components/forms/AppSubmitButton";
+import AppField from "@/components/form/AppField";
+import AppSubmitButton from "@/components/form/AppSubmitButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { useVerifyEmail } from "../hooks/useVerifyEmail";
@@ -184,7 +184,9 @@ const VerifyEmailForm = () => {
             variant="outline"
             className="border-white/10 bg-white/5 text-white hover:bg-white/10"
           >
-            <Link href={`/resend-verification${emailFromQuery ? `?email=${encodeURIComponent(emailFromQuery)}` : ""}`}>
+            <Link
+              href={`/resend-verification${emailFromQuery ? `?email=${encodeURIComponent(emailFromQuery)}` : ""}`}
+            >
               Resend
             </Link>
           </Button>
