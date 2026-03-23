@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import * as React from "react";
 
 type AppSubmitButtonProps = {
   isSubmitting?: boolean;

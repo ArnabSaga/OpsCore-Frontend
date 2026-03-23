@@ -44,12 +44,27 @@ const LoginForm = () => {
       rememberMe: false,
     },
     onSubmit: async ({ value }) => {
-      await loginUser({
-        email: value.email,
-        password: value.password,
-      });
+      try {
+        const response = await loginUser({
+          email: value.email,
+          password: value.password,
+        });
 
-      router.replace("/dashboard");
+        const user = response.data?.user;
+
+        if (user && !user.emailVerified) {
+          router.replace(`/verify-email?email=${encodeURIComponent(value.email)}`);
+        } else {
+          router.replace("/dashboard");
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error && error.message === "Email not verified") {
+          router.replace(`/verify-email?email=${encodeURIComponent(value.email)}`);
+          return;
+        }
+        throw error;
+      }
+
       router.refresh();
     },
   });
@@ -68,7 +83,7 @@ const LoginForm = () => {
               alt="OpsCore Logo"
               width={84}
               height={84}
-              style={{ width: "auto", height: "auto" }}
+              style={{ width: "84px", height: "auto" }}
               className="relative mx-auto rounded-2xl"
               priority
             />

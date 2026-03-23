@@ -22,6 +22,7 @@ const RegisterForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { mutateAsync: registerUser, isPending } = useRegister();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!cardRef.current) return;
@@ -49,20 +50,30 @@ const RegisterForm = () => {
       agreeToTerms: false,
     },
     onSubmit: async ({ value }) => {
+      setError(null);
       if (value.password !== value.confirmPassword) {
-        throw new Error("Passwords do not match");
+        setError("Passwords do not match");
+        return;
       }
 
-      await registerUser({
-        name: value.name,
-        email: value.email,
-        password: value.password,
-        confirmPassword: value.confirmPassword,
-        workspaceName: value.workspaceName,
-      });
+      try {
+        await registerUser({
+          name: value.name,
+          email: value.email,
+          password: value.password,
+          confirmPassword: value.confirmPassword,
+          workspaceName: value.workspaceName,
+        });
 
-      router.replace("/login");
-      router.refresh();
+        router.replace(`/verify-email?email=${encodeURIComponent(value.email)}`);
+        router.refresh();
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to create account. Please try again.");
+        }
+      }
     },
   });
 
@@ -80,7 +91,7 @@ const RegisterForm = () => {
               alt="OpsCore Logo"
               width={84}
               height={84}
-              style={{ width: "auto", height: "auto" }}
+              style={{ width: "84px", height: "auto" }}
               className="relative mx-auto rounded-2xl"
               priority
             />
@@ -332,6 +343,12 @@ const RegisterForm = () => {
               </div>
             )}
           </form.Field>
+
+          {error && (
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-center text-sm text-red-400">
+              {error}
+            </div>
+          )}
 
           <div className="pt-1">
             <AppSubmitButton isSubmitting={isPending}>Create account</AppSubmitButton>
