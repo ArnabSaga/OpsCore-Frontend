@@ -1,4 +1,4 @@
-import ResendVerificationForm from '@/components/features/auth/components/ResendVerificationFrom';
+import ResendVerificationForm from '@/components/features/auth/components/ResendVerificationForm';
 
 
 const ResendVerificationPage = () => {

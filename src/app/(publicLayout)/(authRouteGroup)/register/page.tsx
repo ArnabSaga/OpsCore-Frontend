@@ -1,4 +1,4 @@
-import RegisterForm from '@/components/features/auth/components/RegisterFrom';
+import RegisterForm from '@/components/features/auth/components/RegisterForm';
 
 
 const RegisterPage = () => {
