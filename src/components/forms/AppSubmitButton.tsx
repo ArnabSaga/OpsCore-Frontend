@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import * as React from "react";
 
 type AppSubmitButtonProps = {
   isSubmitting?: boolean;
@@ -27,7 +27,7 @@ const AppSubmitButton = ({ isSubmitting = false, children, className }: AppSubmi
       {isSubmitting ? (
         <span className="flex items-center gap-2">
           <Loader2 className="h-4 w-4 animate-spin" />
-          Signing in...
+          Processing...
         </span>
       ) : (
         children

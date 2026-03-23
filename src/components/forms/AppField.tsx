@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { AnyFieldApi } from "@tanstack/react-form";
-import * as React from "react";
 
 type AppFieldProps = {
   field: AnyFieldApi;
