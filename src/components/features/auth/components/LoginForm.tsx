@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import AppField from "@/components/form/AppField";
@@ -16,8 +16,11 @@ import { useLogin } from "../hooks/useLogin";
 
 const LoginForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  const message = searchParams.get("message");
 
   const { mutateAsync: loginUser, isPending } = useLogin();
 
@@ -138,6 +141,12 @@ const LoginForm = () => {
           </span>
           <div className="h-px flex-1 bg-white/10" />
         </div>
+
+        {message && (
+          <div className="rounded-xl border border-[#12B76A]/20 bg-[#12B76A]/10 p-3 text-center text-sm text-[#12B76A]">
+            {message}
+          </div>
+        )}
 
         <form
           method="POST"

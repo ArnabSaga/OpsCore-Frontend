@@ -31,6 +31,23 @@ export type ResendVerificationPayload = {
   email: string;
 };
 
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type ResetPasswordPayload = {
+  email: string;
+  otp: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
+export type ChangePasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
 export type AuthResponse = {
   success?: boolean;
   message?: string;
@@ -126,6 +143,77 @@ export const resendVerificationCode = async (
 
   if (!response.ok) {
     throw new Error(data?.message || data?.error || "Unable to resend verification code.");
+  }
+
+  return data;
+};
+
+export const forgotPassword = async (payload: ForgotPasswordPayload): Promise<AuthResponse> => {
+  const forgotPasswordEndpoint =
+    process.env.NEXT_PUBLIC_AUTH_FORGOT_PASSWORD_ENDPOINT ||
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/forgot-password`;
+
+  const response = await fetch(forgotPasswordEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.message || data?.error || "Unable to send reset instructions. Please try again."
+    );
+  }
+
+  return data;
+};
+
+export const resetPassword = async (payload: ResetPasswordPayload): Promise<AuthResponse> => {
+  const resetPasswordEndpoint =
+    process.env.NEXT_PUBLIC_AUTH_RESET_PASSWORD_ENDPOINT ||
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/reset-password`;
+
+  const response = await fetch(resetPasswordEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.message || data?.error || "Unable to reset password. Please try again.");
+  }
+
+  return data;
+};
+
+export const changePassword = async (payload: ChangePasswordPayload): Promise<AuthResponse> => {
+  const changePasswordEndpoint =
+    process.env.NEXT_PUBLIC_AUTH_CHANGE_PASSWORD_ENDPOINT ||
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/change-password`;
+
+  const response = await fetch(changePasswordEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.message || data?.error || "Unable to change password. Please try again.");
   }
 
   return data;
