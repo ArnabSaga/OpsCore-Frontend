@@ -42,3 +42,5 @@ next-env.d.ts
 global-assets.d.ts
 AGENTS.md
 CLAUDE.md
+
+.vscode
