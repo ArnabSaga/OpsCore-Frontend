@@ -68,15 +68,17 @@ const DashboardLoading = () => {
           className="hidden w-[280px] border-r border-white/10 bg-[#111111]/95 px-5 py-6 lg:block"
         >
           <div className="mb-8 flex items-center gap-3">
-            <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-linear-to-br from-[#7F56D9] to-[#6941C6] shadow-[0_12px_30px_rgba(127,86,217,0.35)]">
-              <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-md" />
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F172A] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+              {/* Glow */}
+              <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-xl" />
+
+              {/* Logo */}
               <Image
                 src="/icons/logo.png"
-                width={22}
-                height={22}
                 alt="OpsCore logo"
-                style={{ width: "auto", height: "auto" }}
-                className="relative object-contain drop-shadow-[0_4px_10px_rgba(255,255,255,0.15)]"
+                width={36}
+                height={36}
+                className="relative object-contain h-14 w-14 drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
                 priority
               />
             </div>

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Breadcrumbs from "@/components/shared/layout/Breadcrumbs";
 import type { User } from "@/components/features/auth/api/auth.api";
 import {
   DropdownMenu,
@@ -58,9 +59,9 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
   return (
     <header className="sticky top-0 z-10 border-b border-white/10 bg-[#0B0B0B]/80 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8">
       <div className="flex items-center justify-between gap-4">
-        <div className="space-y-1">
+        <div className="space-y-2">
           <h1 className="text-xl font-semibold text-white">{getPageTitle(pathname)}</h1>
-          <p className="text-sm text-[#94A3B8]">Welcome back, {user?.name}</p>
+          <Breadcrumbs />
         </div>
 
         <div className="flex items-center gap-3">

@@ -4,8 +4,8 @@ import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 
-import Sidebar from "./Sidebar";
-import Header from "./Header";
+import Sidebar from "../shared/layout/AppSidebar";
+import Header from "../shared/layout/AppHeader";
 import DashboardLoading from "./DashboardLoading";
 import { useUser } from "@/hooks/useUser";
 
