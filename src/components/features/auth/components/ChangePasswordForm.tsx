@@ -86,7 +86,7 @@ const ChangePasswordForm = () => {
               alt="OpsCore Logo"
               width={84}
               height={84}
-              style={{ width: "84px", height: "auto" }}
+              style={{ width: "auto", height: "auto" }}
               className="relative mx-auto rounded-2xl"
               priority
             />
