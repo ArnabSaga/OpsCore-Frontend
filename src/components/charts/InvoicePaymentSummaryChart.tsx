@@ -25,9 +25,10 @@ const InvoicePaymentSummaryChart = ({ overview }: InvoicePaymentSummaryChartProp
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const frameId = requestAnimationFrame(() => {
+    const timer = setTimeout(() => {
       setMounted(true);
-    });
+    }, 100);
+
     const ctx = gsap.context(() => {
       if (!cardRef.current) return;
 
@@ -45,7 +46,7 @@ const InvoicePaymentSummaryChart = ({ overview }: InvoicePaymentSummaryChartProp
     });
 
     return () => {
-      cancelAnimationFrame(frameId);
+      clearTimeout(timer);
       ctx.revert();
     };
   }, []);
@@ -96,7 +97,7 @@ const InvoicePaymentSummaryChart = ({ overview }: InvoicePaymentSummaryChartProp
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_220px]">
           <div className="h-[300px] w-full min-h-0 min-w-0">
             {mounted && (
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+              <ResponsiveContainer width="100%" height={300} minWidth={0} minHeight={0} debounce={100}>
                 <PieChart>
                   <Tooltip
                     contentStyle={{
