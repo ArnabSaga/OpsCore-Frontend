@@ -47,10 +47,10 @@ const DashboardShellContent = ({
 
   if (!activeWorkspace) {
     return (
-      <div className="flex min-h-screen bg-[#0B0B0B] text-white">
+      <div className="flex h-screen overflow-hidden bg-[#0B0B0B] text-white">
         <AppSidebar userRole={user?.systemRole ?? null} />
 
-        <main className="flex min-w-0 flex-1 flex-col">
+        <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <AppHeader user={user} />
 
           <div className="flex-1 overflow-y-auto">
@@ -64,10 +64,10 @@ const DashboardShellContent = ({
   }
 
   return (
-    <div className="flex min-h-screen bg-[#0B0B0B] text-white">
+    <div className="flex h-screen overflow-hidden bg-[#0B0B0B] text-white">
       <AppSidebar userRole={user?.systemRole ?? null} />
 
-      <main className="flex min-w-0 flex-1 flex-col">
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <AppHeader user={user} />
 
         <div ref={contentRef} className="flex-1 overflow-y-auto">

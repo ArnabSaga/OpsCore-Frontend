@@ -54,7 +54,7 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
   return (
     <aside
       ref={sidebarRef}
-      className="hidden w-[280px] border-r border-white/10 bg-[#111111]/95 px-5 py-6 lg:flex lg:flex-col"
+      className="sticky top-0 hidden h-screen w-[280px] border-r border-white/10 bg-[#111111]/95 px-5 py-6 lg:flex lg:flex-col"
     >
       <div className="mb-6">
         <div className="flex items-center gap-3">
