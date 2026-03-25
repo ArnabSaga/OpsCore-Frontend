@@ -43,11 +43,9 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
 
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
 
-  // Sync state with resolved ID if not set (replaces useEffect for more efficient syncing)
   if (!activeWorkspaceId && resolvedWorkspaceId && !isUserLoading && !isWorkspacesLoading) {
     setActiveWorkspaceId(resolvedWorkspaceId);
   }
-
 
   const activeWorkspace = useMemo(() => {
     if (activeWorkspaceId) {
@@ -71,14 +69,13 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
   }, [isUserLoading, isWorkspacesLoading, workspaces.length, activeWorkspace]);
 
   const handleSwitchWorkspace = useCallback(
-    async (workspaceId: string) => {
-      if (!workspaceId || workspaceId === activeWorkspaceId) return;
+    async (workspaceId: string, force = false) => {
+      if (!workspaceId || (!force && workspaceId === activeWorkspaceId)) return;
 
       try {
         await mutateAsync({ workspaceId });
         setActiveWorkspaceId(workspaceId);
 
-        // Invalidate workspaces to sync with backend state
         await queryClient.invalidateQueries({ queryKey: ["workspaces"] });
 
         router.refresh();
@@ -89,7 +86,6 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
     [activeWorkspaceId, mutateAsync, router, queryClient]
   );
 
-  // Debug logs to trace workspace resolution (placed after all hook definitions)
   useEffect(() => {
     console.group("🔍 Workspace Sync Debug");
     console.log("USER =>", user);
@@ -100,7 +96,52 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
     console.log("ACTIVE WS =>", activeWorkspace);
     console.log("IS RESOLVED =>", isResolved);
     console.groupEnd();
-  }, [user, workspaceData, workspaces, resolvedWorkspaceId, activeWorkspaceId, activeWorkspace, isResolved]);
+  }, [
+    user,
+    workspaceData,
+    workspaces,
+    resolvedWorkspaceId,
+    activeWorkspaceId,
+    activeWorkspace,
+    isResolved,
+  ]);
+
+  const hasAttemptedSync = React.useRef(false);
+
+  useEffect(() => {
+    if (
+      !isResolved ||
+      isUserLoading ||
+      isWorkspacesLoading ||
+      !user ||
+      !activeWorkspaceId ||
+      hasAttemptedSync.current
+    ) {
+      return;
+    }
+
+    const backendSessionActiveId = user.activeWorkspaceId;
+
+    if (!backendSessionActiveId && !isPending) {
+      hasAttemptedSync.current = true;
+      console.log("📢 Auto-syncing workspace to backend session:", activeWorkspaceId);
+
+      setTimeout(() => {
+        handleSwitchWorkspace(activeWorkspaceId, true).catch((err) => {
+          console.error("Auto-sync workspace failed:", err);
+          hasAttemptedSync.current = false;
+        });
+      }, 0);
+    }
+  }, [
+    isResolved,
+    isUserLoading,
+    isWorkspacesLoading,
+    user,
+    activeWorkspaceId,
+    isPending,
+    handleSwitchWorkspace,
+  ]);
 
   const value = useMemo(
     () => ({
