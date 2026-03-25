@@ -1,3 +1,6 @@
+import { UserRole } from "@/lib/authUtils";
+import { Workspace } from "@/types/workspace.types";
+
 export type User = {
   id: string;
   name: string;
@@ -6,7 +9,10 @@ export type User = {
   emailVerified: boolean;
   isActive?: boolean;
   isDeleted?: boolean;
-  systemRole?: string;
+  systemRole?: UserRole;
+  needPasswordChange?: boolean;
+  activeWorkspaceId?: string | null;
+  activeWorkspace?: Workspace | null;
 };
 
 export type LoginPayload = {

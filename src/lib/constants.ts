@@ -208,5 +208,8 @@ export const canAccessNavItem = (item: NavItem, role?: string | null): boolean =
   if (!item.roles?.length) return true;
   if (!role) return false;
 
+  // System-level admins should have access to everything
+  if (role === "SUPER_ADMIN" || role === "ADMIN" || role === "OWNER") return true;
+
   return item.roles.includes(role as AppRole);
 };

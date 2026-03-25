@@ -73,7 +73,7 @@ const DashboardLoading = () => {
               <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-xl" />
 
               {/* Logo */}
-              <Image
+              <Image   
                 src="/icons/logo.png"
                 alt="OpsCore logo"
                 width={36}

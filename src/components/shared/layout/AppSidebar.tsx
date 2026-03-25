@@ -7,11 +7,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+import WorkspaceSwitcher from "@/components/features/workspace/components/WorkspaceSwitcher";
 import { DASHBOARD_NAV_GROUPS, canAccessNavItem } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
+import { UserRole } from "@/lib/authUtils";
+
 type AppSidebarProps = {
-  userRole?: string | null;
+  userRole?: UserRole | null;
 };
 
 const AppSidebar = ({ userRole }: AppSidebarProps) => {
@@ -53,26 +56,28 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
       ref={sidebarRef}
       className="hidden w-[280px] border-r border-white/10 bg-[#111111]/95 px-5 py-6 lg:flex lg:flex-col"
     >
-      <div className="mb-8 flex items-center gap-3">
-        <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F172A] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-          {/* Glow */}
-          <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-xl" />
+      <div className="mb-6">
+        <div className="flex items-center gap-3">
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[#0F172A] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-xl" />
+            <Image
+              src="/icons/logo.png"
+              alt="OpsCore logo"
+              width={36}
+              height={36}
+              className="relative object-contain drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
+              priority
+            />
+          </div>
 
-          {/* Logo */}
-          <Image
-            src="/icons/logo.png"
-            alt="OpsCore logo"
-            width={36}
-            height={36}
-            className="relative object-contain h-14 w-14 drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
-            priority
-          />
+          <div className="min-w-0">
+            <h2 className="truncate text-lg font-bold leading-none text-white">OpsCore</h2>
+            <p className="mt-1 text-xs text-[#94A3B8]">Workspace Manager</p>
+          </div>
         </div>
 
-        <div className="min-w-0">
-          <h2 className="truncate text-lg font-bold leading-none text-white">OpsCore</h2>
-          <p className="mt-1 text-xs text-[#94A3B8]">Workspace Manager</p>
-        </div>
+        {/* Workspace Switcher under logo */}
+        <WorkspaceSwitcher />
       </div>
 
       <div className="flex-1 space-y-6 overflow-y-auto pr-1">

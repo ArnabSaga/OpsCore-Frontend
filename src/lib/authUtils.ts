@@ -1,4 +1,4 @@
-export type UserRole = "SUPER_ADMIN" | "ADMIN" | "USER" | "MANAGER";
+export type UserRole = "SUPER_ADMIN" | "OWNER" | "ADMIN" | "USER";
 
 export const AUTH_ROUTES = [
   "/login",
@@ -43,9 +43,8 @@ export const getRouteOwner = (pathname: string): UserRole | "COMMON" | null => {
 export const getDefaultDashboardRoute = (role: UserRole): string => {
   switch (role) {
     case "SUPER_ADMIN":
+    case "OWNER":
     case "ADMIN":
-      return "/dashboard";
-    case "MANAGER":
       return "/dashboard";
     default:
       return "/dashboard";

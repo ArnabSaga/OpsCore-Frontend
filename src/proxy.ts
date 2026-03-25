@@ -30,19 +30,30 @@ export async function proxy(req: NextRequest) {
     const routeOwner = getRouteOwner(pathname);
     const isAuth = isAuthRoute(pathname);
 
-    // Fetch user info from backend
-    const res = await fetch(`${BASE_API_URL}/api/v1/auth/me`, {
-      method: "GET",
-      headers: {
-        cookie,
-        "content-type": "application/json",
-      },
-      cache: "no-store",
-    });
+    // Only fetch user info if a session cookie exists to avoid unnecessary backend calls
+    const hasSessionCookie = cookie.includes("better-auth.session_token");
 
-    const isLoggedIn = res.ok;
-    const json = isLoggedIn ? await res.json().catch(() => null) : null;
-    const user = json?.data || json; // Backend might return { data: user } or just user
+    let isLoggedIn = false;
+    let user = null;
+
+    if (hasSessionCookie) {
+      try {
+        const res = await fetch(`${BASE_API_URL}/api/v1/auth/me`, {
+          method: "GET",
+          headers: {
+            cookie,
+            "content-type": "application/json",
+          },
+          cache: "no-store",
+        });
+
+        isLoggedIn = res.ok;
+        const json = isLoggedIn ? await res.json().catch(() => null) : null;
+        user = json?.data || json;
+      } catch (authError) {
+        console.error("Auth check failed in proxy:", authError);
+      }
+    }
 
     // Extract user details
     const userRole = (user?.systemRole || user?.role) as UserRole | null;
