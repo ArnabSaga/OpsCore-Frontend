@@ -76,3 +76,36 @@ export type DashboardActivityResponse = {
     totalPages: number;
   };
 };
+
+export type DashboardMetricsPeriod =
+  | "last_7_days"
+  | "last_30_days"
+  | "last_3_months"
+  | "last_12_months";
+
+export type DashboardRevenueMetricPoint = {
+  label: string;
+  date: string;
+  currency: string;
+  paidAmount: number;
+};
+
+export type DashboardProjectMetricPoint = {
+  label: string;
+  date: string;
+  created: number;
+  completed: number;
+};
+
+export type DashboardTaskMetricPoint = {
+  label: string;
+  date: string;
+  created: number;
+  completed: number;
+};
+
+export type DashboardMetrics = {
+  revenue: DashboardRevenueMetricPoint[];
+  projects: DashboardProjectMetricPoint[];
+  tasks: DashboardTaskMetricPoint[];
+};

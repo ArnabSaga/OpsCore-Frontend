@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { FolderKanban } from "lucide-react";
@@ -15,7 +15,12 @@ type ProjectStatusChartProps = {
 const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    const frameId = requestAnimationFrame(() => {
+      setMounted(true);
+    });
     const ctx = gsap.context(() => {
       if (!cardRef.current) return;
 
@@ -32,7 +37,10 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
       );
     });
 
-    return () => ctx.revert();
+    return () => {
+      cancelAnimationFrame(frameId);
+      ctx.revert();
+    };
   }, []);
 
   const data = [
@@ -55,31 +63,33 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
       </CardHeader>
 
       <CardContent>
-        <div className="h-[320px] w-full min-h-0">
-          <ResponsiveContainer width="100%" height="100%" minHeight={0}>
-            <PieChart>
-              <Tooltip
-                contentStyle={{
-                  background: "#101828",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  borderRadius: "16px",
-                  color: "#FFFFFF",
-                }}
-              />
-              <Pie
-                data={data}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={70}
-                outerRadius={110}
-                paddingAngle={4}
-              >
-                {data.map((entry) => (
-                  <Cell key={entry.name} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="h-[320px] w-full min-h-0 min-w-0">
+          {mounted && (
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+              <PieChart>
+                <Tooltip
+                  contentStyle={{
+                    background: "#101828",
+                    border: "1px solid rgba(255,255,255,0.10)",
+                    borderRadius: "16px",
+                    color: "#FFFFFF",
+                  }}
+                />
+                <Pie
+                  data={data}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={70}
+                  outerRadius={110}
+                  paddingAngle={4}
+                >
+                  {data.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          )}
         </div>
 
         <div className="mt-2 grid grid-cols-2 gap-3">

@@ -1,5 +1,10 @@
 import { apiFetch } from "@/lib/fetcher";
-import type { DashboardActivityResponse, DashboardOverview } from "@/types/dashboard.types";
+import type {
+  DashboardActivityResponse,
+  DashboardMetrics,
+  DashboardMetricsPeriod,
+  DashboardOverview,
+} from "@/types/dashboard.types";
 
 type OverviewApiResponse = {
   success?: boolean;
@@ -12,6 +17,12 @@ type ActivityApiResponse = {
   message?: string;
   data?: DashboardActivityResponse["data"];
   meta?: DashboardActivityResponse["meta"];
+};
+
+type MetricsApiResponse = {
+  success?: boolean;
+  message?: string;
+  data?: DashboardMetrics;
 };
 
 export const getDashboardOverview = async (): Promise<DashboardOverview> => {
@@ -45,5 +56,19 @@ export const getDashboardActivity = async ({
       total: 0,
       totalPages: 1,
     },
+  };
+};
+
+export const getDashboardMetrics = async (
+  period: DashboardMetricsPeriod = "last_30_days"
+): Promise<DashboardMetrics> => {
+  const response = (await apiFetch({
+    endpoint: `/api/v1/dashboard/metrics?period=${period}`,
+  })) as MetricsApiResponse;
+
+  return {
+    revenue: response?.data?.revenue ?? [],
+    projects: response?.data?.projects ?? [],
+    tasks: response?.data?.tasks ?? [],
   };
 };
