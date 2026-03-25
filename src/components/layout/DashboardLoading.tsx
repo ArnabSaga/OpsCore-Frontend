@@ -49,10 +49,17 @@ const DashboardLoading = () => {
     return () => ctx.revert();
   }, []);
 
+  const navGroups = [
+    { title: "Overview", items: 1 },
+    { title: "Workspace", items: 4 },
+    { title: "Insights", items: 3 },
+    { title: "Account", items: 3 },
+  ];
+
   return (
     <div
       ref={containerRef}
-      className="relative min-h-screen overflow-hidden bg-[#0B0B0B] text-white"
+      className="relative h-screen overflow-hidden bg-[#0B0B0B] text-white"
     >
       {/* Ambient glow */}
       <div className="pointer-events-none absolute inset-0">
@@ -61,57 +68,66 @@ const DashboardLoading = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(127,86,217,0.06),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(105,65,198,0.06),transparent_30%)]" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px]">
-        {/* Sidebar skeleton */}
+      <div className="relative flex h-full w-full">
+        {/* Fixed Sidebar skeleton - Pinned to left */}
         <aside
           ref={sidebarRef}
-          className="hidden w-[280px] border-r border-white/10 bg-[#111111]/95 px-5 py-6 lg:block"
+          className="sticky top-0 hidden h-screen w-[280px] flex-col border-r border-white/10 bg-[#111111]/95 px-5 py-6 lg:flex"
         >
-          <div className="mb-8 flex items-center gap-3">
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0F172A] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-              {/* Glow */}
-              <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-xl" />
+          <div className="mb-6">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[#0F172A] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-xl" />
+                <Image
+                  src="/icons/logo.png"
+                  alt="OpsCore logo"
+                  width={36}
+                  height={36}
+                  style={{ width: "auto", height: "auto" }}
+                  className="relative object-contain drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
+                  priority
+                />
+              </div>
 
-              {/* Logo */}
-              <Image   
-                src="/icons/logo.png"
-                alt="OpsCore logo"
-                width={36}
-                height={36}
-                style={{ width: "auto", height: "auto" }}
-                className="relative object-contain drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
-                priority
-              />
+              <div className="space-y-1">
+                <Skeleton className="h-5 w-24 bg-white/10" />
+                <Skeleton className="h-3 w-32 bg-white/5" />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-28 bg-white/10" />
-              <Skeleton className="h-3 w-20 bg-white/5" />
-            </div>
+            <div className="mt-6 h-12 w-full rounded-xl border border-white/10 bg-white/3" />
           </div>
 
-          <div className="space-y-3">
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={index}
-                className="rounded-xl border border-white/5 bg-white/2 p-3 backdrop-blur-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <Skeleton className="h-5 w-5 rounded-md bg-white/10" />
-                  <Skeleton className="h-4 w-full bg-white/10" />
+          <div className="flex-1 space-y-6 overflow-y-auto pr-1">
+            {navGroups.map((group) => (
+              <div key={group.title} className="space-y-2">
+                <Skeleton className="ml-2 h-3 w-20 bg-white/10" />
+                <div className="space-y-2">
+                  {Array.from({ length: group.items }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between rounded-xl border border-transparent px-3 py-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="h-5 w-5 rounded-md bg-white/10" />
+                        <Skeleton className="h-4 w-24 bg-white/10" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
           </div>
 
           <div className="mt-8 rounded-xl border border-white/5 bg-white/2 p-4">
-            <Skeleton className="h-4 w-20 bg-white/10" />
+            <Skeleton className="h-4 w-24 bg-white/10" />
+            <Skeleton className="mt-1 h-3 w-40 bg-white/5" />
           </div>
         </aside>
 
-        {/* Main content */}
-        <main className="flex-1">
-          {/* Top bar */}
+        {/* Main layout matching DashboardShell - Full width minus sidebar */}
+        <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          {/* Header pins at top of main flex-col - Full width of main */}
           <div
             ref={headerRef}
             className="border-b border-white/10 bg-[#0B0B0B]/80 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8"
@@ -124,116 +140,122 @@ const DashboardLoading = () => {
 
               <div className="flex items-center gap-3">
                 <Skeleton className="h-10 w-10 rounded-full bg-white/10" />
-                <Skeleton className="hidden h-10 w-28 rounded-xl bg-white/10 sm:block" />
+                <Skeleton className="hidden h-10 w-32 rounded-xl bg-white/10 sm:block" />
+                <Skeleton className="hidden h-10 w-10 rounded-full bg-white/10 sm:block" />
               </div>
             </div>
           </div>
 
-          {/* Content area */}
-          <div ref={contentRef} className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-            {/* Stats cards */}
-            <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl"
-                >
-                  <div className="mb-4 flex items-center justify-between">
-                    <Skeleton className="h-4 w-24 bg-white/10" />
-                    <div className="rounded-xl bg-[#7F56D9]/10 p-2">
-                      <Skeleton className="h-6 w-6 rounded-lg bg-[#7F56D9]/20" />
+          {/* Scrollable Content section - Centered internal content with max-w */}
+          <div 
+            ref={contentRef} 
+            className="flex-1 overflow-y-auto"
+          >
+            <div className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+              {/* Stats cards */}
+              <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl"
+                  >
+                    <div className="mb-4 flex items-center justify-between">
+                      <Skeleton className="h-4 w-24 bg-white/10" />
+                      <div className="rounded-xl bg-[#7F56D9]/10 p-2">
+                        <Skeleton className="h-6 w-6 rounded-lg bg-[#7F56D9]/20" />
+                      </div>
                     </div>
+                    <Skeleton className="mb-3 h-8 w-24 bg-white/10" />
+                    <Skeleton className="h-4 w-32 bg-white/5" />
                   </div>
-                  <Skeleton className="mb-3 h-8 w-24 bg-white/10" />
-                  <Skeleton className="h-4 w-32 bg-white/5" />
-                </div>
-              ))}
-            </section>
+                ))}
+              </section>
 
-            {/* Charts + side panel */}
-            <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-              <div className="xl:col-span-2 rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
-                <div className="mb-5 flex items-center justify-between">
+              {/* Status overview charts */}
+              <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+                  <Skeleton className="mb-4 h-5 w-40 bg-white/10" />
+                  <Skeleton className="h-[320px] w-full bg-white/5" />
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+                  <Skeleton className="mb-4 h-5 w-52 bg-white/10" />
+                  <Skeleton className="mb-6 h-[220px] w-full bg-white/5" />
+                  <div className="grid grid-cols-2 gap-3">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i} className="rounded-xl border border-white/5 bg-white/2 p-3">
+                        <Skeleton className="mb-2 h-3 w-16 bg-white/10" />
+                        <Skeleton className="h-5 w-8 bg-white/10" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* Invoice Summary */}
+              <section className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+                <Skeleton className="mb-6 h-5 w-48 bg-white/10" />
+                <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1fr_220px]">
+                  <Skeleton className="h-[300px] w-full bg-white/5" />
+                  <div className="flex flex-col justify-center space-y-4">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="rounded-xl border border-white/5 bg-white/2 p-4">
+                        <Skeleton className="mb-2 h-3 w-20 bg-white/10" />
+                        <Skeleton className="h-6 w-16 bg-white/10" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              {/* Trends Section */}
+              <section className="space-y-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="space-y-2">
-                    <Skeleton className="h-5 w-40 bg-white/10" />
-                    <Skeleton className="h-4 w-56 bg-white/5" />
+                    <Skeleton className="h-6 w-48 bg-white/10" />
+                    <Skeleton className="h-4 w-64 bg-white/5" />
                   </div>
-                  <Skeleton className="h-9 w-28 rounded-xl bg-white/10" />
+                  <div className="flex gap-2 p-1 rounded-2xl border border-white/10 bg-white/3">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <Skeleton key={i} className="h-9 w-12 rounded-xl bg-white/5" />
+                    ))}
+                  </div>
                 </div>
-
-                <div className="flex h-[280px] items-end gap-3">
-                  {Array.from({ length: 10 }).map((_, index) => (
-                    <Skeleton
-                      key={index}
-                      className="w-full rounded-t-xl bg-linear-to-t from-[#7F56D9]/30 to-[#6941C6]/10"
-                      style={{
-                        height: `${40 + ((index % 5) + 1) * 35}px`,
-                      }}
-                    />
-                  ))}
+                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5">
+                    <Skeleton className="mb-4 h-5 w-40 bg-white/10" />
+                    <Skeleton className="h-[320px] w-full bg-white/5" />
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5">
+                    <Skeleton className="mb-4 h-5 w-52 bg-white/10" />
+                    <Skeleton className="h-[320px] w-full bg-white/5" />
+                  </div>
                 </div>
-              </div>
+              </section>
 
-              <div className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
-                <div className="mb-5 space-y-2">
-                  <Skeleton className="h-5 w-36 bg-white/10" />
-                  <Skeleton className="h-4 w-40 bg-white/5" />
-                </div>
-
-                <div className="space-y-4">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between rounded-xl border border-white/5 bg-white/2 p-3"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Skeleton className="h-10 w-10 rounded-full bg-white/10" />
-                        <div className="space-y-2">
-                          <Skeleton className="h-4 w-28 bg-white/10" />
-                          <Skeleton className="h-3 w-20 bg-white/5" />
+              {/* Bottom Activity + Subscription */}
+              <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+                <div className="xl:col-span-2 rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
+                  <Skeleton className="mb-6 h-5 w-40 bg-white/10" />
+                  <div className="space-y-4">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="flex items-center gap-4">
+                        <Skeleton className="h-10 w-10 shrink-0 rounded-full bg-white/10" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-4 w-full bg-white/10" />
+                          <Skeleton className="h-3 w-1/2 bg-white/5" />
                         </div>
                       </div>
-                      <Skeleton className="h-5 w-14 rounded-full bg-[#12B76A]/20" />
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </section>
-
-            {/* Table skeleton */}
-            <section className="rounded-2xl border border-white/10 bg-[#1D2939]/80 p-5 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
-              <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="space-y-2">
-                  <Skeleton className="h-5 w-40 bg-white/10" />
-                  <Skeleton className="h-4 w-64 bg-white/5" />
+                <div className="rounded-2xl overflow-hidden border border-white/10 bg-[#1D2939]/80 shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl p-5">
+                  <Skeleton className="mb-4 h-5 w-36 bg-white/10" />
+                  <Skeleton className="mb-6 h-4 w-full bg-white/5" />
+                  <Skeleton className="mb-8 h-20 w-full rounded-2xl bg-white/5" />
+                  <Skeleton className="h-12 w-full rounded-xl bg-[#7F56D9]/20" />
                 </div>
-
-                <div className="flex gap-3">
-                  <Skeleton className="h-10 w-44 rounded-xl bg-white/10" />
-                  <Skeleton className="h-10 w-28 rounded-xl bg-[#7F56D9]/20" />
-                </div>
-              </div>
-
-              <div className="overflow-hidden rounded-2xl border border-white/10">
-                <div className="grid grid-cols-4 gap-4 border-b border-white/10 bg-white/3 px-4 py-3">
-                  <Skeleton className="h-4 w-20 bg-white/10" />
-                  <Skeleton className="h-4 w-24 bg-white/10" />
-                  <Skeleton className="h-4 w-20 bg-white/10" />
-                  <Skeleton className="h-4 w-16 bg-white/10" />
-                </div>
-
-                <div className="divide-y divide-white/10">
-                  {Array.from({ length: 6 }).map((_, index) => (
-                    <div key={index} className="grid grid-cols-4 gap-4 px-4 py-4">
-                      <Skeleton className="h-4 w-24 bg-white/10" />
-                      <Skeleton className="h-4 w-32 bg-white/5" />
-                      <Skeleton className="h-4 w-20 bg-white/10" />
-                      <Skeleton className="h-4 w-16 bg-white/5" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
+              </section>
+            </div>
           </div>
         </main>
       </div>
