@@ -1,5 +1,6 @@
 "use client";
 
+import { API_ENDPOINTS } from "@/config/api-endpoints";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/fetcher";
 import type { User } from "@/components/features/auth/api/auth.api";
@@ -9,7 +10,13 @@ export const useUser = () => {
     queryKey: ["auth", "current-user"],
     queryFn: async () => {
       try {
-        const response = await apiFetch("/api/v1/auth/me");
+        const response = await apiFetch<{
+          data?: { user?: User; [key: string]: unknown };
+          user?: User;
+          [key: string]: unknown;
+        }>({
+          endpoint: API_ENDPOINTS.auth.me,
+        });
 
         // The API might return { success: true, data: { user: ... } }
         // or { success: true, data: ... } (where data is the user)

@@ -78,7 +78,8 @@ const DashboardLoading = () => {
                 alt="OpsCore logo"
                 width={36}
                 height={36}
-                className="relative object-contain h-14 w-14 drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
+                style={{ width: "auto", height: "auto" }}
+                className="relative object-contain drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
                 priority
               />
             </div>

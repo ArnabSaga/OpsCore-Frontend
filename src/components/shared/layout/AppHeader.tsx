@@ -2,12 +2,11 @@
 
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Settings, User as UserIcon, BriefcaseBusiness } from "lucide-react";
 
 import Breadcrumbs from "@/components/shared/layout/Breadcrumbs";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
-import { apiFetch } from "@/lib/fetcher";
+import { useLogout } from "@/components/features/auth/hooks/useLogout";
 import type { User } from "@/components/features/auth/api/auth.api";
 
 import {
@@ -64,38 +63,20 @@ const getWorkspaceInitials = (name?: string | null) => {
 const AppHeader: React.FC<HeaderProps> = ({ user }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const queryClient = useQueryClient();
-
   const { activeWorkspace, isLoading: isWorkspaceLoading } = useWorkspaceContext();
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
   const initials = getInitials(user?.name);
-
-  const handleLogout = async () => {
-    try {
-      await apiFetch("/api/auth/sign-out", {
-        method: "POST",
-      });
-    } catch {
-      // Ignore API failure and still clear client state
-    } finally {
-      queryClient.clear();
-      router.replace("/login");
-      router.refresh();
-    }
-  };
 
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0B]/80 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8">
       <div className="flex items-center justify-between gap-4">
-        {/* Left section */}
         <div className="min-w-0 space-y-2">
           <h1 className="truncate text-xl font-semibold text-white">{getPageTitle(pathname)}</h1>
           <Breadcrumbs />
         </div>
 
-        {/* Right section */}
         <div className="flex items-center gap-3">
-          {/* Active workspace display */}
           <div className="hidden md:flex">
             {isWorkspaceLoading ? (
               <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/3 px-3 py-2">
@@ -124,7 +105,6 @@ const AppHeader: React.FC<HeaderProps> = ({ user }) => {
             ) : null}
           </div>
 
-          {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger className="focus:outline-none">
               <div className="flex items-center gap-3 rounded-full bg-white/5 p-1 pr-4 transition-colors hover:bg-white/10">
@@ -203,11 +183,12 @@ const AppHeader: React.FC<HeaderProps> = ({ user }) => {
               <DropdownMenuSeparator className="bg-white/10" />
 
               <DropdownMenuItem
-                onClick={handleLogout}
+                onClick={() => logout()}
+                disabled={isLoggingOut}
                 className="cursor-pointer rounded-lg text-red-400 hover:bg-white/10 focus:bg-white/10 focus:text-red-400"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Log out
+                {isLoggingOut ? "Logging out..." : "Log out"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

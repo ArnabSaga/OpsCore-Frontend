@@ -4,29 +4,29 @@ import gsap from "gsap";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 
-import DashboardLoading from "@/components/layout/DashboardLoading";
 import AppHeader from "@/components/shared/layout/AppHeader";
 import AppSidebar from "@/components/shared/layout/AppSidebar";
+import AuthSessionErrorState from "@/components/shared/error-state/AuthSessionErrorState";
+import NoWorkspaceState from "@/components/shared/empty-state/NoWorkspaceState";
+import DashboardShellLoader from "@/components/shared/loaders/DashboardShellLoader";
 import { useUser } from "@/hooks/useUser";
-import { WorkspaceProvider } from "@/providers/WorkspaceProvider";
+import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
 type DashboardShellProps = {
   children: React.ReactNode;
 };
 
-const DashboardShell = ({ children }: DashboardShellProps) => {
-  const { data: user, isLoading, isError } = useUser();
-  const router = useRouter();
+const DashboardShellContent = ({
+  children,
+  user,
+}: DashboardShellProps & {
+  user: NonNullable<ReturnType<typeof useUser>["data"]>;
+}) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const { activeWorkspace, isLoading: isWorkspaceLoading } = useWorkspaceContext();
 
   useEffect(() => {
-    if (!isLoading && (isError || !user)) {
-      router.replace("/login");
-    }
-  }, [isLoading, isError, user, router]);
-
-  useEffect(() => {
-    if (!isLoading && user && contentRef.current) {
+    if (contentRef.current) {
       gsap.fromTo(
         contentRef.current,
         { opacity: 0, y: 12 },
@@ -39,33 +39,68 @@ const DashboardShell = ({ children }: DashboardShellProps) => {
         }
       );
     }
-  }, [isLoading, user]);
+  }, [activeWorkspace?.id]);
 
-  if (isLoading) {
-    return <DashboardLoading />;
+  if (isWorkspaceLoading) {
+    return <DashboardShellLoader />;
   }
 
-  if (!user || isError) {
-    return null;
-  }
-
-  return (
-    <WorkspaceProvider>
+  if (!activeWorkspace) {
+    return (
       <div className="flex min-h-screen bg-[#0B0B0B] text-white">
         <AppSidebar userRole={user?.systemRole ?? null} />
 
         <main className="flex min-w-0 flex-1 flex-col">
           <AppHeader user={user} />
 
-          <div ref={contentRef} className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto">
             <div className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
-              {children}
+              <NoWorkspaceState />
             </div>
           </div>
         </main>
       </div>
-    </WorkspaceProvider>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen bg-[#0B0B0B] text-white">
+      <AppSidebar userRole={user?.systemRole ?? null} />
+
+      <main className="flex min-w-0 flex-1 flex-col">
+        <AppHeader user={user} />
+
+        <div ref={contentRef} className="flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+        </div>
+      </main>
+    </div>
   );
+};
+
+const DashboardShell = ({ children }: DashboardShellProps) => {
+  const { data: user, isLoading, isError } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace("/login");
+    }
+  }, [isLoading, user, router]);
+
+  if (isLoading) {
+    return <DashboardShellLoader />;
+  }
+
+  if (isError) {
+    return <AuthSessionErrorState />;
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  return <DashboardShellContent user={user}>{children}</DashboardShellContent>;
 };
 
 export default DashboardShell;

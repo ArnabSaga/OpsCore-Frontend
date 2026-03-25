@@ -65,6 +65,7 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
               alt="OpsCore logo"
               width={36}
               height={36}
+              style={{ width: "auto", height: "auto" }}
               className="relative object-contain drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
               priority
             />

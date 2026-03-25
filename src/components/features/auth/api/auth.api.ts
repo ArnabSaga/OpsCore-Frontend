@@ -1,3 +1,5 @@
+import { API_ENDPOINTS } from "@/config/api-endpoints";
+import { apiFetch } from "@/lib/fetcher";
 import { UserRole } from "@/lib/authUtils";
 import { Workspace } from "@/types/workspace.types";
 
@@ -65,162 +67,59 @@ export type AuthResponse = {
 };
 
 export const loginUser = async (payload: LoginPayload): Promise<AuthResponse> => {
-  const loginEndpoint = process.env.NEXT_PUBLIC_AUTH_LOGIN_ENDPOINT;
-
-  const response = await fetch(loginEndpoint!, {
+  return apiFetch<AuthResponse>({
+    endpoint: API_ENDPOINTS.auth.login,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
     body: JSON.stringify(payload),
   });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new Error(data?.message || data?.error || "Unable to sign in. Please try again.");
-  }
-
-  return data;
 };
 
 export const registerUser = async (payload: RegisterPayload): Promise<AuthResponse> => {
-  const registerEndpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/register`;
-
-  const response = await fetch(registerEndpoint, {
+  return apiFetch<AuthResponse>({
+    endpoint: API_ENDPOINTS.auth.register,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
     body: JSON.stringify(payload),
   });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new Error(data?.message || data?.error || "Unable to create account. Please try again.");
-  }
-
-  return data;
 };
 
 export const verifyEmailCode = async (payload: VerifyEmailPayload): Promise<AuthResponse> => {
-  const verifyEndpoint =
-    process.env.NEXT_PUBLIC_AUTH_VERIFY_EMAIL_ENDPOINT ||
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/verify-email`;
-
-  const response = await fetch(verifyEndpoint, {
+  return apiFetch<AuthResponse>({
+    endpoint: API_ENDPOINTS.auth.verifyEmail,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
     body: JSON.stringify(payload),
   });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new Error(data?.message || data?.error || "Unable to verify email. Please try again.");
-  }
-
-  return data;
 };
 
 export const resendVerificationCode = async (
   payload: ResendVerificationPayload
 ): Promise<AuthResponse> => {
-  const resendEndpoint =
-    process.env.NEXT_PUBLIC_AUTH_RESEND_VERIFICATION_ENDPOINT ||
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/resend-verification`;
-
-  const response = await fetch(resendEndpoint, {
+  return apiFetch<AuthResponse>({
+    endpoint: API_ENDPOINTS.auth.resendVerification,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
     body: JSON.stringify(payload),
   });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new Error(data?.message || data?.error || "Unable to resend verification code.");
-  }
-
-  return data;
 };
 
 export const forgotPassword = async (payload: ForgotPasswordPayload): Promise<AuthResponse> => {
-  const forgotPasswordEndpoint =
-    process.env.NEXT_PUBLIC_AUTH_FORGOT_PASSWORD_ENDPOINT ||
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/forgot-password`;
-
-  const response = await fetch(forgotPasswordEndpoint, {
+  return apiFetch<AuthResponse>({
+    endpoint: API_ENDPOINTS.auth.forgotPassword,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
     body: JSON.stringify(payload),
   });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new Error(
-      data?.message || data?.error || "Unable to send reset instructions. Please try again."
-    );
-  }
-
-  return data;
 };
 
 export const resetPassword = async (payload: ResetPasswordPayload): Promise<AuthResponse> => {
-  const resetPasswordEndpoint =
-    process.env.NEXT_PUBLIC_AUTH_RESET_PASSWORD_ENDPOINT ||
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/reset-password`;
-
-  const response = await fetch(resetPasswordEndpoint, {
+  return apiFetch<AuthResponse>({
+    endpoint: API_ENDPOINTS.auth.resetPassword,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
     body: JSON.stringify(payload),
   });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new Error(data?.message || data?.error || "Unable to reset password. Please try again.");
-  }
-
-  return data;
 };
 
 export const changePassword = async (payload: ChangePasswordPayload): Promise<AuthResponse> => {
-  const changePasswordEndpoint =
-    process.env.NEXT_PUBLIC_AUTH_CHANGE_PASSWORD_ENDPOINT ||
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/change-password`;
-
-  const response = await fetch(changePasswordEndpoint, {
+  return apiFetch<AuthResponse>({
+    endpoint: API_ENDPOINTS.auth.changePassword,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
     body: JSON.stringify(payload),
   });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    throw new Error(data?.message || data?.error || "Unable to change password. Please try again.");
-  }
-
-  return data;
 };

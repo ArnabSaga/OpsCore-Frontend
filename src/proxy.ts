@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { API_ENDPOINTS } from "./config/api-endpoints";
+import { buildApiUrl } from "./lib/build-api-url";
 import { UserRole, getDefaultDashboardRoute, getRouteOwner, isAuthRoute } from "./lib/authUtils";
 
 export const config = {
@@ -24,7 +26,6 @@ export async function proxy(req: NextRequest) {
 
   try {
     const cookie = req.headers.get("cookie") ?? "";
-    const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
 
     // Rule 3: User trying to access public route (Home page, etc.)
     const routeOwner = getRouteOwner(pathname);
@@ -38,7 +39,7 @@ export async function proxy(req: NextRequest) {
 
     if (hasSessionCookie) {
       try {
-        const res = await fetch(`${BASE_API_URL}/api/v1/auth/me`, {
+        const res = await fetch(buildApiUrl(API_ENDPOINTS.auth.me), {
           method: "GET",
           headers: {
             cookie,

@@ -12,6 +12,8 @@ import AppField from "@/components/form/AppField";
 import AppSubmitButton from "@/components/form/AppSubmitButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { API_ENDPOINTS } from "@/config/api-endpoints";
+import { getApiUrl } from "@/lib/get-api-url";
 import { useRegister } from "../hooks/useRegister";
 
 const RegisterForm = () => {
@@ -112,11 +114,7 @@ const RegisterForm = () => {
           variant="outline"
           className="h-11 w-full border-white/10 bg-white/5 text-white transition-all duration-300 hover:bg-white/10"
           onClick={() => {
-            const googleRegisterUrl = process.env.NEXT_PUBLIC_GOOGLE_LOGIN_URL;
-
-            if (googleRegisterUrl) {
-              window.location.href = googleRegisterUrl;
-            }
+            window.location.href = getApiUrl(API_ENDPOINTS.auth.googleLogin);
           }}
         >
           <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
