@@ -52,7 +52,7 @@ const DashboardLoading = () => {
   const navGroups = [
     { title: "Overview", items: 1 },
     { title: "Workspace", items: 4 },
-    { title: "Insights", items: 3 },
+    { title: "Insights", items: 4 },
     { title: "Account", items: 3 },
   ];
 

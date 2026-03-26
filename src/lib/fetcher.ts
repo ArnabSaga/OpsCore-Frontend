@@ -38,7 +38,9 @@ export const apiFetch = async <T>({
       errorMessage = response.statusText || errorMessage;
     }
 
-    throw new Error(errorMessage);
+    const error = new Error(errorMessage) as Error & { status?: number };
+    error.status = response.status;
+    throw error;
   }
 
   return response.json();

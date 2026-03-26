@@ -1,6 +1,7 @@
 "use client";
 
 import { API_ENDPOINTS } from "@/config/api-endpoints";
+import httpStatus from "http-status";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/fetcher";
 import type { User } from "@/components/features/auth/api/auth.api";
@@ -18,9 +19,6 @@ export const useUser = () => {
           endpoint: API_ENDPOINTS.auth.me,
         });
 
-        // The API might return { success: true, data: { user: ... } }
-        // or { success: true, data: ... } (where data is the user)
-        // or just the user object itself depending on the endpoint implementation
         const user = response?.data?.user ?? response?.user ?? response?.data ?? response;
 
         if (user && typeof user === "object" && "id" in user && "email" in user) {
@@ -28,8 +26,18 @@ export const useUser = () => {
         }
 
         return null;
-      } catch (error) {
-        console.error("Error fetching current user:", error);
+      } catch (error: unknown) {
+        const apiError = error as { status?: number; message?: string };
+        // Handle unauthorized or session errors silently as they are expected when logged out
+        const isUnauthorized =
+          apiError?.status === httpStatus.UNAUTHORIZED ||
+          apiError?.message?.toLowerCase().includes("failed to get session") ||
+          apiError?.message?.toLowerCase().includes("unauthorized");
+
+        if (!isUnauthorized) {
+          console.error("Error fetching current user:", apiError);
+        }
+
         return null;
       }
     },
