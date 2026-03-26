@@ -1,5 +1,7 @@
+import WorkspaceDetailsPage from "@/components/features/workspace/components/WorkspaceDetailsPage";
+
 const WorkspacePage = () => {
-  return <div>WorkspacePage</div>;
+  return <WorkspaceDetailsPage />;
 };
 
 export default WorkspacePage;
