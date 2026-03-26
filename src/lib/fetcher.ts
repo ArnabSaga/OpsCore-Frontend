@@ -1,7 +1,8 @@
 import { buildApiUrl } from "./build-api-url";
 
-type ApiFetchOptions = RequestInit & {
+type ApiFetchOptions = Omit<RequestInit, "body"> & {
   endpoint: string;
+  body?: BodyInit | Record<string, unknown> | null;
 };
 
 /**
@@ -19,8 +20,24 @@ export const apiFetch = async <T>({
   const isAbsoluteUrl = /^https?:\/\//i.test(endpoint);
   const url = isAbsoluteUrl ? endpoint : buildApiUrl(endpoint);
 
+  let body: BodyInit | null | undefined;
+
+  if (
+    options.body &&
+    typeof options.body === "object" &&
+    !(options.body instanceof FormData) &&
+    !(options.body instanceof Blob) &&
+    !(options.body instanceof ArrayBuffer) &&
+    !(options.body instanceof URLSearchParams)
+  ) {
+    body = JSON.stringify(options.body);
+  } else {
+    body = options.body as BodyInit | null | undefined;
+  }
+
   const response = await fetch(url, {
     ...options,
+    body,
     headers: {
       "Content-Type": "application/json",
       ...headers,

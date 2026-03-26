@@ -36,6 +36,14 @@ const SuperAdminDashboardPage = () => {
   const rootRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
   const [metricPeriod, setMetricPeriod] = useState<PlatformMetricsPeriod>("last_30_days");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     data: overview,
@@ -412,8 +420,8 @@ const SuperAdminDashboardPage = () => {
                   <div className="pointer-events-none absolute inset-0">
                     <div className="absolute left-1/2 top-[55%] h-28 w-28 -translate-x-1/2 rounded-full bg-[#FF4DDF]/20 blur-3xl" />
                     <div className="absolute left-1/2 top-[58%] h-16 w-40 -translate-x-1/2 rounded-full bg-[#7F56D9]/20 blur-2xl" />
-                    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#7F56D9]/12 to-transparent" />
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:32px_32px] opacity-20" />
+                    <div className="absolute inset-x-0 top-0 h-24 bg-linear-to-b from-[#7F56D9]/12 to-transparent" />
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-size-[32px_32px] opacity-20" />
                   </div>
 
                   <div className="relative mb-6 flex items-start justify-between gap-4">
@@ -442,10 +450,17 @@ const SuperAdminDashboardPage = () => {
 
                   <div className="relative h-[340px] w-full">
                     <div className="pointer-events-none absolute inset-x-8 bottom-10 h-10 rounded-full bg-[#FF4DDF]/25 blur-2xl" />
-                    <div className="pointer-events-none absolute inset-x-12 bottom-9 h-[2px] bg-gradient-to-r from-transparent via-[#FF4DDF]/80 to-transparent opacity-70" />
+                    <div className="pointer-events-none absolute inset-x-12 bottom-9 h-[2px] bg-linear-to-r from-transparent via-[#FF4DDF]/80 to-transparent opacity-70" />
 
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
+                    {mounted && (
+                      <ResponsiveContainer
+                        width="100%"
+                        height="100%"
+                        minWidth={0}
+                        minHeight={0}
+                        debounce={100}
+                      >
+                        <BarChart
                         data={growthData}
                         margin={{ top: 16, right: 8, left: -20, bottom: 8 }}
                         barGap={14}
@@ -550,6 +565,7 @@ const SuperAdminDashboardPage = () => {
                         />
                       </BarChart>
                     </ResponsiveContainer>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -564,7 +580,7 @@ const SuperAdminDashboardPage = () => {
         {isActivityError ? (
           <ProtectedPageErrorState
             title="Unable to load platform activity"
-            description="We couldn’t fetch activity right now."
+            description="We couldn't fetch activity right now."
             onRetry={() => refetchActivity()}
           />
         ) : isActivityLoading ? (

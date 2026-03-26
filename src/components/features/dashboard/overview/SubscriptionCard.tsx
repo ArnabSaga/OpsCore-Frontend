@@ -1,10 +1,14 @@
 "use client";
 
-import { differenceInDays, format } from "date-fns";
-import { CreditCard, Sparkles, Timer } from "lucide-react";
+import { CreditCard, Sparkles, ArrowUpRight, Settings2 } from "lucide-react";
+import { format } from "date-fns";
+import { useState } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import type { DashboardOverview } from "@/types/dashboard.types";
+import { usePrepareCheckout } from "@/components/features/billing/hooks/usePrepareCheckout";
+import { useCustomerPortal } from "@/components/features/billing/hooks/useCustomerPortal";
 
 type SubscriptionCardProps = {
   overview: DashboardOverview;
@@ -12,15 +16,38 @@ type SubscriptionCardProps = {
 
 const SubscriptionCard = ({ overview }: SubscriptionCardProps) => {
   const subscription = overview.subscription;
+  const workspaceRole = overview.workspace.role;
 
-  const daysRemaining = subscription.trialEndsAt
-    ? differenceInDays(new Date(subscription.trialEndsAt), new Date())
-    : null;
+  const { mutateAsync: prepareCheckout, isPending: isPreparingCheckout } = usePrepareCheckout();
+  const { mutateAsync: openPortal, isPending: isOpeningPortal } = useCustomerPortal();
 
-  const getUrgencyColor = (days: number) => {
-    if (days <= 3) return "bg-red-500/20 text-red-400 border-red-500/20";
-    if (days <= 7) return "bg-amber-500/20 text-amber-400 border-amber-500/20";
-    return "bg-[#12B76A]/20 text-[#12B76A] border-[#12B76A]/20";
+  const [billingInterval] = useState<"month" | "year">("month");
+
+  if (!subscription) return null;
+
+  const isOwner = workspaceRole === "OWNER";
+  const isAdmin = workspaceRole === "ADMIN";
+
+  const handleUpgradePlan = async () => {
+    const result = await prepareCheckout({
+      plan: "PRO",
+      billingInterval,
+      successUrl:
+        typeof window !== "undefined" ? `${window.location.origin}/billing/success` : undefined,
+      cancelUrl: typeof window !== "undefined" ? `${window.location.origin}/dashboard` : undefined,
+    });
+
+    if (result.checkoutUrl) {
+      window.location.href = result.checkoutUrl;
+    }
+  };
+
+  const handleManageBilling = async () => {
+    const result = await openPortal();
+
+    if (result.url) {
+      window.location.href = result.url;
+    }
   };
 
   return (
@@ -44,23 +71,6 @@ const SubscriptionCard = ({ overview }: SubscriptionCardProps) => {
               <Sparkles className="h-5 w-5 text-[#CBB5FF]" />
             </div>
           </div>
-
-          {daysRemaining !== null && (
-            <div
-              className={`mt-4 flex items-center gap-2 rounded-xl border p-2.5 text-xs font-semibold backdrop-blur-md ${getUrgencyColor(
-                daysRemaining
-              )}`}
-            >
-              <Timer className="h-3.5 w-3.5" />
-              <span>
-                {daysRemaining > 0
-                  ? `${daysRemaining} Days Remaining`
-                  : daysRemaining === 0
-                  ? "Last day of trial"
-                  : "Trial Expired"}
-              </span>
-            </div>
-          )}
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -99,6 +109,33 @@ const SubscriptionCard = ({ overview }: SubscriptionCardProps) => {
                 {format(new Date(subscription.trialEndsAt), "dd MMM yyyy")}
               </span>
             </p>
+          </div>
+        ) : null}
+
+        {isOwner ? (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Button
+              onClick={handleUpgradePlan}
+              disabled={isPreparingCheckout}
+              className="bg-[#7F56D9] text-white hover:bg-[#6941C6]"
+            >
+              <ArrowUpRight className="mr-2 h-4 w-4" />
+              {isPreparingCheckout ? "Preparing..." : "Upgrade Plan"}
+            </Button>
+
+            <Button
+              onClick={handleManageBilling}
+              disabled={isOpeningPortal}
+              variant="outline"
+              className="border-white/10 bg-white/3 text-white hover:bg-white/6"
+            >
+              <Settings2 className="mr-2 h-4 w-4" />
+              {isOpeningPortal ? "Opening..." : "Manage Billing"}
+            </Button>
+          </div>
+        ) : isAdmin ? (
+          <div className="rounded-2xl border border-white/10 bg-white/3 p-4">
+            <p className="text-sm text-[#94A3B8]">Billing is managed by the workspace owner.</p>
           </div>
         ) : null}
       </CardContent>

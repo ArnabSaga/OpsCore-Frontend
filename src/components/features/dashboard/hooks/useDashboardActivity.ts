@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardActivity } from "@/components/features/dashboard/api/dashboard.api";
+import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
 export const useDashboardActivity = ({
   page = 1,
@@ -10,9 +11,12 @@ export const useDashboardActivity = ({
   page?: number;
   limit?: number;
 } = {}) => {
+  const { isResolved, isSwitching } = useWorkspaceContext();
+
   return useQuery({
     queryKey: ["dashboard", "activity", page, limit],
     queryFn: () => getDashboardActivity({ page, limit }),
     staleTime: 1000 * 60,
+    enabled: isResolved && !isSwitching,
   });
 };
