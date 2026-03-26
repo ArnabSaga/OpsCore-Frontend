@@ -5,12 +5,12 @@ import { getDashboardOverview } from "@/components/features/dashboard/api/dashbo
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
 export const useDashboardOverview = () => {
-  const { isResolved, isSwitching, activeWorkspaceId } = useWorkspaceContext();
+  const { activeWorkspaceId, hasServerWorkspaceContext } = useWorkspaceContext();
 
   return useQuery({
-    queryKey: ["dashboard", "overview"],
-    queryFn: getDashboardOverview,
-    staleTime: 1000 * 60 * 2,
-    enabled: isResolved && !isSwitching && !!activeWorkspaceId,
+    queryKey: ["dashboard", "overview", activeWorkspaceId],
+    queryFn: () => getDashboardOverview(activeWorkspaceId),
+    enabled: hasServerWorkspaceContext && !!activeWorkspaceId,
+    staleTime: 5 * 60 * 1000,
   });
 };

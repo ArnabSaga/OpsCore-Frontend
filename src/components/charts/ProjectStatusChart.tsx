@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { FolderKanban } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DashboardOverview } from "@/types/dashboard.types";
+import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
 
 type ProjectStatusChartProps = {
   overview: DashboardOverview;
@@ -15,13 +16,10 @@ type ProjectStatusChartProps = {
 const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
 
-  const [mounted, setMounted] = useState(false);
+  const chartContainerRef = useRef<HTMLDivElement | null>(null);
+  const isChartMounted = useMountedWithWidth(chartContainerRef);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 100);
-
     const ctx = gsap.context(() => {
       if (!cardRef.current) return;
 
@@ -39,7 +37,6 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
     });
 
     return () => {
-      clearTimeout(timer);
       ctx.revert();
     };
   }, []);
@@ -64,9 +61,9 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
       </CardHeader>
 
       <CardContent>
-        <div className="h-[320px] w-full min-h-0 min-w-0">
-          {mounted && (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={100}>
+        <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
+          {isChartMounted && (
+            <ResponsiveContainer width="100%" aspect={1.8} minWidth={0} minHeight={0}>
               <PieChart>
                 <Tooltip
                   contentStyle={{

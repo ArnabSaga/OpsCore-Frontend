@@ -1,7 +1,7 @@
 import { API_ENDPOINTS } from "@/config/api-endpoints";
 import { apiFetch } from "@/lib/fetcher";
 import { UserRole } from "@/lib/authUtils";
-import { Workspace } from "@/types/workspace.types";
+import { WorkspaceSummary } from "@/types/workspace.types";
 
 export type User = {
   id: string;
@@ -14,7 +14,16 @@ export type User = {
   systemRole?: UserRole;
   needPasswordChange?: boolean;
   activeWorkspaceId?: string | null;
-  activeWorkspace?: Workspace | null;
+  activeWorkspace?: WorkspaceSummary | null;
+  workspaceMembers?: Array<{
+    role: string;
+    status: string;
+    workspace: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+  }>;
 };
 
 export type LoginPayload = {

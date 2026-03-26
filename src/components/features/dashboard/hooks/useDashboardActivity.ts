@@ -1,22 +1,19 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getDashboardActivity } from "@/components/features/dashboard/api/dashboard.api";
+import {
+  getDashboardActivity,
+  type IWorkspaceDashboardActivityQuery,
+} from "@/components/features/dashboard/api/dashboard.api";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
-export const useDashboardActivity = ({
-  page = 1,
-  limit = 8,
-}: {
-  page?: number;
-  limit?: number;
-} = {}) => {
-  const { isResolved, isSwitching, activeWorkspaceId } = useWorkspaceContext();
+export const useDashboardActivity = (query: IWorkspaceDashboardActivityQuery) => {
+  const { activeWorkspaceId, hasServerWorkspaceContext } = useWorkspaceContext();
 
   return useQuery({
-    queryKey: ["dashboard", "activity", page, limit],
-    queryFn: () => getDashboardActivity({ page, limit }),
-    staleTime: 1000 * 60,
-    enabled: isResolved && !isSwitching && !!activeWorkspaceId,
+    queryKey: ["dashboard", "activity", query, activeWorkspaceId],
+    queryFn: () => getDashboardActivity(query, activeWorkspaceId),
+    enabled: hasServerWorkspaceContext && !!activeWorkspaceId,
+    staleTime: 2 * 60 * 1000,
   });
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import {
   CartesianGrid,
@@ -19,6 +19,7 @@ import type {
   DashboardProjectMetricPoint,
   DashboardTaskMetricPoint,
 } from "@/types/dashboard.types";
+import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
 
 type ProjectTaskTrendChartProps = {
   projects: DashboardProjectMetricPoint[];
@@ -28,13 +29,10 @@ type ProjectTaskTrendChartProps = {
 const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
 
-  const [mounted, setMounted] = useState(false);
+  const chartContainerRef = useRef<HTMLDivElement | null>(null);
+  const isChartMounted = useMountedWithWidth(chartContainerRef);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 100);
-
     const ctx = gsap.context(() => {
       if (!cardRef.current) return;
 
@@ -52,7 +50,6 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
     });
 
     return () => {
-      clearTimeout(timer);
       ctx.revert();
     };
   }, []);
@@ -112,9 +109,9 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
       </CardHeader>
 
       <CardContent>
-        <div className="h-[320px] w-full min-h-0 min-w-0">
-          {mounted && (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={100}>
+        <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
+          {isChartMounted && (
+            <ResponsiveContainer width="100%" aspect={2.5} minWidth={0} minHeight={0}>
               <LineChart data={chartData}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
                 <XAxis

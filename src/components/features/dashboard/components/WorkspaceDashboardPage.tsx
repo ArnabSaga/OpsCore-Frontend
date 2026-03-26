@@ -116,10 +116,11 @@ const WorkspaceDashboardPage = () => {
   }
 
   if (isOverviewError) {
+    console.error("Dashboard overview error:", isOverviewError);
     return (
       <ProtectedPageErrorState
         title="Unable to load dashboard"
-        description="We couldn’t fetch your dashboard overview right now."
+        description="We couldn&apos;t fetch your dashboard overview right now."
         onRetry={() => {
           refetchOverview();
           refetchActivity();

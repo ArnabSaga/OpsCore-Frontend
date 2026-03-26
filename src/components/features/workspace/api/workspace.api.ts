@@ -37,6 +37,7 @@ export const getWorkspaceById = async (workspaceId: string): Promise<WorkspaceDe
   const response = await apiFetch<ApiResponse<WorkspaceDetails>>({
     endpoint: API_ENDPOINTS.workspace.details(workspaceId),
     method: "GET",
+    workspaceId,
   });
 
   return response.data;
@@ -58,6 +59,7 @@ export const switchWorkspace = async (workspaceId: string): Promise<SwitchWorksp
   const response = await apiFetch<ApiResponse<SwitchWorkspaceResponse>>({
     endpoint: API_ENDPOINTS.workspace.switch(workspaceId),
     method: "POST",
+    workspaceId,
   });
 
   return response.data;
@@ -67,6 +69,7 @@ export const getWorkspaceMembers = async (workspaceId: string): Promise<Workspac
   const response = await apiFetch<ApiResponse<WorkspaceMember[]>>({
     endpoint: API_ENDPOINTS.workspace.members(workspaceId),
     method: "GET",
+    workspaceId,
   });
 
   return response.data ?? [];
@@ -78,6 +81,7 @@ export const getWorkspaceInvitations = async (
   const response = await apiFetch<ApiResponse<WorkspaceInvitation[]>>({
     endpoint: API_ENDPOINTS.workspace.invitations(workspaceId),
     method: "GET",
+    workspaceId,
   });
 
   return response.data ?? [];

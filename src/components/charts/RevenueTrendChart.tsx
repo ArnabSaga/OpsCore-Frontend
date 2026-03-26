@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import {
   Area,
@@ -15,6 +15,7 @@ import { TrendingUp } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DashboardRevenueMetricPoint } from "@/types/dashboard.types";
+import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
 
 type RevenueTrendChartProps = {
   data: DashboardRevenueMetricPoint[];
@@ -23,13 +24,10 @@ type RevenueTrendChartProps = {
 const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
 
-  const [mounted, setMounted] = useState(false);
+  const chartContainerRef = useRef<HTMLDivElement | null>(null);
+  const isChartMounted = useMountedWithWidth(chartContainerRef);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 100);
-
     const ctx = gsap.context(() => {
       if (!cardRef.current) return;
 
@@ -46,7 +44,6 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
     });
 
     return () => {
-      clearTimeout(timer);
       ctx.revert();
     };
   }, []);
@@ -83,9 +80,9 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
       </CardHeader>
 
       <CardContent>
-        <div className="h-[320px] w-full min-h-0 min-w-0">
-          {mounted && (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={100}>
+        <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
+          {isChartMounted && (
+            <ResponsiveContainer width="100%" aspect={2.5} minWidth={0} minHeight={0}>
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">

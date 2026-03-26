@@ -10,6 +10,11 @@ import type {
   PlatformMetricsPeriod,
 } from "@/types/dashboard.types";
 
+export interface IWorkspaceDashboardActivityQuery {
+  page?: number;
+  limit?: number;
+}
+
 type OverviewApiResponse = {
   success?: boolean;
   message?: string;
@@ -29,9 +34,10 @@ type MetricsApiResponse = {
   data?: DashboardMetrics;
 };
 
-export const getDashboardOverview = async (): Promise<DashboardOverview> => {
+export const getDashboardOverview = async (workspaceId?: string | null): Promise<DashboardOverview> => {
   const response = (await apiFetch({
     endpoint: "/api/v1/dashboard/overview",
+    workspaceId,
   })) as OverviewApiResponse;
 
   if (!response?.data) {
@@ -41,15 +47,14 @@ export const getDashboardOverview = async (): Promise<DashboardOverview> => {
   return response.data;
 };
 
-export const getDashboardActivity = async ({
-  page = 1,
-  limit = 8,
-}: {
-  page?: number;
-  limit?: number;
-} = {}): Promise<DashboardActivityResponse> => {
+export const getDashboardActivity = async (
+  query: IWorkspaceDashboardActivityQuery = {},
+  workspaceId?: string | null
+): Promise<DashboardActivityResponse> => {
+  const { page = 1, limit = 8 } = query;
   const response = (await apiFetch({
     endpoint: `/api/v1/dashboard/activity?page=${page}&limit=${limit}`,
+    workspaceId,
   })) as ActivityApiResponse;
 
   return {
@@ -64,10 +69,12 @@ export const getDashboardActivity = async ({
 };
 
 export const getDashboardMetrics = async (
-  period: DashboardMetricsPeriod = "last_30_days"
+  period: DashboardMetricsPeriod = "last_30_days",
+  workspaceId?: string | null
 ): Promise<DashboardMetrics> => {
   const response = (await apiFetch({
     endpoint: `/api/v1/dashboard/metrics?period=${period}`,
+    workspaceId,
   })) as MetricsApiResponse;
 
   return {

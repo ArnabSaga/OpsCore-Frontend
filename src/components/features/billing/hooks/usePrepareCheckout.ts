@@ -2,6 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/fetcher";
+import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
 type PrepareCheckoutPayload = {
   plan: "PRO" | "ENTERPRISE";
@@ -22,11 +23,14 @@ type PrepareCheckoutResponse = {
 };
 
 export const usePrepareCheckout = () => {
+  const { activeWorkspaceId } = useWorkspaceContext();
+
   return useMutation({
     mutationFn: async (payload: PrepareCheckoutPayload) => {
       const response = (await apiFetch({
         endpoint: "/api/v1/billing/checkout-session",
         method: "POST",
+        workspaceId: activeWorkspaceId,
         body: payload,
       })) as PrepareCheckoutResponse;
 

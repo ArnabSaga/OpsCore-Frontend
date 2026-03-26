@@ -6,12 +6,12 @@ import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import type { DashboardMetricsPeriod } from "@/types/dashboard.types";
 
 export const useDashboardMetrics = (period: DashboardMetricsPeriod = "last_30_days") => {
-  const { isResolved, isSwitching, activeWorkspaceId } = useWorkspaceContext();
+  const { activeWorkspaceId, hasServerWorkspaceContext } = useWorkspaceContext();
 
   return useQuery({
-    queryKey: ["dashboard", "metrics", period],
-    queryFn: () => getDashboardMetrics(period),
-    staleTime: 1000 * 60,
-    enabled: isResolved && !isSwitching && !!activeWorkspaceId,
+    queryKey: ["dashboard", "metrics", period, activeWorkspaceId],
+    queryFn: () => getDashboardMetrics(period, activeWorkspaceId),
+    enabled: hasServerWorkspaceContext && !!activeWorkspaceId,
+    staleTime: 5 * 60 * 1000,
   });
 };

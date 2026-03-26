@@ -1,9 +1,7 @@
-import React from 'react'
+import WorkspaceListPageContent from "@/components/features/workspace/components/WorkspaceListPageContent";
 
 const WorkspacesPage = () => {
-  return (
-    <div>WorkspacesPage</div>
-  )
-}
+  return <WorkspaceListPageContent />;
+};
 
-export default WorkspacesPage
+export default WorkspacesPage;

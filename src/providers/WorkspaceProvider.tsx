@@ -16,6 +16,7 @@ type WorkspaceContextValue = {
   isLoading: boolean;
   isResolved: boolean;
   isSwitching: boolean;
+  hasServerWorkspaceContext: boolean;
   switchWorkspace: (workspaceId: string) => Promise<void>;
 };
 
@@ -61,6 +62,38 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
     return !!activeWorkspace;
   }, [isUserLoading, isWorkspacesLoading, workspaces.length, activeWorkspace]);
 
+  React.useEffect(() => {
+    if (
+      isUserLoading ||
+      isWorkspacesLoading ||
+      isPending ||
+      backendActiveId ||
+      !firstWorkspaceId
+    ) {
+      return;
+    }
+
+    void mutateAsync(firstWorkspaceId)
+      .then(async () => {
+        await queryClient.invalidateQueries({ queryKey: ["workspaces"] });
+        await queryClient.invalidateQueries({ queryKey: ["auth", "current-user"] });
+        await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+        router.refresh();
+      })
+      .catch((error) => {
+        console.error("Failed to auto-sync initial workspace:", error);
+      });
+  }, [
+    backendActiveId,
+    firstWorkspaceId,
+    isPending,
+    isUserLoading,
+    isWorkspacesLoading,
+    mutateAsync,
+    queryClient,
+    router,
+  ]);
+
   const handleSwitchWorkspace = useCallback(
     async (workspaceId: string) => {
       if (!workspaceId || workspaceId === currentActiveId) return;
@@ -88,6 +121,10 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
     [currentActiveId, mutateAsync, queryClient, router]
   );
 
+  const hasServerWorkspaceContext = useMemo(() => {
+    return !!backendActiveId;
+  }, [backendActiveId]);
+
   const value = useMemo(
     () => ({
       workspaces,
@@ -96,9 +133,18 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
       isLoading: !isResolved,
       isResolved,
       isSwitching: isPending,
+      hasServerWorkspaceContext,
       switchWorkspace: handleSwitchWorkspace,
     }),
-    [workspaces, activeWorkspace, currentActiveId, isResolved, isPending, handleSwitchWorkspace]
+    [
+      workspaces,
+      activeWorkspace,
+      currentActiveId,
+      isResolved,
+      isPending,
+      hasServerWorkspaceContext,
+      handleSwitchWorkspace,
+    ]
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;

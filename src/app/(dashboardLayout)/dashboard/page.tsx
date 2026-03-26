@@ -22,7 +22,10 @@ const DashboardPage = () => {
     return <SuperAdminDashboardPage />;
   }
 
-  const workspaceRole = user.activeWorkspace?.role ?? null;
+  const workspaceRole =
+    user.workspaceMembers?.find(
+      (member) => member.workspace.id === user.activeWorkspaceId
+    )?.role ?? null;
 
   if (workspaceRole === "MEMBER") {
     return <MemberDashboardPage />;

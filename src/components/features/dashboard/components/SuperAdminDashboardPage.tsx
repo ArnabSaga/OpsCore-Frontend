@@ -24,6 +24,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
 
 const metricPeriods: { label: string; value: PlatformMetricsPeriod }[] = [
   { label: "7D", value: "last_7_days" },
@@ -41,7 +42,7 @@ const SuperAdminDashboardPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setMounted(true);
-    }, 100);
+    }, 500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -158,8 +159,11 @@ const SuperAdminDashboardPage = () => {
     return () => ctx.revert();
   }, []);
 
+  const growthChartContainerRef = useRef<HTMLDivElement | null>(null);
+  const isGrowthChartMounted = useMountedWithWidth(growthChartContainerRef);
+
   useEffect(() => {
-    if (!mounted || !growthData.length || !chartRef.current) return;
+    if (!isGrowthChartMounted || !growthData.length || !chartRef.current) return;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -186,7 +190,7 @@ const SuperAdminDashboardPage = () => {
     }, chartRef);
 
     return () => ctx.revert();
-  }, [growthData, mounted]);
+  }, [growthData, isGrowthChartMounted, chartRef]);
 
   if (isOverviewLoading) {
     return (
@@ -451,17 +455,16 @@ const SuperAdminDashboardPage = () => {
                     </div>
                   </div>
 
-                  <div className="relative h-[340px] w-full">
+                  <div ref={growthChartContainerRef} className="relative h-[340px] w-full min-h-0 min-w-0">
                     <div className="pointer-events-none absolute inset-x-8 bottom-10 h-10 rounded-full bg-[#FF4DDF]/25 blur-2xl" />
                     <div className="pointer-events-none absolute inset-x-12 bottom-9 h-[2px] bg-linear-to-r from-transparent via-[#FF4DDF]/80 to-transparent opacity-70" />
-
-                    {mounted && (
+ 
+                    {isGrowthChartMounted && (
                       <ResponsiveContainer
                         width="100%"
-                        height="100%"
+                        aspect={1.8}
                         minWidth={0}
                         minHeight={0}
-                        debounce={100}
                       >
                         <BarChart
                         data={growthData}

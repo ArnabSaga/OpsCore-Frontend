@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import {
   Bar,
@@ -16,6 +16,7 @@ import { CheckSquare } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DashboardOverview } from "@/types/dashboard.types";
+import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
 
 type TaskStatusChartProps = {
   overview: DashboardOverview;
@@ -24,13 +25,10 @@ type TaskStatusChartProps = {
 const TaskStatusChart = ({ overview }: TaskStatusChartProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
 
-  const [mounted, setMounted] = useState(false);
+  const chartContainerRef = useRef<HTMLDivElement | null>(null);
+  const isChartMounted = useMountedWithWidth(chartContainerRef);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 100);
-
     const ctx = gsap.context(() => {
       if (!cardRef.current) return;
 
@@ -47,7 +45,6 @@ const TaskStatusChart = ({ overview }: TaskStatusChartProps) => {
     });
 
     return () => {
-      clearTimeout(timer);
       ctx.revert();
     };
   }, []);
@@ -72,9 +69,9 @@ const TaskStatusChart = ({ overview }: TaskStatusChartProps) => {
       </CardHeader>
 
       <CardContent>
-        <div className="h-[320px] w-full min-h-0 min-w-0">
-          {mounted && (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={100}>
+        <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
+          {isChartMounted && (
+            <ResponsiveContainer width="100%" aspect={2.5} minWidth={0} minHeight={0}>
               <BarChart data={data} barCategoryGap={24}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
                 <XAxis

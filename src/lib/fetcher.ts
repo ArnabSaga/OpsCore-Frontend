@@ -3,6 +3,7 @@ import { buildApiUrl } from "./build-api-url";
 type ApiFetchOptions = Omit<RequestInit, "body"> & {
   endpoint: string;
   body?: BodyInit | Record<string, unknown> | null;
+  workspaceId?: string | null;
 };
 
 /**
@@ -11,6 +12,7 @@ type ApiFetchOptions = Omit<RequestInit, "body"> & {
 export const apiFetch = async <T>({
   endpoint,
   headers,
+  workspaceId,
   ...options
 }: ApiFetchOptions): Promise<T> => {
   if (!endpoint) {
@@ -35,13 +37,19 @@ export const apiFetch = async <T>({
     body = options.body as BodyInit | null | undefined;
   }
 
+  const finalHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(headers as Record<string, string>),
+  };
+
+  if (workspaceId) {
+    finalHeaders["x-workspace-id"] = workspaceId;
+  }
+
   const response = await fetch(url, {
     ...options,
     body,
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
+    headers: finalHeaders,
     credentials: "include",
   });
 
