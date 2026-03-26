@@ -17,6 +17,10 @@ export const API_ENDPOINTS = {
   },
   workspace: {
     my: `${API_PREFIX}/workspaces/my`,
-    switch: `${API_PREFIX}/auth/workspace/switch`,
+    create: `${API_PREFIX}/workspaces`,
+    details: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}`,
+    switch: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/switch`,
+    members: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/members`,
+    invitations: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/invitations`,
   },
 };

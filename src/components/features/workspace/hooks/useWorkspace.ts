@@ -7,7 +7,7 @@ export const useWorkspace = () => {
   const { data, isLoading, isError, error } = useWorkspaces();
 
   const activeWorkspace = useMemo(() => {
-    return data?.activeWorkspace ?? data?.workspaces?.find((w) => w.isActive) ?? null;
+    return data?.activeWorkspace ?? data?.workspaces?.find((w) => w.isActiveWorkspace) ?? null;
   }, [data]);
 
   return {
