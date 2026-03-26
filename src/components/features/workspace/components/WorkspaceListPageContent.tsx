@@ -1,21 +1,22 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import Link from "next/link";
 import { ArrowRight, BriefcaseBusiness, FolderPlus, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef } from "react";
 
+import WorkspaceLoadErrorState from "@/components/shared/error-state/WorkspaceLoadErrorState";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
+import { cn } from "@/lib/utils";
 import WorkspaceCard from "./WorkspaceCard";
-import WorkspaceListSkeleton from "./WorkspaceListSkeleton";
 import WorkspaceEmptyState from "./WorkspaceEmptyState";
-import WorkspaceLoadErrorState from "@/components/shared/error-state/WorkspaceLoadErrorState";
+import WorkspaceListSkeleton from "./WorkspaceListSkeleton";
 
 const WorkspaceListPageContent = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const { workspaces, isLoading, isResolved } = useWorkspaceContext();
+  const { workspaces, isLoading, isResolved, isError } = useWorkspaceContext();
 
   useEffect(() => {
     if (!containerRef.current || isLoading) return;
@@ -49,7 +50,7 @@ const WorkspaceListPageContent = () => {
     return <WorkspaceListSkeleton />;
   }
 
-  if (!Array.isArray(workspaces)) {
+  if (isError) {
     return <WorkspaceLoadErrorState />;
   }
 
@@ -117,7 +118,12 @@ const WorkspaceListPageContent = () => {
       {workspaces.length === 0 ? (
         <WorkspaceEmptyState />
       ) : (
-        <section className="grid grid-cols-1 gap-5 xl:grid-cols-2 2xl:grid-cols-3">
+        <section
+          className={cn(
+            "grid grid-cols-1 gap-5",
+            workspaces.length === 1 ? "mx-auto max-w-xl" : "xl:grid-cols-2 2xl:grid-cols-3"
+          )}
+        >
           {workspaces.map((workspace) => (
             <div key={workspace.id} data-workspace-card>
               <WorkspaceCard workspace={workspace} />

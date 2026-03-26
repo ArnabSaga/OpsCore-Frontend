@@ -32,21 +32,29 @@ const formatRole = (role?: string) => {
   return role.charAt(0) + role.slice(1).toLowerCase();
 };
 
+const formatStatus = (status?: string) => {
+  if (!status) return "Active";
+  return status.charAt(0) + status.slice(1).toLowerCase();
+};
+
 const WorkspaceCard = ({ workspace }: Props) => {
-  const { activeWorkspaceId, isSwitching, switchWorkspace } = useWorkspaceContext();
+  const { activeWorkspaceId, switchingWorkspaceId, switchWorkspace } = useWorkspaceContext();
 
   const isActive = workspace.id === activeWorkspaceId || workspace.isActiveWorkspace;
   const memberCount = workspace._count?.members ?? 0;
   const planLabel = formatPlan(workspace.planMeta?.effectivePlan);
   const roleLabel = formatRole(workspace.role);
+  const statusLabel = formatStatus(workspace.status);
+  const isSwitching = !!switchingWorkspaceId;
+  const isCurrentSwitchTarget = switchingWorkspaceId === workspace.id;
 
-  const createdAt = useMemo(() => {
+  const updatedAt = useMemo(() => {
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-    }).format(new Date(workspace.createdAt));
-  }, [workspace.createdAt]);
+    }).format(new Date(workspace.updatedAt));
+  }, [workspace.updatedAt]);
 
   return (
     <Card className="rounded-[24px] border border-white/10 bg-[#1D2939]/80 text-white shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#7F56D9]/30 hover:shadow-[0_24px_80px_rgba(127,86,217,0.18)]">
@@ -89,7 +97,24 @@ const WorkspaceCard = ({ workspace }: Props) => {
             {roleLabel}
           </Badge>
 
-          {workspace.planMeta?.isTrialActive ? (
+          {workspace.planMeta?.isTrialActive && workspace.planMeta?.trialEndsAt ? (
+            <div className="flex flex-col gap-1">
+              <Badge
+                variant="outline"
+                className="w-fit rounded-full border-[#12B76A]/25 bg-[#12B76A]/10 text-[#6CE9A6]"
+              >
+                Trial Active
+              </Badge>
+              <p className="px-1 text-[10px] text-[#94A3B8]">
+                Ends{" "}
+                {new Intl.DateTimeFormat("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                }).format(new Date(workspace.planMeta.trialEndsAt))}
+              </p>
+            </div>
+          ) : workspace.planMeta?.isTrialActive ? (
             <Badge
               variant="outline"
               className="rounded-full border-[#12B76A]/25 bg-[#12B76A]/10 text-[#6CE9A6]"
@@ -113,9 +138,9 @@ const WorkspaceCard = ({ workspace }: Props) => {
           <div className="rounded-2xl border border-white/10 bg-[#101828]/80 p-4">
             <div className="mb-2 flex items-center gap-2 text-[#94A3B8]">
               <Crown className="h-4 w-4" />
-              <span className="text-xs font-medium uppercase tracking-[0.16em]">Created</span>
+              <span className="text-xs font-medium uppercase tracking-[0.16em]">Updated</span>
             </div>
-            <p className="text-sm font-medium text-white">{createdAt}</p>
+            <p className="text-sm font-medium text-white">{updatedAt}</p>
           </div>
         </div>
 
@@ -124,7 +149,7 @@ const WorkspaceCard = ({ workspace }: Props) => {
             <span className="text-sm text-[#94A3B8]">Workspace status</span>
             <span className="inline-flex items-center gap-2 text-sm font-medium text-white">
               <CheckCircle2 className="h-4 w-4 text-[#12B76A]" />
-              {workspace.status ?? "ACTIVE"}
+              {statusLabel}
             </span>
           </div>
         </div>
@@ -139,7 +164,7 @@ const WorkspaceCard = ({ workspace }: Props) => {
             isActive ? "bg-[#12B76A]/15 hover:bg-[#12B76A]/15" : "bg-[#7F56D9] hover:bg-[#6941C6]"
           )}
         >
-          {isSwitching && !isActive ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+          {isCurrentSwitchTarget ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
           {isActive ? "Current Workspace" : "Switch Workspace"}
         </Button>
 

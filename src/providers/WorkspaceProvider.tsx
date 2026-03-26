@@ -3,6 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { createContext, useCallback, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { useSwitchWorkspace } from "@/components/features/workspace/hooks/useSwitchWorkspace";
 import { useWorkspaces } from "@/components/features/workspace/hooks/useWorkspaces";
@@ -15,7 +16,8 @@ type WorkspaceContextValue = {
   activeWorkspaceId: string | null;
   isLoading: boolean;
   isResolved: boolean;
-  isSwitching: boolean;
+  isError: boolean;
+  switchingWorkspaceId: string | null;
   hasServerWorkspaceContext: boolean;
   switchWorkspace: (workspaceId: string) => Promise<void>;
 };
@@ -26,9 +28,15 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading: isUserLoading } = useUser();
-  const { data: workspaceData, isLoading: isWorkspacesLoading } = useWorkspaces();
+  const { data: user, isLoading: isUserLoading, isError: isUserError } = useUser();
+  const {
+    data: workspaceData,
+    isLoading: isWorkspacesLoading,
+    isError: isWorkspacesError,
+  } = useWorkspaces();
   const { mutateAsync, isPending } = useSwitchWorkspace();
+
+  const [switchingWorkspaceId, setSwitchingWorkspaceId] = useState<string | null>(null);
 
   // Only used for optimistic local override after manual switching
   const [manualWorkspaceId, setManualWorkspaceId] = useState<string | null>(null);
@@ -99,6 +107,7 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
       if (!workspaceId || workspaceId === currentActiveId) return;
 
       try {
+        setSwitchingWorkspaceId(workspaceId);
         // optimistic local update
         setManualWorkspaceId(workspaceId);
 
@@ -112,13 +121,22 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
         await queryClient.invalidateQueries({ queryKey: ["analytics"] });
 
         router.refresh();
+
+        const switchedWorkspace = workspaces.find((w) => w.id === workspaceId);
+        if (switchedWorkspace) {
+          toast.success(`Switched to ${switchedWorkspace.name}`, {
+            description: "Your session has been updated.",
+          });
+        }
       } catch (error) {
         // rollback optimistic override on failure
         setManualWorkspaceId(null);
         console.error("Failed to switch workspace:", error);
+      } finally {
+        setSwitchingWorkspaceId(null);
       }
     },
-    [currentActiveId, mutateAsync, queryClient, router]
+    [currentActiveId, mutateAsync, queryClient, router, workspaces]
   );
 
   const hasServerWorkspaceContext = useMemo(() => {
@@ -132,7 +150,8 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
       activeWorkspaceId: currentActiveId,
       isLoading: !isResolved,
       isResolved,
-      isSwitching: isPending,
+      isError: isUserError || isWorkspacesError,
+      switchingWorkspaceId,
       hasServerWorkspaceContext,
       switchWorkspace: handleSwitchWorkspace,
     }),
@@ -141,7 +160,9 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
       activeWorkspace,
       currentActiveId,
       isResolved,
-      isPending,
+      isUserError,
+      isWorkspacesError,
+      switchingWorkspaceId,
       hasServerWorkspaceContext,
       handleSwitchWorkspace,
     ]

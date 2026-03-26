@@ -1,3 +1,6 @@
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "sonner";
+
 import QueryProviders from "@/providers/QueryProvides";
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
@@ -30,12 +33,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
-      <body
-        className={`${inter.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning
-      >
-        <QueryProviders>{children}</QueryProviders>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <QueryProviders>{children}</QueryProviders>
+          <Toaster position="bottom-right" richColors closeButton />
+        </ThemeProvider>
       </body>
     </html>
   );
