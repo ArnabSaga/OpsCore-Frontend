@@ -11,6 +11,8 @@ import {
   Shield,
   UserCircle2,
   Users,
+  CreditCard,
+  BriefcaseBusiness,
   type LucideIcon,
 } from "lucide-react";
 
@@ -146,6 +148,66 @@ export const DASHBOARD_NAV_GROUPS: NavGroup[] = [
         href: APP_ROUTES.settingsGeneral,
         icon: Settings,
         roles: ["OWNER", "ADMIN"],
+        matchStartsWith: true,
+      },
+    ],
+  },
+];
+
+export const PLATFORM_NAV_GROUPS: NavGroup[] = [
+  {
+    title: "Platform Overview",
+    items: [
+      {
+        title: "Dashboard",
+        href: APP_ROUTES.dashboard,
+        icon: Home,
+        matchStartsWith: false,
+      },
+    ],
+  },
+  {
+    title: "Administration",
+    items: [
+      {
+        title: "All Workspaces",
+        href: "/platform/workspaces",
+        icon: BriefcaseBusiness,
+        matchStartsWith: true,
+      },
+      {
+        title: "Users",
+        href: "/platform/users",
+        icon: Users,
+        matchStartsWith: true,
+      },
+      {
+        title: "Subscriptions",
+        href: "/platform/subscriptions",
+        icon: CreditCard,
+        matchStartsWith: true,
+      },
+      {
+        title: "System Logs",
+        href: "/platform/logs",
+        icon: ScrollText,
+        matchStartsWith: true,
+      },
+    ],
+  },
+  {
+    title: "Account",
+    items: [
+      {
+        title: "Profile",
+        href: APP_ROUTES.accountProfile,
+        icon: UserCircle2,
+        matchStartsWith: true,
+      },
+      {
+        title: "Security",
+        href: APP_ROUTES.accountSecurity,
+        icon: Shield,
         matchStartsWith: true,
       },
     ],

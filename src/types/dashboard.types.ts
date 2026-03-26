@@ -109,3 +109,43 @@ export type DashboardMetrics = {
   projects: DashboardProjectMetricPoint[];
   tasks: DashboardTaskMetricPoint[];
 };
+
+export type PlatformMetricsPeriod = DashboardMetricsPeriod;
+
+export type PlatformDashboardOverview = {
+  workspaces: {
+    total: number;
+    active: number;
+    newThisMonth?: number;
+  };
+  users: {
+    total: number;
+    active: number;
+    newThisMonth?: number;
+  };
+  subscriptions: {
+    total: number;
+    active: number;
+    revenue?: number;
+  };
+  invoices: {
+    total: number;
+    paid: number;
+    amount?: number;
+  };
+};
+
+export type PlatformDashboardActivityResponse = DashboardActivityResponse;
+
+export type PlatformGenericMetricPoint = {
+  label: string;
+  date: string;
+  [key: string]: string | number;
+};
+
+export type PlatformDashboardMetrics = {
+  revenue: DashboardRevenueMetricPoint[];
+  workspaces: PlatformGenericMetricPoint[];
+  users: PlatformGenericMetricPoint[];
+  subscriptions: PlatformGenericMetricPoint[];
+};

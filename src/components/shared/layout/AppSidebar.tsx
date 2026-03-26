@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 import WorkspaceSwitcher from "@/components/features/workspace/components/WorkspaceSwitcher";
-import { DASHBOARD_NAV_GROUPS, canAccessNavItem } from "@/lib/constants";
+import { DASHBOARD_NAV_GROUPS, PLATFORM_NAV_GROUPS, canAccessNavItem } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 import { UserRole } from "@/lib/authUtils";
@@ -78,11 +78,11 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
         </div>
 
         {/* Workspace Switcher under logo */}
-        <WorkspaceSwitcher />
+        {userRole !== "SUPER_ADMIN" ? <WorkspaceSwitcher /> : null}
       </div>
 
       <div className="flex-1 space-y-6 overflow-y-auto pr-1">
-        {DASHBOARD_NAV_GROUPS.map((group, groupIndex) => {
+        {(userRole === "SUPER_ADMIN" ? PLATFORM_NAV_GROUPS : DASHBOARD_NAV_GROUPS).map((group, groupIndex) => {
           const visibleItems = group.items.filter((item) => canAccessNavItem(item, userRole));
 
           if (!visibleItems.length) return null;

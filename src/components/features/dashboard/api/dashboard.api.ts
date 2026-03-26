@@ -4,6 +4,10 @@ import type {
   DashboardMetrics,
   DashboardMetricsPeriod,
   DashboardOverview,
+  PlatformDashboardActivityResponse,
+  PlatformDashboardMetrics,
+  PlatformDashboardOverview,
+  PlatformMetricsPeriod,
 } from "@/types/dashboard.types";
 
 type OverviewApiResponse = {
@@ -70,5 +74,74 @@ export const getDashboardMetrics = async (
     revenue: response?.data?.revenue ?? [],
     projects: response?.data?.projects ?? [],
     tasks: response?.data?.tasks ?? [],
+  };
+};
+
+type PlatformOverviewApiResponse = {
+  success?: boolean;
+  message?: string;
+  data?: PlatformDashboardOverview;
+};
+
+type PlatformActivityApiResponse = {
+  success?: boolean;
+  message?: string;
+  data?: PlatformDashboardActivityResponse["data"];
+  meta?: PlatformDashboardActivityResponse["meta"];
+};
+
+type PlatformMetricsApiResponse = {
+  success?: boolean;
+  message?: string;
+  data?: PlatformDashboardMetrics;
+};
+
+export const getPlatformDashboardOverview =
+  async (): Promise<PlatformDashboardOverview> => {
+    const response = (await apiFetch({
+      endpoint: "/api/v1/dashboard/platform/overview",
+    })) as PlatformOverviewApiResponse;
+
+    if (!response?.data) {
+      throw new Error("Platform dashboard overview not found");
+    }
+
+    return response.data;
+  };
+
+export const getPlatformDashboardActivity = async ({
+  page = 1,
+  limit = 8,
+}: {
+  page?: number;
+  limit?: number;
+} = {}): Promise<PlatformDashboardActivityResponse> => {
+  const response = (await apiFetch({
+    endpoint: `/api/v1/dashboard/platform/activity?page=${page}&limit=${limit}`,
+  })) as PlatformActivityApiResponse;
+
+  return {
+    data: response?.data ?? [],
+    meta: response?.meta ?? {
+      page,
+      limit,
+      total: 0,
+      totalPages: 1,
+    },
+  };
+};
+
+export const getPlatformDashboardMetrics = async (
+  period: PlatformMetricsPeriod = "last_30_days"
+): Promise<PlatformDashboardMetrics> => {
+  const response = (await apiFetch({
+    endpoint: `/api/v1/dashboard/platform/metrics?period=${period}`,
+  })) as PlatformMetricsApiResponse;
+
+  return {
+    revenue: response?.data?.revenue ?? [],
+    workspaces: response?.data?.workspaces ?? [],
+    users: response?.data?.users ?? [],
+    subscriptions: response?.data?.subscriptions ?? [],
   };
 };

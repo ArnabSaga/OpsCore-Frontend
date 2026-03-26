@@ -78,7 +78,18 @@ const AppHeader: React.FC<HeaderProps> = ({ user }) => {
 
         <div className="flex items-center gap-3">
           <div className="hidden md:flex">
-            {isWorkspaceLoading ? (
+            {user?.systemRole === "SUPER_ADMIN" ? (
+              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/3 px-3 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
+                <div className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-[#0F172A]">
+                  <div className="absolute inset-0 rounded-xl bg-[#7F56D9]/15 blur-lg" />
+                  <span className="relative text-xs font-semibold text-white">PA</span>
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-white">Platform Access</p>
+                  <p className="truncate text-xs text-[#94A3B8]">SUPER_ADMIN</p>
+                </div>
+              </div>
+            ) : isWorkspaceLoading ? (
               <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/3 px-3 py-2">
                 <Skeleton className="h-9 w-9 rounded-xl bg-white/10" />
                 <div className="space-y-2">

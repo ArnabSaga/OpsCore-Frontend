@@ -45,7 +45,7 @@ const DashboardShellContent = ({
     return <DashboardShellLoader />;
   }
 
-  if (!activeWorkspace) {
+  if (!activeWorkspace && user.systemRole !== "SUPER_ADMIN") {
     return (
       <div className="flex h-screen overflow-hidden bg-[#0B0B0B] text-white">
         <AppSidebar userRole={user?.systemRole ?? null} />
