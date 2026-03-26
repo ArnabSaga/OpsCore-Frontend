@@ -74,7 +74,7 @@ const TaskStatusChart = ({ overview }: TaskStatusChartProps) => {
       <CardContent>
         <div className="h-[320px] w-full min-h-0 min-w-0">
           {mounted && (
-            <ResponsiveContainer width="100%" height={320} minWidth={0} minHeight={0} debounce={100}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={100}>
               <BarChart data={data} barCategoryGap={24}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
                 <XAxis
@@ -98,7 +98,7 @@ const TaskStatusChart = ({ overview }: TaskStatusChartProps) => {
                     color: "#FFFFFF",
                   }}
                 />
-                <Bar dataKey="value" radius={[10, 10, 0, 0]}>
+                <Bar dataKey="value" radius={[10, 10, 0, 0]} isAnimationActive={false}>
                   {data.map((entry) => (
                     <Cell key={entry.name} fill={entry.color} />
                   ))}

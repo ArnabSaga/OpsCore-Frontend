@@ -66,7 +66,7 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
       <CardContent>
         <div className="h-[320px] w-full min-h-0 min-w-0">
           {mounted && (
-            <ResponsiveContainer width="100%" height={320} minWidth={0} minHeight={0} debounce={100}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={100}>
               <PieChart>
                 <Tooltip
                   contentStyle={{
@@ -83,6 +83,7 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
                   innerRadius={70}
                   outerRadius={110}
                   paddingAngle={4}
+                  isAnimationActive={false}
                 >
                   {data.map((entry) => (
                     <Cell key={entry.name} fill={entry.color} />

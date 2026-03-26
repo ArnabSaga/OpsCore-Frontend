@@ -159,7 +159,7 @@ const SuperAdminDashboardPage = () => {
   }, []);
 
   useEffect(() => {
-    if (!growthData.length || !chartRef.current) return;
+    if (!mounted || !growthData.length || !chartRef.current) return;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -168,22 +168,25 @@ const SuperAdminDashboardPage = () => {
         { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: "power2.out" }
       );
 
-      gsap.fromTo(
-        ".recharts-bar-rectangle",
-        { opacity: 0, y: 80 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.04,
-          ease: "power3.out",
-          delay: 0.12,
-        }
-      );
+      const bars = gsap.utils.toArray(".recharts-bar-rectangle");
+      if (bars.length > 0) {
+        gsap.fromTo(
+          bars,
+          { opacity: 0, y: 80 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.04,
+            ease: "power3.out",
+            delay: 0.12,
+          }
+        );
+      }
     }, chartRef);
 
     return () => ctx.revert();
-  }, [growthData]);
+  }, [growthData, mounted]);
 
   if (isOverviewLoading) {
     return (
@@ -546,6 +549,7 @@ const SuperAdminDashboardPage = () => {
                           radius={[10, 10, 4, 4]}
                           maxBarSize={28}
                           filter="url(#pinkGlow)"
+                          isAnimationActive={false}
                         />
                         <Bar
                           dataKey="workspaces"
@@ -554,6 +558,7 @@ const SuperAdminDashboardPage = () => {
                           radius={[10, 10, 4, 4]}
                           maxBarSize={28}
                           filter="url(#pinkGlow)"
+                          isAnimationActive={false}
                         />
                         <Bar
                           dataKey="subscriptions"
@@ -562,6 +567,7 @@ const SuperAdminDashboardPage = () => {
                           radius={[10, 10, 4, 4]}
                           maxBarSize={28}
                           filter="url(#pinkGlow)"
+                          isAnimationActive={false}
                         />
                       </BarChart>
                     </ResponsiveContainer>

@@ -114,7 +114,7 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
       <CardContent>
         <div className="h-[320px] w-full min-h-0 min-w-0">
           {mounted && (
-            <ResponsiveContainer width="100%" height={320} minWidth={0} minHeight={0} debounce={100}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={100}>
               <LineChart data={chartData}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
                 <XAxis
@@ -145,6 +145,7 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
                   stroke="#7F56D9"
                   strokeWidth={2.5}
                   dot={{ r: 3 }}
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -153,6 +154,7 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
                   stroke="#CBB5FF"
                   strokeWidth={2.5}
                   dot={{ r: 3 }}
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -161,6 +163,7 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
                   stroke="#6941C6"
                   strokeWidth={2.5}
                   dot={{ r: 3 }}
+                  isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
@@ -169,6 +172,7 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
                   stroke="#12B76A"
                   strokeWidth={2.5}
                   dot={{ r: 3 }}
+                  isAnimationActive={false}
                 />
               </LineChart>
             </ResponsiveContainer>
