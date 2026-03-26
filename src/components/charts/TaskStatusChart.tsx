@@ -71,7 +71,7 @@ const TaskStatusChart = ({ overview }: TaskStatusChartProps) => {
       <CardContent>
         <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
           {isChartMounted && (
-            <ResponsiveContainer width="100%" aspect={2.5} minWidth={0} minHeight={0}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
               <BarChart data={data} barCategoryGap={24}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
                 <XAxis

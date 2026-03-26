@@ -82,7 +82,7 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
       <CardContent>
         <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
           {isChartMounted && (
-            <ResponsiveContainer width="100%" aspect={2.5} minWidth={0} minHeight={0}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">

@@ -37,14 +37,6 @@ const SuperAdminDashboardPage = () => {
   const rootRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
   const [metricPeriod, setMetricPeriod] = useState<PlatformMetricsPeriod>("last_30_days");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
 
   const {
     data: overview,
@@ -462,9 +454,9 @@ const SuperAdminDashboardPage = () => {
                     {isGrowthChartMounted && (
                       <ResponsiveContainer
                         width="100%"
-                        aspect={1.8}
+                        height="100%"
                         minWidth={0}
-                        minHeight={0}
+                        minHeight={340}
                       >
                         <BarChart
                         data={growthData}
