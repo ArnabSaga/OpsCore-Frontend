@@ -1,9 +1,7 @@
-import React from 'react'
+import CreateWorkspaceForm from "@/components/features/workspace/components/CreateWorkspaceForm";
 
 const CreateWorkspacePage = () => {
-  return (
-    <div>CreateWorkspacePage</div>
-  )
-}
+  return <CreateWorkspaceForm />;
+};
 
-export default CreateWorkspacePage
+export default CreateWorkspacePage;
