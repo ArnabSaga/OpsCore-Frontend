@@ -13,7 +13,7 @@ type CustomerPortalResponse = {
   url?: string;
 };
 
-export const useCustomerPortal = () => {
+export function useCustomerPortal() {
   const { activeWorkspaceId } = useWorkspaceContext();
 
   return useMutation({
@@ -32,4 +32,4 @@ export const useCustomerPortal = () => {
       };
     },
   });
-};
+}

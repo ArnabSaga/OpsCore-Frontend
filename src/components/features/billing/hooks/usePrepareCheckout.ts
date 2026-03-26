@@ -22,7 +22,7 @@ type PrepareCheckoutResponse = {
   checkoutUrl?: string;
 };
 
-export const usePrepareCheckout = () => {
+export function usePrepareCheckout() {
   const { activeWorkspaceId } = useWorkspaceContext();
 
   return useMutation({
@@ -40,4 +40,4 @@ export const usePrepareCheckout = () => {
       };
     },
   });
-};
+}
