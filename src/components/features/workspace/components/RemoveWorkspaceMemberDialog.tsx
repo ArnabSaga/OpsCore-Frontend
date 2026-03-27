@@ -1,16 +1,17 @@
 "use client";
 
 import { useRemoveWorkspaceMember } from "@/components/features/workspace/hooks/useRemoveWorkspaceMember";
-import AppSubmitButton from "@/components/form/AppSubmitButton";
+import type { WorkspaceMember } from "@/types/workspace.types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { WorkspaceMember } from "@/types/workspace.types";
+import AppSubmitButton from "@/components/form/AppSubmitButton";
 
 type Props = {
   workspaceId: string;
@@ -24,6 +25,7 @@ const RemoveWorkspaceMemberDialog = ({ workspaceId, member, open, onOpenChange }
 
   const handleRemove = async () => {
     if (!member) return;
+
     await mutateAsync(member.id);
     onOpenChange(false);
   };
@@ -34,29 +36,30 @@ const RemoveWorkspaceMemberDialog = ({ workspaceId, member, open, onOpenChange }
         <DialogHeader>
           <DialogTitle>Remove member</DialogTitle>
           <DialogDescription className="text-[#94A3B8]">
-            This will remove <span className="font-medium text-white">{member?.user.name}</span>{" "}
-            from the workspace.
+            Are you sure you want to remove <span className="font-medium text-white">{member?.user.name || member?.user.email}</span> from this workspace? They will lose access to all projects and data.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
-          This action may remove access to workspace resources immediately.
-        </div>
-
-        <div className="flex justify-end gap-3">
+        <DialogFooter className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button
             type="button"
             variant="outline"
             className="rounded-xl border-white/10 bg-white/5 text-white hover:bg-white/10"
             onClick={() => onOpenChange(false)}
+            disabled={isPending}
           >
             Cancel
           </Button>
 
-          <AppSubmitButton isSubmitting={isPending} onClick={handleRemove}>
+          <AppSubmitButton
+            variant="destructive"
+            isSubmitting={isPending}
+            onClick={handleRemove}
+            className="bg-red-600 font-medium hover:bg-red-700"
+          >
             Remove Member
           </AppSubmitButton>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

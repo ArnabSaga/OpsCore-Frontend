@@ -22,7 +22,6 @@ const WorkspaceMembersPageContent = () => {
   const [dialog, setDialog] = useState<"edit" | "remove" | "transfer" | null>(null);
 
   const { members, isError, refetch } = useWorkspaceMembers(workspaceId);
-
   const { data: capabilities } = useWorkspaceCapabilities(workspaceId);
 
   const memberCount = useMemo(() => members.length, [members]);

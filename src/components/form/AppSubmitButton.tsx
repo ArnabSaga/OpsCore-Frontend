@@ -6,10 +6,12 @@ import { Loader2 } from "lucide-react";
 
 interface AppSubmitButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isSubmitting?: boolean;
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 }
 
 const AppSubmitButton = ({
   isSubmitting = false,
+  variant = "default",
   children,
   className,
   type = "submit",
@@ -18,11 +20,12 @@ const AppSubmitButton = ({
   return (
     <Button
       type={type}
+      variant={variant}
       disabled={isSubmitting || props.disabled}
       className={cn(
-        "h-12 w-full rounded-xl bg-[#7F56D9] font-semibold text-white",
-        "shadow-[0_10px_30px_rgba(127,86,217,0.35)] transition-all duration-300",
-        "hover:bg-[#6941C6] hover:shadow-[0_14px_36px_rgba(127,86,217,0.45)]",
+        variant === "default" && "bg-[#7F56D9] hover:bg-[#6941C6] shadow-[0_10px_30px_rgba(127,86,217,0.35)] hover:shadow-[0_14px_36px_rgba(127,86,217,0.45)] text-white",
+        "h-12 w-full rounded-xl font-semibold",
+        "transition-all duration-300",
         "disabled:cursor-not-allowed disabled:opacity-70",
         className
       )}

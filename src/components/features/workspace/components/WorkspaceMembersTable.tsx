@@ -1,6 +1,6 @@
 "use client";
 
-import { Crown, MoreHorizontal, ShieldCheck, Trash2 } from "lucide-react";
+import { Crown, MoreHorizontal, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,6 @@ const WorkspaceMembersTable = ({
     <WorkspaceSectionCard
       title="Workspace members"
       description="Manage roles, statuses, and ownership access for your workspace team."
-      icon={<ShieldCheck className="h-4 w-4" />}
     >
       <div className="space-y-3">
         {members.length === 0 ? (

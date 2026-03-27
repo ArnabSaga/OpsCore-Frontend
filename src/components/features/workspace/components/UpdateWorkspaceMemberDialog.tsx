@@ -1,10 +1,10 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
 import { useEffect } from "react";
+import { useForm } from "@tanstack/react-form";
 
+import type { WorkspaceMember, WorkspaceRole } from "@/types/workspace.types";
 import { useUpdateWorkspaceMember } from "@/components/features/workspace/hooks/useUpdateWorkspaceMember";
-import AppSubmitButton from "@/components/form/AppSubmitButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import AppSubmitButton from "@/components/form/AppSubmitButton";
 import {
   Select,
   SelectContent,
@@ -21,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { WorkspaceMember, WorkspaceMemberStatus, WorkspaceRole } from "@/types/workspace.types";
 
 type Props = {
   workspaceId: string;
@@ -35,8 +35,8 @@ const UpdateWorkspaceMemberDialog = ({ workspaceId, member, open, onOpenChange }
 
   const form = useForm({
     defaultValues: {
-      role: (member?.role ?? "MEMBER") as WorkspaceRole,
-      status: (member?.status ?? "ACTIVE") as WorkspaceMemberStatus,
+      role: member?.role ?? "MEMBER",
+      status: member?.status ?? "ACTIVE",
     },
     onSubmit: async ({ value }) => {
       if (!member) return;
@@ -68,7 +68,7 @@ const UpdateWorkspaceMemberDialog = ({ workspaceId, member, open, onOpenChange }
         <DialogHeader>
           <DialogTitle>Update member</DialogTitle>
           <DialogDescription className="text-[#94A3B8]">
-            Adjust role and account status for this workspace member.
+            Adjust role and status for this workspace member.
           </DialogDescription>
         </DialogHeader>
 
@@ -84,9 +84,9 @@ const UpdateWorkspaceMemberDialog = ({ workspaceId, member, open, onOpenChange }
             {(field) => (
               <div className="space-y-2">
                 <Label className="text-white">Role</Label>
-                <Select
-                  value={field.state.value as string}
-                  onValueChange={(value) => field.handleChange(value as WorkspaceRole)}
+                <Select 
+                  value={field.state.value} 
+                  onValueChange={(val) => field.handleChange(val as WorkspaceRole)}
                 >
                   <SelectTrigger className="border-white/10 bg-white/5 text-white">
                     <SelectValue placeholder="Select role" />
@@ -105,9 +105,9 @@ const UpdateWorkspaceMemberDialog = ({ workspaceId, member, open, onOpenChange }
             {(field) => (
               <div className="space-y-2">
                 <Label className="text-white">Status</Label>
-                <Select
-                  value={field.state.value as string}
-                  onValueChange={(value) => field.handleChange(value as WorkspaceMemberStatus)}
+                <Select 
+                  value={field.state.value} 
+                  onValueChange={(val) => field.handleChange(val as "ACTIVE" | "INACTIVE")}
                 >
                   <SelectTrigger className="border-white/10 bg-white/5 text-white">
                     <SelectValue placeholder="Select status" />

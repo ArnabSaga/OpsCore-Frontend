@@ -41,7 +41,7 @@ const TransferOwnershipDialog = ({ workspaceId, member, open, onOpenChange }: Pr
         </DialogHeader>
 
         <div className="rounded-2xl border border-[#12B76A]/20 bg-[#12B76A]/10 p-4 text-sm text-[#6CE9A6]">
-          Ownership transfer changes billing and administrative authority for this workspace.
+          Ownership transfer changes administrative and billing authority for this workspace.
         </div>
 
         <div className="flex justify-end gap-3">
