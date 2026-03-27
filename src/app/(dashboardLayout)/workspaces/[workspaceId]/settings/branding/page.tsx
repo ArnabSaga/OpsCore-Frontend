@@ -1,5 +1,7 @@
-const WorkspaceSettingsBrandingPage = () => {
-  return <div>WorkspaceSettingsBrandingPage</div>;
+import WorkspaceBrandingSettingsForm from "@/components/features/workspace/components/WorkspaceBrandingSettingsForm";
+
+const WorkspaceBrandingSettingsPage = () => {
+  return <WorkspaceBrandingSettingsForm />;
 };
 
-export default WorkspaceSettingsBrandingPage;
+export default WorkspaceBrandingSettingsPage;

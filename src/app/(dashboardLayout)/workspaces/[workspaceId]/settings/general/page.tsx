@@ -1,5 +1,7 @@
-const WorkspaceSettingsGeneralPage = () => {
-  return <div>WorkspaceSettingsGeneralPage</div>;
+import WorkspaceGeneralSettingsForm from "@/components/features/workspace/components/WorkspaceGeneralSettingsForm";
+
+const WorkspaceGeneralSettingsPage = () => {
+  return <WorkspaceGeneralSettingsForm />;
 };
 
-export default WorkspaceSettingsGeneralPage;
+export default WorkspaceGeneralSettingsPage;

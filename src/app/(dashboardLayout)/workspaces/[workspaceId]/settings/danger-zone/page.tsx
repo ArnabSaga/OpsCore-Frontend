@@ -1,9 +1,7 @@
-import React from 'react'
+import WorkspaceDangerZoneCard from "@/components/features/workspace/components/WorkspaceDangerZoneCard";
 
-const WorkspaceSettingsDangerZonePage = () => {
-  return (
-    <div>WorkspaceSettingsDangerZonePage</div>
-  )
-}
+const WorkspaceDangerZonePage = () => {
+  return <WorkspaceDangerZoneCard />;
+};
 
-export default WorkspaceSettingsDangerZonePage
+export default WorkspaceDangerZonePage;

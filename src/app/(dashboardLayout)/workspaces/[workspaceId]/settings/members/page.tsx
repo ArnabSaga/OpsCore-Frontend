@@ -1,9 +1,7 @@
-import React from 'react'
+import WorkspaceMembersPageContent from "@/components/features/workspace/components/WorkspaceMembersPageContent";
 
 const WorkspaceSettingsMembersPage = () => {
-  return (
-    <div>WorkspaceSettingsMembersPage</div>
-  )
-}
+  return <WorkspaceMembersPageContent />;
+};
 
-export default WorkspaceSettingsMembersPage
+export default WorkspaceSettingsMembersPage;

@@ -1,5 +1,7 @@
+import WorkspaceSettingsPageContent from "@/components/features/workspace/components/WorkspaceSettingsPageContent";
+
 const WorkspaceSettingsPage = () => {
-  return <div>WorkspaceSettingsPage</div>;
+  return <WorkspaceSettingsPageContent />;
 };
 
 export default WorkspaceSettingsPage;

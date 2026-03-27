@@ -1,5 +1,7 @@
-const WorkspaceSettingsPermissionsPage = () => {
-  return <div>WorkspaceSettingsPermissionsPage</div>;
+import WorkspacePermissionsOverview from "@/components/features/workspace/components/WorkspacePermissionsOverview";
+
+const WorkspacePermissionsPage = () => {
+  return <WorkspacePermissionsOverview />;
 };
 
-export default WorkspaceSettingsPermissionsPage;
+export default WorkspacePermissionsPage;
