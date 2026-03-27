@@ -42,12 +42,19 @@ export const createWorkspace = async (payload: CreateWorkspacePayload): Promise<
 };
 
 export const getWorkspaces = async (): Promise<WorkspacesResponse> => {
-  const response = await apiFetch<ApiResponse<WorkspacesResponse>>({
+  const response = await apiFetch<ApiResponse<WorkspaceSummary[]>>({
     endpoint: API_ENDPOINTS.workspace.my,
     method: "GET",
   });
 
-  return response.data;
+  const workspaces = response.data ?? [];
+  const activeWorkspace =
+    workspaces.find((workspace) => workspace.isActiveWorkspace) ?? null;
+
+  return {
+    workspaces,
+    activeWorkspace,
+  };
 };
 
 export const getWorkspaceById = async (workspaceId: string): Promise<WorkspaceDetails> => {
