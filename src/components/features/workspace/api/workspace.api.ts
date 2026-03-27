@@ -1,36 +1,53 @@
-import { API_ENDPOINTS } from "@/config/api-endpoints";
-import { apiFetch } from "@/lib/fetcher";
 import type {
+  ActivityLogResponse,
+  BillingHistoryResponse,
+  BillingSubscriptionResponse,
+  BillingUsageResponse,
+  CreateWorkspaceInvitationPayload,
   CreateWorkspacePayload,
+  EnhancedWorkspaceDetails,
   SwitchWorkspaceResponse,
-  WorkspaceDetails,
+  UpdateWorkspaceMemberPayload,
+  WorkspaceBrandingSettings,
+  WorkspaceCapabilities,
+  WorkspaceGeneralSettings,
+  WorkspacePermissionMatrix,
+  WorkspaceSettingsSummary,
   WorkspaceInvitation,
-  WorkspaceMember,
   WorkspaceSummary,
+  WorkspacesResponse,
+  WorkspaceMember,
+  WorkspaceDetails,
 } from "@/types/workspace.types";
 
+import { API_ENDPOINTS } from "@/config/api-endpoints";
+import { apiFetch } from "@/lib/fetcher";
+
 type ApiResponse<T> = {
-  success: boolean;
-  message: string;
+  success?: boolean;
+  message?: string;
   data: T;
 };
 
-export const getWorkspaces = async (): Promise<{
-  workspaces: WorkspaceSummary[];
-  activeWorkspace: WorkspaceSummary | null;
-}> => {
-  const response = await apiFetch<ApiResponse<WorkspaceSummary[]>>({
+// --- CORE WORKSPACE API ---
+
+export const createWorkspace = async (payload: CreateWorkspacePayload): Promise<WorkspaceSummary> => {
+  const response = await apiFetch<ApiResponse<WorkspaceSummary>>({
+    endpoint: API_ENDPOINTS.workspace.create,
+    method: "POST",
+    body: payload,
+  });
+
+  return response.data;
+};
+
+export const getWorkspaces = async (): Promise<WorkspacesResponse> => {
+  const response = await apiFetch<ApiResponse<WorkspacesResponse>>({
     endpoint: API_ENDPOINTS.workspace.my,
     method: "GET",
   });
 
-  const workspaces = response.data ?? [];
-  const activeWorkspace = workspaces.find((workspace) => workspace.isActiveWorkspace) ?? null;
-
-  return {
-    workspaces,
-    activeWorkspace,
-  };
+  return response.data;
 };
 
 export const getWorkspaceById = async (workspaceId: string): Promise<WorkspaceDetails> => {
@@ -38,18 +55,6 @@ export const getWorkspaceById = async (workspaceId: string): Promise<WorkspaceDe
     endpoint: API_ENDPOINTS.workspace.details(workspaceId),
     method: "GET",
     workspaceId,
-  });
-
-  return response.data;
-};
-
-export const createWorkspace = async (
-  payload: CreateWorkspacePayload
-): Promise<WorkspaceDetails> => {
-  const response = await apiFetch<ApiResponse<WorkspaceDetails>>({
-    endpoint: API_ENDPOINTS.workspace.create,
-    method: "POST",
-    body: payload,
   });
 
   return response.data;
@@ -65,6 +70,191 @@ export const switchWorkspace = async (workspaceId: string): Promise<SwitchWorksp
   return response.data;
 };
 
+// --- SETTINGS & DETAILS ---
+
+export const getEnhancedWorkspaceById = async (
+  workspaceId: string
+): Promise<EnhancedWorkspaceDetails> => {
+  const response = await apiFetch<ApiResponse<EnhancedWorkspaceDetails>>({
+    endpoint: API_ENDPOINTS.workspace.details(workspaceId),
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const getWorkspaceCapabilities = async (
+  workspaceId: string
+): Promise<WorkspaceCapabilities> => {
+  const response = await apiFetch<ApiResponse<WorkspaceCapabilities>>({
+    endpoint: API_ENDPOINTS.workspace.capabilities(workspaceId),
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const getWorkspaceSettingsSummary = async (
+  workspaceId: string
+): Promise<WorkspaceSettingsSummary> => {
+  const response = await apiFetch<ApiResponse<WorkspaceSettingsSummary>>({
+    endpoint: API_ENDPOINTS.workspace.settingsSummary(workspaceId),
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const getWorkspaceGeneralSettings = async (
+  workspaceId: string
+): Promise<WorkspaceGeneralSettings> => {
+  const response = await apiFetch<ApiResponse<WorkspaceGeneralSettings>>({
+    endpoint: API_ENDPOINTS.workspace.generalSettings(workspaceId),
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const updateWorkspaceGeneralSettings = async (
+  workspaceId: string,
+  payload: WorkspaceGeneralSettings
+): Promise<WorkspaceGeneralSettings> => {
+  const response = await apiFetch<ApiResponse<WorkspaceGeneralSettings>>({
+    endpoint: API_ENDPOINTS.workspace.generalSettings(workspaceId),
+    method: "PATCH",
+    workspaceId,
+    body: payload,
+  });
+
+  return response.data;
+};
+
+export const getWorkspaceBrandingSettings = async (
+  workspaceId: string
+): Promise<WorkspaceBrandingSettings> => {
+  const response = await apiFetch<ApiResponse<WorkspaceBrandingSettings>>({
+    endpoint: API_ENDPOINTS.workspace.brandingSettings(workspaceId),
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const updateWorkspaceBrandingSettings = async (
+  workspaceId: string,
+  payload: WorkspaceBrandingSettings
+): Promise<WorkspaceBrandingSettings> => {
+  const response = await apiFetch<ApiResponse<WorkspaceBrandingSettings>>({
+    endpoint: API_ENDPOINTS.workspace.brandingSettings(workspaceId),
+    method: "PATCH",
+    workspaceId,
+    body: payload,
+  });
+
+  return response.data;
+};
+
+export const getWorkspacePermissions = async (
+  workspaceId: string
+): Promise<WorkspacePermissionMatrix> => {
+  const response = await apiFetch<ApiResponse<WorkspacePermissionMatrix>>({
+    endpoint: API_ENDPOINTS.workspace.permissions(workspaceId),
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+// --- ACTIVITY & ARCHIVE ---
+
+export const getWorkspaceActivityLogs = async (
+  workspaceId: string,
+  params?: { page?: number; limit?: number }
+): Promise<ActivityLogResponse> => {
+  const searchParams = new URLSearchParams();
+
+  if (params?.page) searchParams.set("page", String(params.page));
+  if (params?.limit) searchParams.set("limit", String(params.limit));
+
+  const endpoint = `${API_ENDPOINTS.workspace.activityLogs(workspaceId)}${
+    searchParams.toString() ? `?${searchParams.toString()}` : ""
+  }`;
+
+  const response = await apiFetch<ApiResponse<ActivityLogResponse>>({
+    endpoint,
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const archiveWorkspace = async (workspaceId: string): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.workspace.archive(workspaceId),
+    method: "POST",
+    workspaceId,
+  });
+};
+
+export const deleteWorkspace = async (
+  workspaceId: string,
+  payload?: { confirmName?: string }
+): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.workspace.details(workspaceId),
+    method: "DELETE",
+    workspaceId,
+    body: payload ?? {},
+  });
+};
+
+// --- MEMBERS MANAGEMENT ---
+
+export const updateWorkspaceMember = async (
+  workspaceId: string,
+  memberId: string,
+  payload: UpdateWorkspaceMemberPayload
+): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.workspace.member(workspaceId, memberId),
+    method: "PATCH",
+    workspaceId,
+    body: payload,
+  });
+};
+
+export const removeWorkspaceMember = async (
+  workspaceId: string,
+  memberId: string
+): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.workspace.member(workspaceId, memberId),
+    method: "DELETE",
+    workspaceId,
+  });
+};
+
+export const transferWorkspaceOwnership = async (
+  workspaceId: string,
+  memberId: string,
+  payload: { confirm: true }
+): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.workspace.transferOwnership(workspaceId, memberId),
+    method: "POST",
+    workspaceId,
+    body: payload,
+  });
+};
+
 export const getWorkspaceMembers = async (workspaceId: string): Promise<WorkspaceMember[]> => {
   const response = await apiFetch<ApiResponse<WorkspaceMember[]>>({
     endpoint: API_ENDPOINTS.workspace.members(workspaceId),
@@ -72,7 +262,23 @@ export const getWorkspaceMembers = async (workspaceId: string): Promise<Workspac
     workspaceId,
   });
 
-  return response.data ?? [];
+  return response.data;
+};
+
+// --- INVITATIONS MANAGEMENT ---
+
+export const createWorkspaceInvitation = async (
+  workspaceId: string,
+  payload: CreateWorkspaceInvitationPayload
+): Promise<WorkspaceInvitation> => {
+  const response = await apiFetch<ApiResponse<WorkspaceInvitation>>({
+    endpoint: API_ENDPOINTS.workspace.invitations(workspaceId),
+    method: "POST",
+    workspaceId,
+    body: payload,
+  });
+
+  return response.data;
 };
 
 export const getWorkspaceInvitations = async (
@@ -84,5 +290,74 @@ export const getWorkspaceInvitations = async (
     workspaceId,
   });
 
-  return response.data ?? [];
+  return response.data;
+};
+
+export const cancelWorkspaceInvitation = async (
+  workspaceId: string,
+  invitationId: string
+): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.workspace.invitation(workspaceId, invitationId),
+    method: "DELETE",
+    workspaceId,
+  });
+};
+
+export const resendWorkspaceInvitation = async (
+  workspaceId: string,
+  invitationId: string
+): Promise<WorkspaceInvitation> => {
+  const response = await apiFetch<ApiResponse<WorkspaceInvitation>>({
+    endpoint: API_ENDPOINTS.workspace.resendInvitation(workspaceId, invitationId),
+    method: "POST",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const expireWorkspaceInvitation = async (
+  workspaceId: string,
+  invitationId: string
+): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.workspace.expireInvitation(workspaceId, invitationId),
+    method: "POST",
+    workspaceId,
+  });
+};
+
+// --- BILLING API ---
+
+export const getWorkspaceSubscription = async (
+  workspaceId: string
+): Promise<BillingSubscriptionResponse> => {
+  const response = await apiFetch<ApiResponse<BillingSubscriptionResponse>>({
+    endpoint: API_ENDPOINTS.billing.subscription,
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const getBillingHistory = async (workspaceId: string): Promise<BillingHistoryResponse> => {
+  const response = await apiFetch<ApiResponse<BillingHistoryResponse>>({
+    endpoint: API_ENDPOINTS.billing.invoices,
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
+};
+
+export const getBillingUsage = async (workspaceId: string): Promise<BillingUsageResponse> => {
+  const response = await apiFetch<ApiResponse<BillingUsageResponse>>({
+    endpoint: API_ENDPOINTS.billing.usage,
+    method: "GET",
+    workspaceId,
+  });
+
+  return response.data;
 };

@@ -21,6 +21,34 @@ export const API_ENDPOINTS = {
     details: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}`,
     switch: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/switch`,
     members: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/members`,
+    member: (workspaceId: string, memberId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/members/${memberId}`,
+    transferOwnership: (workspaceId: string, memberId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/members/${memberId}/transfer-ownership`,
     invitations: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/invitations`,
+    invitation: (workspaceId: string, invitationId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/invitations/${invitationId}`,
+    resendInvitation: (workspaceId: string, invitationId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/invitations/${invitationId}/resend`,
+    expireInvitation: (workspaceId: string, invitationId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/invitations/${invitationId}/expire`,
+    generalSettings: (workspaceId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/settings/general`,
+    brandingSettings: (workspaceId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/settings/branding`,
+    settingsSummary: (workspaceId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/settings/summary`,
+    permissions: (workspaceId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/settings/permissions`,
+    capabilities: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/capabilities`,
+    activityLogs: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/activity-logs`,
+    archive: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/archive`,
+  },
+  billing: {
+    subscription: `${API_PREFIX}/billing/subscription`,
+    checkoutSession: `${API_PREFIX}/billing/checkout-session`,
+    customerPortal: `${API_PREFIX}/billing/customer-portal`,
+    invoices: `${API_PREFIX}/billing/invoices`,
+    usage: `${API_PREFIX}/billing/usage`,
   },
 };
