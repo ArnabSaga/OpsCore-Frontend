@@ -1,8 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
 
 type WorkspaceSectionCardProps = {
   title?: string;
@@ -23,6 +23,8 @@ const WorkspaceSectionCard = ({
   className,
   contentClassName,
 }: WorkspaceSectionCardProps) => {
+  const hasHeader = Boolean(title || description || icon || action);
+
   return (
     <Card
       className={cn(
@@ -30,7 +32,7 @@ const WorkspaceSectionCard = ({
         className
       )}
     >
-      {title || description || icon || action ? (
+      {hasHeader ? (
         <CardHeader className="flex flex-row items-start justify-between gap-4">
           <div className="space-y-2">
             {icon ? (
@@ -38,7 +40,9 @@ const WorkspaceSectionCard = ({
                 {icon}
               </div>
             ) : null}
+
             {title ? <CardTitle className="text-xl text-white">{title}</CardTitle> : null}
+
             {description ? (
               <p className="max-w-2xl text-sm leading-6 text-[#94A3B8]">{description}</p>
             ) : null}

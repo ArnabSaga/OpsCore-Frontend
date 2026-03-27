@@ -61,9 +61,8 @@ const WorkspaceSettingsSidebar = () => {
     <aside className="rounded-[24px] border border-white/10 bg-[#101828]/80 p-3 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
       <nav className="space-y-2">
         {items.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-
           const Icon = item.icon;
+          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
 
           return (
             <Link
