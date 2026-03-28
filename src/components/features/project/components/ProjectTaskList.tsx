@@ -1,11 +1,11 @@
-import type { TaskSummary } from "@/types/task.types";
+import type { BaseTaskUI } from "@/types/task.shared";
 import ProjectTaskCard from "./ProjectTaskCard";
 
 type ProjectTaskListProps = {
-  tasks: TaskSummary[];
+  tasks: BaseTaskUI[];
   onOpen: (taskId: string) => void;
-  onEdit: (task: TaskSummary) => void;
-  onDelete: (task: TaskSummary) => void;
+  onEdit: (task: BaseTaskUI) => void;
+  onDelete: (task: BaseTaskUI) => void;
 };
 
 const ProjectTaskList = ({ tasks, onOpen, onEdit, onDelete }: ProjectTaskListProps) => {

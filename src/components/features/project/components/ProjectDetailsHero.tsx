@@ -1,4 +1,4 @@
-import { CalendarRange, FolderKanban, Sparkles, Users2 } from "lucide-react";
+import { AlertCircle, CalendarRange, FolderKanban, Sparkles, Users2 } from "lucide-react";
 
 import ProjectQuickActions from "@/components/features/project/components/ProjectQuickActions";
 import ProjectStatusBadge from "@/components/features/project/components/ProjectStatusBadge";
@@ -28,6 +28,14 @@ const ProjectDetailsHero = ({ project }: ProjectDetailsHeroProps) => {
       data-project-hero
       className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#101828] px-6 py-7 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:px-8"
     >
+      {(project.archivedAt || project.status === "ARCHIVED") && (
+        <div className="mb-6 flex items-center gap-3 rounded-xl border border-[#FDA29B]/20 bg-[#FDA29B]/5 p-4 text-[#FDA29B]">
+          <AlertCircle className="h-5 w-5 shrink-0" />
+          <p className="text-sm font-medium">
+            This project is archived. Current tasks are read-only and no new tasks can be created.
+          </p>
+        </div>
+      )}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(127,86,217,0.22),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(105,65,198,0.16),transparent_30%)]" />
 
       <div className="relative z-10 flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
@@ -68,7 +76,11 @@ const ProjectDetailsHero = ({ project }: ProjectDetailsHeroProps) => {
           </div>
         </div>
 
-        <ProjectQuickActions projectId={project.id} />
+        <ProjectQuickActions
+          projectId={project.id}
+          status={project.status}
+          archivedAt={project.archivedAt}
+        />
       </div>
     </section>
   );

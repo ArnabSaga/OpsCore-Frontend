@@ -108,7 +108,7 @@ export type CreateProjectPayload = {
 };
 
 export type UpdateProjectPayload = {
-  name: string;
+  name?: string;
   description?: string | null;
   clientName?: string | null;
   status?: ProjectStatus;
@@ -140,10 +140,15 @@ export type GetProjectsParams = {
 
 export type GetProjectTasksParams = {
   status?: TaskStatus;
+  priority?: TaskPriority;
+  searchTerm?: string;
   assignedToUserId?: string;
+  overdue?: boolean;
+  dueFrom?: string;
+  dueTo?: string;
   page?: number;
   limit?: number;
-  sortBy?: "createdAt" | "updatedAt" | "dueDate" | "title" | "status";
+  sortBy?: "createdAt" | "updatedAt" | "dueDate" | "title" | "status" | "priority";
   sortOrder?: "asc" | "desc";
 };
 

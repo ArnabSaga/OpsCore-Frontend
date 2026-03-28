@@ -6,13 +6,13 @@ import TaskAssigneeAvatar from "@/components/features/task/components/TaskAssign
 import TaskPriorityBadge from "@/components/features/task/components/TaskPriorityBadge";
 import TaskStatusBadge from "@/components/features/task/components/TaskStatusBadge";
 import { Button } from "@/components/ui/button";
-import type { TaskSummary } from "@/types/task.types";
+import type { BaseTaskUI } from "@/types/task.shared";
 
 type ProjectTaskCardProps = {
-  task: TaskSummary;
+  task: BaseTaskUI;
   onOpen: (taskId: string) => void;
-  onEdit: (task: TaskSummary) => void;
-  onDelete: (task: TaskSummary) => void;
+  onEdit: (task: BaseTaskUI) => void;
+  onDelete: (task: BaseTaskUI) => void;
 };
 
 const formatDate = (value?: string | null) => {

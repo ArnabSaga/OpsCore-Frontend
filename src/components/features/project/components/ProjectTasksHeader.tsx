@@ -9,6 +9,7 @@ type ProjectTasksHeaderProps = {
   projectId: string;
   projectName?: string;
   taskCount: number;
+  isArchived?: boolean;
   onCreateClick: () => void;
 };
 
@@ -16,6 +17,7 @@ const ProjectTasksHeader = ({
   projectId,
   projectName,
   taskCount,
+  isArchived,
   onCreateClick,
 }: ProjectTasksHeaderProps) => {
   return (
@@ -63,8 +65,10 @@ const ProjectTasksHeader = ({
 
           <Button
             type="button"
+            disabled={isArchived}
             onClick={onCreateClick}
-            className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
+            className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6] disabled:cursor-not-allowed disabled:opacity-50"
+            title={isArchived ? "Cannot create tasks in an archived project" : undefined}
           >
             <Plus className="mr-2 h-4 w-4" />
             Create Task

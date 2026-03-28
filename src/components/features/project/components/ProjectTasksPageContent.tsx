@@ -15,10 +15,11 @@ import CreateTaskDialog from "@/components/features/task/components/CreateTaskDi
 import EditTaskDialog from "@/components/features/task/components/EditTaskDialog";
 import TaskDetailsDrawer from "@/components/features/task/components/TaskDetailsDrawer";
 import { useDeleteTask } from "@/components/features/task/hooks/useDeleteTask";
-import { useTasks } from "@/components/features/task/hooks/useTasks";
+import { useProjectTasks } from "@/components/features/project/hooks/useProjectTasks";
 import { useWorkspaceMembers } from "@/components/features/workspace/hooks/useWorkspaceMembers";
 import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPageErrorState";
 import { Button } from "@/components/ui/button";
+import type { ProjectTaskItem } from "@/types/project.types";
 import type { TaskSummary } from "@/types/task.types";
 
 type ProjectTasksPageContentProps = {
@@ -29,7 +30,7 @@ const ProjectTasksPageContent = ({ projectId }: ProjectTasksPageContentProps) =>
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState<TaskSummary | null>(null);
+  const [editingTask, setEditingTask] = useState<ProjectTaskItem | null>(null);
   const [drawerTaskId, setDrawerTaskId] = useState<string | null>(null);
 
   const {
@@ -69,8 +70,9 @@ const ProjectTasksPageContent = ({ projectId }: ProjectTasksPageContentProps) =>
     resetFilters,
   } = useProjectTaskFilters(projectId);
 
-  const { data, isLoading, isError, refetch, isFetching } = useTasks({
-    params,
+  const { data, isLoading, isError, refetch, isFetching } = useProjectTasks({
+    projectId,
+    params: params,
     enabled: !!projectId,
   });
 
@@ -134,6 +136,7 @@ const ProjectTasksPageContent = ({ projectId }: ProjectTasksPageContentProps) =>
         projectId={projectId}
         projectName={project.name}
         taskCount={taskCount}
+        isArchived={!!project.archivedAt || project.status === "ARCHIVED"}
         onCreateClick={() => setIsCreateOpen(true)}
       />
 
@@ -166,18 +169,18 @@ const ProjectTasksPageContent = ({ projectId }: ProjectTasksPageContentProps) =>
         <ProjectTaskList
           tasks={tasks}
           onOpen={setDrawerTaskId}
-          onEdit={setEditingTask}
+          onEdit={(task) => setEditingTask(task as ProjectTaskItem)}
           onDelete={async (task) => {
-            await deleteTask({ taskId: task.id, projectId: task.projectId });
+            await deleteTask({ taskId: task.id, projectId });
           }}
         />
       ) : (
         <ProjectTaskTable
           tasks={tasks}
           onOpen={setDrawerTaskId}
-          onEdit={setEditingTask}
+          onEdit={(task) => setEditingTask(task as ProjectTaskItem)}
           onDelete={async (task) => {
-            await deleteTask({ taskId: task.id, projectId: task.projectId });
+            await deleteTask({ taskId: task.id, projectId });
           }}
         />
       )}
@@ -234,7 +237,7 @@ const ProjectTasksPageContent = ({ projectId }: ProjectTasksPageContentProps) =>
         onOpenChange={(open) => {
           if (!open) setEditingTask(null);
         }}
-        task={editingTask}
+        task={editingTask ? ({ ...editingTask, projectId } as unknown as TaskSummary) : null}
         workspaceMembers={workspaceMembers}
       />
 

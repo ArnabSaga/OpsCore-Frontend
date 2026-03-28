@@ -135,7 +135,7 @@ const ProjectForm = ({
             }}
             className="space-y-6"
           >
-            <ProjectFormFields form={form} />
+            <ProjectFormFields form={form} mode={mode} />
 
             {submitError ? (
               <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">

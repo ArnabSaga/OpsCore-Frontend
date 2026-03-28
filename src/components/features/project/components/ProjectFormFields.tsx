@@ -29,6 +29,7 @@ type ProjectFormApi = {
 
 type ProjectFormFieldsProps = {
   form: ProjectFormApi;
+  mode?: "create" | "edit";
 };
 
 const getFieldError = (field: AnyFieldApi) => {
@@ -50,7 +51,7 @@ const getFieldError = (field: AnyFieldApi) => {
   return "Invalid value";
 };
 
-const ProjectFormFields = ({ form }: ProjectFormFieldsProps) => {
+const ProjectFormFields = ({ form, mode = "create" }: ProjectFormFieldsProps) => {
   return (
     <div className="space-y-5">
       <form.Field
@@ -166,7 +167,7 @@ const ProjectFormFields = ({ form }: ProjectFormFieldsProps) => {
                     <SelectItem value="ACTIVE">Active</SelectItem>
                     <SelectItem value="COMPLETED">Completed</SelectItem>
                     <SelectItem value="ON_HOLD">On hold</SelectItem>
-                    <SelectItem value="ARCHIVED">Archived</SelectItem>
+                    {mode === "edit" && <SelectItem value="ARCHIVED">Archived</SelectItem>}
                   </SelectContent>
                 </Select>
               </div>

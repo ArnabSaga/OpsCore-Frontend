@@ -25,7 +25,7 @@ const ProjectTasksPreview = ({ projectId, tasks }: ProjectTasksPreviewProps) => 
 
   return (
     <ProjectSectionCard
-      title="Recent task activity"
+      title="Recently updated tasks"
       description="A lightweight project task preview driven by the project tasks endpoint."
       action={
         <Button

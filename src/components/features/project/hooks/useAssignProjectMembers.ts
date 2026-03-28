@@ -35,6 +35,14 @@ export const useAssignProjectMembers = ({ workspaceId }: UseAssignProjectMembers
       await queryClient.invalidateQueries({
         queryKey: projectQueryKeys.detail(resolvedWorkspaceId, variables.projectId),
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: projectQueryKeys.summary(resolvedWorkspaceId, variables.projectId),
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: projectQueryKeys.lists(),
+      });
     },
     onError: (error: Error) => {
       console.error("Assign project members failed:", error.message);

@@ -3,7 +3,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
-import { taskQueryKeys } from "@/components/features/task/hooks/task.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import { removeProjectMember } from "../api/project.api";
 
@@ -37,7 +36,11 @@ export const useRemoveProjectMember = ({ workspaceId }: UseRemoveProjectMemberOp
       });
 
       await queryClient.invalidateQueries({
-        queryKey: taskQueryKeys.lists(),
+        queryKey: projectQueryKeys.summary(resolvedWorkspaceId, variables.projectId),
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: projectQueryKeys.lists(),
       });
     },
     onError: (error: Error) => {
