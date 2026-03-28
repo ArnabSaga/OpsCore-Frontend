@@ -26,6 +26,7 @@ export type ProjectMemberUser = {
 
 export type ProjectMember = {
   id: string;
+  userId?: string;
   createdAt: string;
   user: ProjectMemberUser;
 };
@@ -107,7 +108,7 @@ export type CreateProjectPayload = {
 };
 
 export type UpdateProjectPayload = {
-  name?: string;
+  name: string;
   description?: string | null;
   clientName?: string | null;
   status?: ProjectStatus;

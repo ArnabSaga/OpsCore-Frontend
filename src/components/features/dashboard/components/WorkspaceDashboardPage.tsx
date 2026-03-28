@@ -64,22 +64,24 @@ const WorkspaceDashboardPage = () => {
         { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }
       );
 
-      gsap.fromTo(
-        ".ws-section",
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.1,
-          duration: 0.8,
-          ease: "power3.out",
-          delay: 0.15,
-        }
-      );
+      if (rootRef.current?.querySelector(".ws-section")) {
+        gsap.fromTo(
+          ".ws-section",
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: "power3.out",
+            delay: 0.15,
+          }
+        );
+      }
     }, rootRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isOverviewLoading, isActivityLoading, isMetricsLoading]);
 
   if (isOverviewLoading) {
     return (

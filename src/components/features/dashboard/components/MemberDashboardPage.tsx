@@ -61,22 +61,24 @@ const MemberDashboardPage = () => {
         { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }
       );
 
-      gsap.fromTo(
-        ".member-section",
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.1,
-          duration: 0.75,
-          ease: "power3.out",
-          delay: 0.15,
-        }
-      );
+      if (rootRef.current?.querySelector(".member-section")) {
+        gsap.fromTo(
+          ".member-section",
+          { opacity: 0, y: 28 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.75,
+            ease: "power3.out",
+            delay: 0.15,
+          }
+        );
+      }
     }, rootRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isOverviewLoading, isActivityLoading, isMetricsLoading]);
 
   if (isOverviewLoading) {
     return (

@@ -58,23 +58,25 @@ const ProjectListPageContent = () => {
         { opacity: 1, y: 0, duration: 0.45, delay: 0.05, ease: "power3.out" }
       );
 
-      gsap.fromTo(
-        "[data-project-card]",
-        { opacity: 0, y: 22, scale: 0.985 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.42,
-          ease: "power3.out",
-          stagger: 0.06,
-          delay: 0.08,
-        }
-      );
+      if (projects.length > 0) {
+        gsap.fromTo(
+          "[data-project-card]",
+          { opacity: 0, y: 22, scale: 0.985 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.42,
+            ease: "power3.out",
+            stagger: 0.06,
+            delay: 0.08,
+          }
+        );
+      }
     }, containerRef);
 
     return () => ctx.revert();
-  }, [isLoading, projects.length, viewMode, page]);
+  }, [isLoading, projects, projects.length, viewMode, page]);
 
   const heroStats = useMemo(() => {
     const totalProjects = meta?.total ?? projects.length;

@@ -29,19 +29,21 @@ const WorkspaceListPageContent = () => {
         { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }
       );
 
-      gsap.fromTo(
-        "[data-workspace-card]",
-        { opacity: 0, y: 22, scale: 0.98 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.45,
-          ease: "power3.out",
-          stagger: 0.08,
-          delay: 0.08,
-        }
-      );
+      if (workspaces.length > 0) {
+        gsap.fromTo(
+          "[data-workspace-card]",
+          { opacity: 0, y: 22, scale: 0.98 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.45,
+            ease: "power3.out",
+            stagger: 0.08,
+            delay: 0.08,
+          }
+        );
+      }
     }, containerRef);
 
     return () => ctx.revert();
