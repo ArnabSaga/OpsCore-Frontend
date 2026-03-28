@@ -17,6 +17,7 @@ import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPa
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DashboardMetricsPeriod } from "@/types/dashboard.types";
+import { PendingInvitationsBanner } from "@/components/features/workspace/components/PendingInvitationsBanner";
 import { BarChart3, CreditCard, Layers3, Sparkles, TrendingUp } from "lucide-react";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
@@ -145,6 +146,8 @@ const WorkspaceDashboardPage = () => {
         <div className="absolute left-[-8%] top-0 h-72 w-72 rounded-full bg-[#7F56D9]/18 blur-3xl" />
         <div className="absolute right-[-10%] top-24 h-72 w-72 rounded-full bg-[#6941C6]/18 blur-3xl" />
       </div>
+
+      <PendingInvitationsBanner />
 
       <section className="ws-hero relative overflow-hidden rounded-[28px] border border-white/10 bg-white/4 p-6 backdrop-blur-xl sm:p-7">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(127,86,217,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(105,65,198,0.14),transparent_35%)]" />

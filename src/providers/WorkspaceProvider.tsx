@@ -17,6 +17,7 @@ type WorkspaceContextValue = {
   isLoading: boolean;
   isResolved: boolean;
   isError: boolean;
+  isSwitching: boolean;
   switchingWorkspaceId: string | null;
   hasServerWorkspaceContext: boolean;
   switchWorkspace: (workspaceId: string) => Promise<void>;
@@ -151,6 +152,7 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
       isLoading: !isResolved,
       isResolved,
       isError: isUserError || isWorkspacesError,
+      isSwitching: !!switchingWorkspaceId,
       switchingWorkspaceId,
       hasServerWorkspaceContext,
       switchWorkspace: handleSwitchWorkspace,

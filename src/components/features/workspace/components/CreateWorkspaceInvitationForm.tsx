@@ -2,6 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { MailPlus } from "lucide-react";
+import { toast } from "sonner";
 
 import { useCreateWorkspaceInvitation } from "@/components/features/workspace/hooks/useCreateWorkspaceInvitation";
 import { createWorkspaceInvitationSchema } from "@/components/features/workspace/validations/workspace-invitation.validation";
@@ -34,8 +35,18 @@ const CreateWorkspaceInvitationForm = ({ workspaceId, canManage }: Props) => {
       const parsed = createWorkspaceInvitationSchema.safeParse(value);
       if (!parsed.success) return;
 
-      await mutateAsync(parsed.data);
-      form.reset();
+      try {
+        await mutateAsync(parsed.data);
+        toast.success("Invitation sent", {
+          description: `An invite has been sent to ${parsed.data.email}.`,
+        });
+        form.reset();
+      } catch (error) {
+        const err = error as { message?: string };
+        toast.error("Failed to send invitation", {
+          description: err?.message || "Please try again later.",
+        });
+      }
     },
   });
 

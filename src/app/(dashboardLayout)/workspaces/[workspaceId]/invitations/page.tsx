@@ -1,9 +1,7 @@
-import React from 'react'
+import WorkspaceInvitationsPageContent from "@/components/features/workspace/components/WorkspaceInvitationsPageContent";
 
 const WorkspaceInvitationsPage = () => {
-  return (
-    <div>WorkspaceInvitationsPage</div>
-  )
-}
+  return <WorkspaceInvitationsPageContent />;
+};
 
-export default WorkspaceInvitationsPage
+export default WorkspaceInvitationsPage;

@@ -1,7 +1,7 @@
 export type WorkspacePlan = "FREE" | "PRO" | "ENTERPRISE";
 export type WorkspaceRole = "OWNER" | "ADMIN" | "MEMBER";
 export type WorkspaceMemberStatus = "ACTIVE" | "INACTIVE" | "INVITED";
-export type InvitationStatus = "PENDING" | "ACCEPTED" | "DECLINED" | "EXPIRED" | "CANCELED";
+export type InvitationStatus = "PENDING" | "ACCEPTED" | "DECLINED" | "REJECTED" | "EXPIRED" | "CANCELED";
 
 export type WorkspacePlanMeta = {
   basePlan: WorkspacePlan;
@@ -52,14 +52,29 @@ export type WorkspaceMember = {
 export type WorkspaceInvitation = {
   id: string;
   email: string;
+  token: string;
   role: Exclude<WorkspaceRole, "OWNER">;
   status: InvitationStatus;
   expiresAt: string;
   createdAt: string;
+  acceptedAt?: string | null;
+  rejectedAt?: string | null;
+  canceledAt?: string | null;
   invitedBy?: {
     id: string;
     name: string;
     email: string;
+  };
+  planMeta?: {
+    workspacePlan: WorkspacePlan;
+    isTrialActive: boolean;
+    trialStartsAt: string | null;
+    trialEndsAt: string | null;
+  };
+  workspace?: {
+    id: string;
+    name: string;
+    slug: string;
   };
 };
 

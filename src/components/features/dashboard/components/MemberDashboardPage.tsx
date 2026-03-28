@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DashboardMetricsPeriod } from "@/types/dashboard.types";
 import { CalendarRange, Sparkles, Target, Zap } from "lucide-react";
+import { PendingInvitationsBanner } from "@/components/features/workspace/components/PendingInvitationsBanner";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 
@@ -145,6 +146,8 @@ const MemberDashboardPage = () => {
         <div className="absolute left-[-8%] top-10 h-64 w-64 rounded-full bg-[#7F56D9]/15 blur-3xl" />
         <div className="absolute right-[-5%] top-32 h-64 w-64 rounded-full bg-[#6941C6]/15 blur-3xl" />
       </div>
+
+      <PendingInvitationsBanner />
 
       <section className="member-hero relative overflow-hidden rounded-[28px] border border-white/10 bg-white/4 p-6 backdrop-blur-xl sm:p-7">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(127,86,217,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(105,65,198,0.14),transparent_35%)]" />

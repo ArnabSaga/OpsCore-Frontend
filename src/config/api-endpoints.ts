@@ -44,6 +44,12 @@ export const API_ENDPOINTS = {
     activityLogs: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/activity-logs`,
     archive: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/archive`,
   },
+  invitation: {
+    my: `${API_PREFIX}/invitations/my`,
+    accept: (token: string) => `${API_PREFIX}/invitations/${token}/accept`,
+    decline: (token: string) => `${API_PREFIX}/invitations/${token}/decline`,
+    details: (token: string) => `${API_PREFIX}/invitations/${token}`,
+  },
   billing: {
     subscription: `${API_PREFIX}/billing/subscription`,
     checkoutSession: `${API_PREFIX}/billing/checkout-session`,

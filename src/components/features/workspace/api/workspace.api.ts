@@ -335,6 +335,17 @@ export const expireWorkspaceInvitation = async (
   });
 };
 
+export const deleteWorkspaceInvitation = async (
+  workspaceId: string,
+  invitationId: string
+): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: `${API_ENDPOINTS.workspace.invitations(workspaceId)}/${invitationId}/hard-delete`,
+    method: "DELETE",
+    workspaceId,
+  });
+};
+
 // --- BILLING API ---
 
 export const getWorkspaceSubscription = async (
@@ -364,6 +375,40 @@ export const getBillingUsage = async (workspaceId: string): Promise<BillingUsage
     endpoint: API_ENDPOINTS.billing.usage,
     method: "GET",
     workspaceId,
+  });
+
+  return response.data;
+};
+
+// --- PUBLIC INVITATION API ---
+
+export const getInvitationByToken = async (token: string): Promise<WorkspaceInvitation> => {
+  const response = await apiFetch<ApiResponse<WorkspaceInvitation>>({
+    endpoint: API_ENDPOINTS.invitation.details(token),
+    method: "GET",
+  });
+
+  return response.data;
+};
+
+export const acceptInvitation = async (token: string): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.invitation.accept(token),
+    method: "POST",
+  });
+};
+
+export const declineInvitation = async (token: string): Promise<void> => {
+  await apiFetch<ApiResponse<null>>({
+    endpoint: API_ENDPOINTS.invitation.decline(token),
+    method: "POST",
+  });
+};
+
+export const getMyInvitations = async (): Promise<WorkspaceInvitation[]> => {
+  const response = await apiFetch<ApiResponse<WorkspaceInvitation[]>>({
+    endpoint: API_ENDPOINTS.invitation.my,
+    method: "GET",
   });
 
   return response.data;

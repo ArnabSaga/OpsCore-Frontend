@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import WorkspaceCard from "./WorkspaceCard";
 import WorkspaceEmptyState from "./WorkspaceEmptyState";
 import WorkspaceListSkeleton from "./WorkspaceListSkeleton";
+import { PendingInvitationsBanner } from "./PendingInvitationsBanner";
 
 const WorkspaceListPageContent = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -56,6 +57,8 @@ const WorkspaceListPageContent = () => {
 
   return (
     <div ref={containerRef} className="space-y-8">
+      <PendingInvitationsBanner />
+
       <section
         data-workspace-hero
         className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#101828] px-6 py-7 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:px-8"

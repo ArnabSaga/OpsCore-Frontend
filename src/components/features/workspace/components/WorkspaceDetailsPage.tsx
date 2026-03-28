@@ -1,27 +1,30 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import { useParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { useWorkspaceDetails } from "@/components/features/workspace/hooks/useWorkspaceDetails";
-import { useWorkspaceInvitations } from "@/components/features/workspace/hooks/useWorkspaceInvitations";
-import { useWorkspaceMembers } from "@/components/features/workspace/hooks/useWorkspaceMembers";
 import WorkspaceAccessNotice from "@/components/features/workspace/components/WorkspaceAccessNotice";
 import WorkspaceDetailsHeader from "@/components/features/workspace/components/WorkspaceDetailsHeader";
 import WorkspaceInvitationsSection from "@/components/features/workspace/components/WorkspaceInvitationsSection";
 import WorkspaceMembersSection from "@/components/features/workspace/components/WorkspaceMembersSection";
 import WorkspaceSummaryCards from "@/components/features/workspace/components/WorkspaceSummaryCards";
-import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
+import { useWorkspaceCapabilities } from "@/components/features/workspace/hooks/useWorkspaceCapabilities";
+import { useWorkspaceDetails } from "@/components/features/workspace/hooks/useWorkspaceDetails";
+import { useWorkspaceInvitations } from "@/components/features/workspace/hooks/useWorkspaceInvitations";
+import { useWorkspaceMembers } from "@/components/features/workspace/hooks/useWorkspaceMembers";
+import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPageErrorState";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPageErrorState";
+import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
+import InviteWorkspaceMemberDialog from "./InviteWorkspaceMemberDialog";
 
 const WorkspaceDetailsPage = () => {
   const params = useParams<{ workspaceId: string }>();
   const workspaceId = params.workspaceId;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
 
   const { workspaces, activeWorkspaceId, switchingWorkspaceId } = useWorkspaceContext();
 
@@ -54,6 +57,8 @@ const WorkspaceDetailsPage = () => {
     canViewInvitations,
     refetch: refetchInvitations,
   } = useWorkspaceInvitations(workspaceId);
+
+  const { data: capabilities } = useWorkspaceCapabilities(workspaceId);
 
   useEffect(() => {
     if (!containerRef.current || isWorkspaceLoading) return;
@@ -122,7 +127,7 @@ const WorkspaceDetailsPage = () => {
     return (
       <ProtectedPageErrorState
         title="Unable to load workspace"
-        description="We couldn&apos;t fetch this workspace overview right now."
+        description="We couldn't fetch this workspace overview right now."
         onRetry={() => {
           void refetchWorkspace();
         }}
@@ -138,11 +143,14 @@ const WorkspaceDetailsPage = () => {
           workspaceSummary={workspaceSummary}
           isActive={activeWorkspaceId === workspace.id}
           isSwitching={switchingWorkspaceId === workspace.id}
+          canManageInvitations={!!capabilities?.canManageInvitations}
+          onInviteClick={() => setInviteOpen(true)}
         />
       </div>
 
       <div data-workspace-details-section>
         <WorkspaceSummaryCards
+          workspaceId={workspaceId}
           workspace={workspace}
           membersCount={workspace._count?.members ?? members.length}
           pendingInvitationsCount={pendingInvitationsCount}
@@ -235,6 +243,12 @@ const WorkspaceDetailsPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      <InviteWorkspaceMemberDialog
+        workspaceId={workspaceId}
+        open={inviteOpen}
+        onOpenChange={setInviteOpen}
+      />
     </div>
   );
 };

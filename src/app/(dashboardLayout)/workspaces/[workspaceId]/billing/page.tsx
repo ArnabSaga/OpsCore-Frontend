@@ -1,9 +1,7 @@
-import React from 'react'
+import WorkspaceBillingPageContent from "@/components/features/workspace/components/WorkspaceBillingPageContent";
 
 const WorkspaceBillingPage = () => {
-  return (
-    <div>BillingPage</div>
-  )
-}
+  return <WorkspaceBillingPageContent />;
+};
 
 export default WorkspaceBillingPage;

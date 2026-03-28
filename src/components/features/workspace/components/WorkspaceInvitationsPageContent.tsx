@@ -12,6 +12,7 @@ import CancelInvitationDialog from "./CancelInvitationDialog";
 import CreateWorkspaceInvitationForm from "./CreateWorkspaceInvitationForm";
 import WorkspaceInvitationList from "./WorkspaceInvitationList";
 import WorkspacePageHero from "./WorkspacePageHero";
+import { PendingInvitationsBanner } from "./PendingInvitationsBanner";
 
 const WorkspaceInvitationsPageContent = () => {
   const params = useParams<{ workspaceId: string }>();
@@ -42,6 +43,8 @@ const WorkspaceInvitationsPageContent = () => {
 
   return (
     <div className="space-y-6">
+      <PendingInvitationsBanner />
+
       <WorkspacePageHero
         eyebrow="Workspace Invitations"
         title="Manage invitations"
