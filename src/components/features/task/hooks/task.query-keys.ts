@@ -15,9 +15,13 @@ export const taskQueryKeys = {
   detail: (workspaceId: string, taskId: string) =>
     [...taskQueryKeys.details(), workspaceId, taskId] as const,
 
+  commentsRoot: (workspaceId: string, taskId: string) =>
+    [...taskQueryKeys.all, "comments", workspaceId, taskId] as const,
   comments: (workspaceId: string, taskId: string, params?: GetTaskCommentsParams) =>
-    [...taskQueryKeys.all, "comments", workspaceId, taskId, params ?? {}] as const,
+    [...taskQueryKeys.commentsRoot(workspaceId, taskId), params ?? {}] as const,
 
+  attachmentsRoot: (workspaceId: string, taskId: string) =>
+    [...taskQueryKeys.all, "attachments", workspaceId, taskId] as const,
   attachments: (workspaceId: string, taskId: string, params?: GetTaskAttachmentsParams) =>
-    [...taskQueryKeys.all, "attachments", workspaceId, taskId, params ?? {}] as const,
+    [...taskQueryKeys.attachmentsRoot(workspaceId, taskId), params ?? {}] as const,
 } as const;

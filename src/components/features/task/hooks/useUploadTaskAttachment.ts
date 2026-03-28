@@ -13,17 +13,17 @@ type UseUploadTaskAttachmentOptions = {
 export const useUploadTaskAttachment = ({ workspaceId }: UseUploadTaskAttachmentOptions = {}) => {
   const queryClient = useQueryClient();
   const { activeWorkspaceId } = useWorkspaceContext();
-
   const resolvedWorkspaceId = workspaceId ?? activeWorkspaceId;
 
   return useMutation({
     mutationFn: ({ taskId, file }: { taskId: string; file: File }) =>
       uploadTaskAttachment(resolvedWorkspaceId as string, taskId, file),
+
     onSuccess: async (_data, variables) => {
       if (!resolvedWorkspaceId) return;
 
       await queryClient.invalidateQueries({
-        queryKey: taskQueryKeys.attachments(resolvedWorkspaceId, variables.taskId),
+        queryKey: taskQueryKeys.attachmentsRoot(resolvedWorkspaceId, variables.taskId),
         exact: false,
       });
 
@@ -35,6 +35,7 @@ export const useUploadTaskAttachment = ({ workspaceId }: UseUploadTaskAttachment
         queryKey: taskQueryKeys.lists(),
       });
     },
+
     onError: (error: Error) => {
       console.error("Upload task attachment failed:", error.message);
     },

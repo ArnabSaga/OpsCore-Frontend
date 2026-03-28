@@ -24,5 +24,6 @@ export const useTaskDetails = ({ workspaceId, taskId, enabled = true }: UseTaskD
         : [...taskQueryKeys.details(), "disabled"],
     queryFn: () => getTaskById(resolvedWorkspaceId as string, taskId),
     enabled: enabled && !!resolvedWorkspaceId && !!taskId,
+    staleTime: 1000 * 30,
   });
 };

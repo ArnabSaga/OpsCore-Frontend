@@ -2,8 +2,8 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
+import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { createTask } from "@/components/features/task/api/task.api";
 import { taskQueryKeys } from "@/components/features/task/hooks/task.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
@@ -45,6 +45,7 @@ export const useCreateTask = ({ workspaceId }: UseCreateTaskOptions = {}) => {
         queryKey: dashboardQueryKeys.all,
       });
     },
+
     onError: (error: Error) => {
       console.error("Create task failed:", error.message);
     },

@@ -14,17 +14,17 @@ type UseCreateTaskCommentOptions = {
 export const useCreateTaskComment = ({ workspaceId }: UseCreateTaskCommentOptions = {}) => {
   const queryClient = useQueryClient();
   const { activeWorkspaceId } = useWorkspaceContext();
-
   const resolvedWorkspaceId = workspaceId ?? activeWorkspaceId;
 
   return useMutation({
     mutationFn: ({ taskId, payload }: { taskId: string; payload: CreateTaskCommentPayload }) =>
       createTaskComment(resolvedWorkspaceId as string, taskId, payload),
+
     onSuccess: async (_data, variables) => {
       if (!resolvedWorkspaceId) return;
 
       await queryClient.invalidateQueries({
-        queryKey: taskQueryKeys.comments(resolvedWorkspaceId, variables.taskId),
+        queryKey: taskQueryKeys.commentsRoot(resolvedWorkspaceId, variables.taskId),
         exact: false,
       });
 
@@ -36,6 +36,7 @@ export const useCreateTaskComment = ({ workspaceId }: UseCreateTaskCommentOption
         queryKey: taskQueryKeys.lists(),
       });
     },
+
     onError: (error: Error) => {
       console.error("Create task comment failed:", error.message);
     },

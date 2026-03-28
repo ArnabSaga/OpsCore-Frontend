@@ -244,3 +244,14 @@ export const deleteTaskAttachment = async (
     workspaceId,
   });
 };
+
+export const getTasksByProject = (
+  workspaceId: string,
+  projectId: string,
+  params?: Omit<GetTasksParams, "projectId">
+): Promise<PaginatedTasksResponse> => getTasks(workspaceId, { ...params, projectId });
+
+export const getMyTasks = (
+  workspaceId: string,
+  params?: Omit<GetTasksParams, "assignedToMe">
+): Promise<PaginatedTasksResponse> => getTasks(workspaceId, { ...params, assignedToMe: true });

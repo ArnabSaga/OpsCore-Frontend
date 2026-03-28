@@ -14,7 +14,6 @@ type UseUpdateTaskCommentOptions = {
 export const useUpdateTaskComment = ({ workspaceId }: UseUpdateTaskCommentOptions = {}) => {
   const queryClient = useQueryClient();
   const { activeWorkspaceId } = useWorkspaceContext();
-
   const resolvedWorkspaceId = workspaceId ?? activeWorkspaceId;
 
   return useMutation({
@@ -27,11 +26,12 @@ export const useUpdateTaskComment = ({ workspaceId }: UseUpdateTaskCommentOption
       commentId: string;
       payload: UpdateTaskCommentPayload;
     }) => updateTaskComment(resolvedWorkspaceId as string, taskId, commentId, payload),
+
     onSuccess: async (_data, variables) => {
       if (!resolvedWorkspaceId) return;
 
       await queryClient.invalidateQueries({
-        queryKey: taskQueryKeys.comments(resolvedWorkspaceId, variables.taskId),
+        queryKey: taskQueryKeys.commentsRoot(resolvedWorkspaceId, variables.taskId),
         exact: false,
       });
 
@@ -39,6 +39,7 @@ export const useUpdateTaskComment = ({ workspaceId }: UseUpdateTaskCommentOption
         queryKey: taskQueryKeys.detail(resolvedWorkspaceId, variables.taskId),
       });
     },
+
     onError: (error: Error) => {
       console.error("Update task comment failed:", error.message);
     },

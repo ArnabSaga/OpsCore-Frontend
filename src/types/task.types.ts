@@ -172,3 +172,38 @@ export type PaginatedTaskAttachmentsResponse = {
   data: TaskAttachment[];
   meta: PaginationMeta;
 };
+
+export type TaskViewMode = "list" | "table" | "board" | "calendar";
+
+export type TaskSortPreset = {
+  label: string;
+  sortBy: GetTasksParams["sortBy"];
+  sortOrder: GetTasksParams["sortOrder"];
+};
+
+export type TaskOverdueFilter = "ALL" | "true" | "false";
+
+export type TaskBoardColumn = {
+  id: TaskStatus;
+  label: string;
+  tasks: TaskSummary[];
+};
+
+export type TaskCalendarItem = {
+  task: TaskSummary;
+  date: string;
+};
+
+export type TaskFormValues = {
+  title: string;
+  description: string;
+  projectId: string;
+  assignedToUserId: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  dueDate: string;
+};
+
+export type TaskCommentFormValues = {
+  body: string;
+};

@@ -13,17 +13,17 @@ type UseDeleteTaskAttachmentOptions = {
 export const useDeleteTaskAttachment = ({ workspaceId }: UseDeleteTaskAttachmentOptions = {}) => {
   const queryClient = useQueryClient();
   const { activeWorkspaceId } = useWorkspaceContext();
-
   const resolvedWorkspaceId = workspaceId ?? activeWorkspaceId;
 
   return useMutation({
     mutationFn: ({ taskId, attachmentId }: { taskId: string; attachmentId: string }) =>
       deleteTaskAttachment(resolvedWorkspaceId as string, taskId, attachmentId),
+
     onSuccess: async (_data, variables) => {
       if (!resolvedWorkspaceId) return;
 
       await queryClient.invalidateQueries({
-        queryKey: taskQueryKeys.attachments(resolvedWorkspaceId, variables.taskId),
+        queryKey: taskQueryKeys.attachmentsRoot(resolvedWorkspaceId, variables.taskId),
         exact: false,
       });
 
@@ -35,6 +35,7 @@ export const useDeleteTaskAttachment = ({ workspaceId }: UseDeleteTaskAttachment
         queryKey: taskQueryKeys.lists(),
       });
     },
+
     onError: (error: Error) => {
       console.error("Delete task attachment failed:", error.message);
     },
