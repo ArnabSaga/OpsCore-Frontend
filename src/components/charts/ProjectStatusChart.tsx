@@ -63,7 +63,7 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
       <CardContent>
         <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
           {isChartMounted && (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320} debounce={50}>
               <PieChart>
                 <Tooltip
                   contentStyle={{

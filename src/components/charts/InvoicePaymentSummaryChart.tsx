@@ -94,7 +94,7 @@ const InvoicePaymentSummaryChart = ({ overview }: InvoicePaymentSummaryChartProp
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_220px]">
           <div ref={chartContainerRef} className="h-[300px] w-full min-h-0 min-w-0">
             {isChartMounted && (
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={300}>
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={300} debounce={50}>
                 <PieChart>
                   <Tooltip
                     contentStyle={{

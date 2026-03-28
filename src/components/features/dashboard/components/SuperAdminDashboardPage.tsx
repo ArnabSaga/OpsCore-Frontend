@@ -457,6 +457,7 @@ const SuperAdminDashboardPage = () => {
                         height="100%"
                         minWidth={0}
                         minHeight={340}
+                        debounce={50}
                       >
                         <BarChart
                         data={growthData}
