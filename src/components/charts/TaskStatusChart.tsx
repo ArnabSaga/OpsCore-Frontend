@@ -16,7 +16,7 @@ import { CheckSquare } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DashboardOverview } from "@/types/dashboard.types";
-import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
+import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 
 type TaskStatusChartProps = {
   overview: DashboardOverview;
@@ -26,7 +26,7 @@ const TaskStatusChart = ({ overview }: TaskStatusChartProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
-  const isChartMounted = useMountedWithWidth(chartContainerRef);
+  const dimensions = useContainerDimensions(chartContainerRef);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -70,8 +70,8 @@ const TaskStatusChart = ({ overview }: TaskStatusChartProps) => {
 
       <CardContent>
         <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
-          {isChartMounted && (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320} debounce={50}>
+          {dimensions.isReady && (
+            <ResponsiveContainer width={dimensions.width} height={dimensions.height}>
               <BarChart data={data} barCategoryGap={24}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
                 <XAxis

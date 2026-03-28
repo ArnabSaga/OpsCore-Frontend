@@ -15,8 +15,12 @@ export const API_ENDPOINTS = {
     changePassword: `${API_PREFIX}/auth/change-password`,
     me: `${API_PREFIX}/auth/me`,
   },
+  user: {
+    platformAll: `${API_PREFIX}/account/platform/all`,
+  },
   workspace: {
     my: `${API_PREFIX}/workspaces/my`,
+    platformAll: `${API_PREFIX}/workspaces/platform/all`,
     create: `${API_PREFIX}/workspaces`,
     details: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}`,
     switch: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/switch`,

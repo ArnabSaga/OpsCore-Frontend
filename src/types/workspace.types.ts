@@ -289,3 +289,21 @@ export type BillingUsageResponse = {
     limit: number | null;
   }[];
 };
+export type PlatformWorkspaceItem = WorkspaceSummary & {
+  createdBy?: WorkspaceCreatedBy;
+  _count: {
+    members: number;
+    projects: number;
+    tasks: number;
+  };
+};
+
+export type PlatformWorkspacesResponse = {
+  items: PlatformWorkspaceItem[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+};

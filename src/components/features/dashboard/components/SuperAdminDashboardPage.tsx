@@ -24,7 +24,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
+import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 
 const metricPeriods: { label: string; value: PlatformMetricsPeriod }[] = [
   { label: "7D", value: "last_7_days" },
@@ -152,10 +152,10 @@ const SuperAdminDashboardPage = () => {
   }, []);
 
   const growthChartContainerRef = useRef<HTMLDivElement | null>(null);
-  const isGrowthChartMounted = useMountedWithWidth(growthChartContainerRef);
+  const growthDimensions = useContainerDimensions(growthChartContainerRef);
 
   useEffect(() => {
-    if (!isGrowthChartMounted || !growthData.length || !chartRef.current) return;
+    if (!growthDimensions.isReady || !growthData.length || !chartRef.current) return;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -182,7 +182,7 @@ const SuperAdminDashboardPage = () => {
     }, chartRef);
 
     return () => ctx.revert();
-  }, [growthData, isGrowthChartMounted, chartRef]);
+  }, [growthData, growthDimensions.isReady, chartRef]);
 
   if (isOverviewLoading) {
     return (
@@ -451,13 +451,10 @@ const SuperAdminDashboardPage = () => {
                     <div className="pointer-events-none absolute inset-x-8 bottom-10 h-10 rounded-full bg-[#FF4DDF]/25 blur-2xl" />
                     <div className="pointer-events-none absolute inset-x-12 bottom-9 h-[2px] bg-linear-to-r from-transparent via-[#FF4DDF]/80 to-transparent opacity-70" />
  
-                    {isGrowthChartMounted && (
+                    {growthDimensions.isReady && (
                       <ResponsiveContainer
-                        width="100%"
-                        height="100%"
-                        minWidth={0}
-                        minHeight={340}
-                        debounce={50}
+                        width={growthDimensions.width}
+                        height={growthDimensions.height}
                       >
                         <BarChart
                         data={growthData}

@@ -7,7 +7,7 @@ import { FolderKanban } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DashboardOverview } from "@/types/dashboard.types";
-import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
+import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 
 type ProjectStatusChartProps = {
   overview: DashboardOverview;
@@ -17,7 +17,7 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
-  const isChartMounted = useMountedWithWidth(chartContainerRef);
+  const dimensions = useContainerDimensions(chartContainerRef);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -62,8 +62,8 @@ const ProjectStatusChart = ({ overview }: ProjectStatusChartProps) => {
 
       <CardContent>
         <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
-          {isChartMounted && (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320} debounce={50}>
+          {dimensions.isReady && (
+            <ResponsiveContainer width={dimensions.width} height={dimensions.height}>
               <PieChart>
                 <Tooltip
                   contentStyle={{

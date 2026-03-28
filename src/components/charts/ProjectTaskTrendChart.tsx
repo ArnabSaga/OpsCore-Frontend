@@ -19,7 +19,7 @@ import type {
   DashboardProjectMetricPoint,
   DashboardTaskMetricPoint,
 } from "@/types/dashboard.types";
-import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
+import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 
 type ProjectTaskTrendChartProps = {
   projects: DashboardProjectMetricPoint[];
@@ -30,7 +30,7 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
-  const isChartMounted = useMountedWithWidth(chartContainerRef);
+  const dimensions = useContainerDimensions(chartContainerRef);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -110,8 +110,8 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
 
       <CardContent>
         <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
-          {isChartMounted && (
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320} debounce={50}>
+          {dimensions.isReady && (
+            <ResponsiveContainer width={dimensions.width} height={dimensions.height}>
               <LineChart data={chartData}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
                 <XAxis

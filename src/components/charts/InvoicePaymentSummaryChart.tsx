@@ -7,7 +7,7 @@ import { ReceiptText } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { DashboardOverview } from "@/types/dashboard.types";
-import { useMountedWithWidth } from "@/hooks/useMountedWithWidth";
+import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 
 type InvoicePaymentSummaryChartProps = {
   overview: DashboardOverview;
@@ -24,7 +24,7 @@ const InvoicePaymentSummaryChart = ({ overview }: InvoicePaymentSummaryChartProp
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
-  const isChartMounted = useMountedWithWidth(chartContainerRef);
+  const dimensions = useContainerDimensions(chartContainerRef);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -93,8 +93,8 @@ const InvoicePaymentSummaryChart = ({ overview }: InvoicePaymentSummaryChartProp
       <CardContent>
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_220px]">
           <div ref={chartContainerRef} className="h-[300px] w-full min-h-0 min-w-0">
-            {isChartMounted && (
-              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={300} debounce={50}>
+            {dimensions.isReady && (
+              <ResponsiveContainer width={dimensions.width} height={dimensions.height}>
                 <PieChart>
                   <Tooltip
                     contentStyle={{

@@ -18,16 +18,13 @@ import type {
   WorkspacesResponse,
   WorkspaceMember,
   WorkspaceDetails,
+  PlatformWorkspacesResponse,
 } from "@/types/workspace.types";
+
+import { ApiResponse } from "@/types/api.types";
 
 import { API_ENDPOINTS } from "@/config/api-endpoints";
 import { apiFetch } from "@/lib/fetcher";
-
-type ApiResponse<T> = {
-  success?: boolean;
-  message?: string;
-  data: T;
-};
 
 // --- CORE WORKSPACE API ---
 
@@ -55,6 +52,26 @@ export const getWorkspaces = async (): Promise<WorkspacesResponse> => {
     workspaces,
     activeWorkspace,
   };
+};
+
+export const getPlatformWorkspaces = async (params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}): Promise<PlatformWorkspacesResponse> => {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.append("page", params.page.toString());
+  if (params?.limit) searchParams.append("limit", params.limit.toString());
+  if (params?.search) searchParams.append("search", params.search);
+
+  const response = await apiFetch<ApiResponse<PlatformWorkspacesResponse>>({
+    endpoint: `${API_ENDPOINTS.workspace.platformAll}${
+      searchParams.toString() ? `?${searchParams.toString()}` : ""
+    }`,
+    method: "GET",
+  });
+
+  return response.data;
 };
 
 export const getWorkspaceById = async (workspaceId: string): Promise<WorkspaceDetails> => {
