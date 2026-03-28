@@ -29,7 +29,7 @@ export const useDeleteTask = ({ workspaceId }: UseDeleteTaskOptions = {}) => {
         queryKey: taskQueryKeys.lists(),
       });
 
-      await queryClient.removeQueries({
+      queryClient.removeQueries({
         queryKey: taskQueryKeys.detail(resolvedWorkspaceId, variables.taskId),
       });
 

@@ -2,9 +2,9 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { taskQueryKeys } from "@/components/features/task/hooks/task.query-keys";
-import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import { deleteProject } from "../api/project.types";
 
@@ -27,20 +27,20 @@ export const useDeleteProject = ({ workspaceId }: UseDeleteProjectOptions = {}) 
         queryKey: projectQueryKeys.lists(),
       });
 
-      await queryClient.removeQueries({
+      queryClient.removeQueries({
         queryKey: projectQueryKeys.detail(resolvedWorkspaceId, projectId),
       });
 
-      await queryClient.removeQueries({
+      queryClient.removeQueries({
         queryKey: projectQueryKeys.members(resolvedWorkspaceId, projectId),
       });
 
-      await queryClient.removeQueries({
+      queryClient.removeQueries({
         queryKey: projectQueryKeys.summary(resolvedWorkspaceId, projectId),
       });
 
-      await queryClient.removeQueries({
-        queryKey: [...projectQueryKeys.all, "tasks", resolvedWorkspaceId, projectId],
+      queryClient.removeQueries({
+        queryKey: projectQueryKeys.tasks(resolvedWorkspaceId, projectId),
         exact: false,
       });
 
