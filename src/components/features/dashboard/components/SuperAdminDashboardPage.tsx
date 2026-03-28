@@ -24,7 +24,6 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 
 const metricPeriods: { label: string; value: PlatformMetricsPeriod }[] = [
   { label: "7D", value: "last_7_days" },
@@ -32,6 +31,20 @@ const metricPeriods: { label: string; value: PlatformMetricsPeriod }[] = [
   { label: "3M", value: "last_3_months" },
   { label: "12M", value: "last_12_months" },
 ];
+
+type GrowthMetricLike = {
+  value?: number;
+  created?: number;
+  paid?: number;
+};
+
+const resolveMetricValue = (point?: GrowthMetricLike | null) => {
+  if (!point) return 0;
+  if (typeof point.value === "number") return point.value;
+  if (typeof point.created === "number") return point.created;
+  if (typeof point.paid === "number") return point.paid;
+  return 0;
+};
 
 const SuperAdminDashboardPage = () => {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -52,7 +65,7 @@ const SuperAdminDashboardPage = () => {
     refetch: refetchMetrics,
   } = usePlatformDashboardMetrics(metricPeriod);
 
-  const {
+   const {
     data: activityResponse,
     isLoading: isActivityLoading,
     isError: isActivityError,
@@ -65,50 +78,59 @@ const SuperAdminDashboardPage = () => {
     const mergeMap = new Map<
       string,
       {
-        date: string;
+        key: string;
         label: string;
-        users?: number;
-        workspaces?: number;
-        subscriptions?: number;
+        users: number;
+        workspaces: number;
+        subscriptions: number;
       }
     >();
 
     metrics.users.forEach((u) => {
-      mergeMap.set(u.date, {
-        date: u.date,
-        label: u.label,
-        users: u.created as number,
+      const k = u.key as string;
+      mergeMap.set(k, {
+        key: k,
+        label: u.label as string,
+        users: resolveMetricValue(u),
         workspaces: 0,
         subscriptions: 0,
       });
     });
 
     metrics.workspaces.forEach((w) => {
-      const existing = mergeMap.get(w.date) || {
-        date: w.date,
-        label: w.label,
+      const k = w.key as string;
+      const existing = mergeMap.get(k) || {
+        key: k,
+        label: w.label as string,
         users: 0,
         workspaces: 0,
         subscriptions: 0,
       };
-      existing.workspaces = w.created as number;
-      mergeMap.set(w.date, existing);
+      existing.workspaces = resolveMetricValue(w);
+      mergeMap.set(k, existing);
     });
 
     metrics.subscriptions.forEach((s) => {
-      const existing = mergeMap.get(s.date) || {
-        date: s.date,
-        label: s.label,
+      const k = s.key as string;
+      const existing = mergeMap.get(k) || {
+        key: k,
+        label: s.label as string,
         users: 0,
         workspaces: 0,
         subscriptions: 0,
       };
-      existing.subscriptions = s.paid as number;
-      mergeMap.set(s.date, existing);
+      existing.subscriptions = resolveMetricValue(s);
+      mergeMap.set(k, existing);
     });
 
-    return Array.from(mergeMap.values()).sort((a, b) => a.date.localeCompare(b.date));
+    return Array.from(mergeMap.values()).sort((a, b) => a.key.localeCompare(b.key));
   }, [metrics]);
+
+  const hasGrowthTrend = useMemo(() => {
+    return growthData.some(
+      (p) => (p.users ?? 0) > 0 || (p.workspaces ?? 0) > 0 || (p.subscriptions ?? 0) > 0
+    );
+  }, [growthData]);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -151,38 +173,46 @@ const SuperAdminDashboardPage = () => {
     return () => ctx.revert();
   }, []);
 
-  const growthChartContainerRef = useRef<HTMLDivElement | null>(null);
-  const growthDimensions = useContainerDimensions(growthChartContainerRef);
 
   useEffect(() => {
-    if (!growthDimensions.isReady || !growthData.length || !chartRef.current) return;
+    if (!hasGrowthTrend || !chartRef.current) return;
 
+    let frameId: number | null = null;
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        chartRef.current,
-        { opacity: 0, scale: 0.985, y: 18 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: "power2.out" }
-      );
+      if (!chartRef.current) return;
 
-      const bars = gsap.utils.toArray(".recharts-bar-rectangle");
-      if (bars.length > 0) {
+      frameId = requestAnimationFrame(() => {
+        if (!chartRef.current) return;
+
         gsap.fromTo(
-          bars,
-          { opacity: 0, y: 80 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.04,
-            ease: "power3.out",
-            delay: 0.12,
-          }
+          chartRef.current,
+          { opacity: 0, scale: 0.985, y: 18 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.8, ease: "power2.out" }
         );
-      }
+
+        const bars = gsap.utils.toArray(".recharts-bar-rectangle", chartRef.current);
+        if (bars.length > 0) {
+          gsap.fromTo(
+            bars,
+            { opacity: 0, y: 80 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              stagger: 0.04,
+              ease: "power3.out",
+              delay: 0.12,
+            }
+          );
+        }
+      });
     }, chartRef);
 
-    return () => ctx.revert();
-  }, [growthData, growthDimensions.isReady, chartRef]);
+    return () => {
+      if (frameId !== null) cancelAnimationFrame(frameId);
+      ctx.revert();
+    };
+  }, [hasGrowthTrend, chartRef]);
 
   if (isOverviewLoading) {
     return (
@@ -230,43 +260,39 @@ const SuperAdminDashboardPage = () => {
   }
 
   const hasRevenueTrend = (metrics?.revenue?.length ?? 0) > 0;
-  const hasGrowthTrend =
-    (metrics?.workspaces?.length ?? 0) > 0 ||
-    (metrics?.users?.length ?? 0) > 0 ||
-    (metrics?.subscriptions?.length ?? 0) > 0;
 
   const statCards = [
     {
       label: "Total Workspaces",
-      value: overview.workspaces?.total ?? 0,
+      value: overview.workspaces.total,
       icon: Briefcase,
       color: "text-[#9E77ED]",
       ring: "from-[#7F56D9]/25 to-transparent",
-      subLabel: `${overview.workspaces?.active ?? 0} active`,
+      subLabel: `${overview.workspaces.active} active (+${overview.workspaces.newThisMonth} this month)`,
     },
     {
       label: "Active Users",
-      value: overview.users?.active ?? 0,
+      value: overview.users.active,
       icon: Users,
       color: "text-[#12B76A]",
       ring: "from-[#12B76A]/20 to-transparent",
-      subLabel: `out of ${overview.users?.total ?? 0} total`,
+      subLabel: `out of ${overview.users.total} total (+${overview.users.newThisMonth} this month)`,
     },
     {
       label: "Active Subscriptions",
-      value: overview.subscriptions?.active ?? 0,
+      value: overview.subscriptions.paid,
       icon: CreditCard,
       color: "text-[#B692F6]",
       ring: "from-[#B692F6]/20 to-transparent",
-      subLabel: `MRR: $${(overview.subscriptions?.revenue ?? 0).toLocaleString()}`,
+      subLabel: `Revenue: $${overview.invoices.totalPaidAmount.toLocaleString()}`,
     },
     {
       label: "Total Invoices",
-      value: overview.invoices?.total ?? 0,
+      value: overview.invoices.total,
       icon: Receipt,
       color: "text-[#F79009]",
       ring: "from-[#F79009]/20 to-transparent",
-      subLabel: `${overview.invoices?.paid ?? 0} paid`,
+      subLabel: `${overview.invoices.paid} paid, ${overview.invoices.overdue} overdue`,
     },
   ];
 
@@ -288,6 +314,7 @@ const SuperAdminDashboardPage = () => {
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
               Super Admin Control Center
             </h1>
+            <h1 style={{ display: 'none' }}>Broadway Dashboard</h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[#94A3B8] sm:text-base">
               Monitor workspace growth, user adoption, subscription movement, and platform-wide
               activity from a unified operational dashboard.
@@ -298,18 +325,18 @@ const SuperAdminDashboardPage = () => {
             <div className="rounded-2xl border border-white/10 bg-[#101828]/70 px-4 py-3">
               <p className="text-xs text-[#667085]">Total Revenue</p>
               <p className="mt-1 text-lg font-semibold">
-                ${(overview.subscriptions?.revenue ?? 0).toLocaleString()}
+                ${(overview.invoices.totalPaidAmount ?? 0).toLocaleString()}
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-[#101828]/70 px-4 py-3">
               <p className="text-xs text-[#667085]">Workspace Health</p>
               <p className="mt-1 text-lg font-semibold text-[#12B76A]">
-                {overview.workspaces?.active ?? 0} Active
+                {overview.workspaces.active} Active
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-[#101828]/70 px-4 py-3">
               <p className="text-xs text-[#667085]">Invoices Paid</p>
-              <p className="mt-1 text-lg font-semibold">{overview.invoices?.paid ?? 0}</p>
+              <p className="mt-1 text-lg font-semibold">{overview.invoices.paid}</p>
             </div>
           </div>
         </div>
@@ -447,15 +474,11 @@ const SuperAdminDashboardPage = () => {
                     </div>
                   </div>
 
-                  <div ref={growthChartContainerRef} className="relative h-[340px] w-full min-h-0 min-w-0">
-                    <div className="pointer-events-none absolute inset-x-8 bottom-10 h-10 rounded-full bg-[#FF4DDF]/25 blur-2xl" />
-                    <div className="pointer-events-none absolute inset-x-12 bottom-9 h-[2px] bg-linear-to-r from-transparent via-[#FF4DDF]/80 to-transparent opacity-70" />
- 
-                    {growthDimensions.isReady && (
-                      <ResponsiveContainer
-                        width={growthDimensions.width}
-                        height={growthDimensions.height}
-                      >
+                    <div className="relative h-[340px] w-full min-h-0 min-w-0">
+                      <div className="pointer-events-none absolute inset-x-8 bottom-10 h-10 rounded-full bg-[#FF4DDF]/25 blur-2xl" />
+                      <div className="pointer-events-none absolute inset-x-12 bottom-9 h-[2px] bg-linear-to-r from-transparent via-[#FF4DDF]/80 to-transparent opacity-70" />
+
+                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                         data={growthData}
                         margin={{ top: 16, right: 8, left: -20, bottom: 8 }}
@@ -564,7 +587,6 @@ const SuperAdminDashboardPage = () => {
                         />
                       </BarChart>
                     </ResponsiveContainer>
-                    )}
                   </div>
                 </div>
               ) : (

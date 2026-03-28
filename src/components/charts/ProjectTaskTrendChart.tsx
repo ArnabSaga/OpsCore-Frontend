@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
+import { ActivitySquare } from "lucide-react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -12,14 +13,13 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ActivitySquare } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 import type {
   DashboardProjectMetricPoint,
   DashboardTaskMetricPoint,
 } from "@/types/dashboard.types";
-import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 
 type ProjectTaskTrendChartProps = {
   projects: DashboardProjectMetricPoint[];
@@ -55,57 +55,44 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
   }, []);
 
   const chartData = useMemo(() => {
-    const merged = new Map<
-      string,
-      {
-        label: string;
-        projectsCreated: number;
-        projectsCompleted: number;
-        tasksCreated: number;
-        tasksCompleted: number;
-      }
-    >();
-
-    projects.forEach((item) => {
-      merged.set(item.label, {
-        label: item.label,
-        projectsCreated: item.created,
-        projectsCompleted: item.completed,
-        tasksCreated: 0,
-        tasksCompleted: 0,
-      });
+    return projects.map((p, idx) => {
+      const t = tasks[idx] || { created: 0, completed: 0 };
+      return {
+        key: p.key,
+        label: p.label,
+        projectsCreated: p.created,
+        projectsCompleted: p.completed,
+        tasksCreated: t.created,
+        tasksCompleted: t.completed,
+      };
     });
-
-    tasks.forEach((item) => {
-      const existing = merged.get(item.label);
-
-      if (existing) {
-        existing.tasksCreated = item.created;
-        existing.tasksCompleted = item.completed;
-      } else {
-        merged.set(item.label, {
-          label: item.label,
-          projectsCreated: 0,
-          projectsCompleted: 0,
-          tasksCreated: item.created,
-          tasksCompleted: item.completed,
-        });
-      }
-    });
-
-    return Array.from(merged.values());
   }, [projects, tasks]);
+
+  const hasActivity = useMemo(() => {
+    return chartData.some(
+      (p) =>
+        p.projectsCreated > 0 ||
+        p.projectsCompleted > 0 ||
+        p.tasksCreated > 0 ||
+        p.tasksCompleted > 0
+    );
+  }, [chartData]);
 
   return (
     <Card
       ref={cardRef}
       className="border-white/10 bg-[#1D2939]/80 text-white shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl"
     >
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-3 flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2 text-lg text-white">
-          <ActivitySquare className="h-5 w-5 text-[#CBB5FF]" />
-          Project & Task Activity Trend
+          <ActivitySquare className="h-5 w-5 text-[#7F56D9]" />
+          Activity Trends
         </CardTitle>
+        {!hasActivity && (
+          <span className="text-[10px] uppercase tracking-widest text-[#94A3B8] opacity-60">
+            No recent activity
+          </span>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -113,15 +100,20 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
           {dimensions.isReady && (
             <ResponsiveContainer width={dimensions.width} height={dimensions.height}>
               <LineChart data={chartData}>
-                <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
+                <CartesianGrid
+                  stroke="rgba(255,255,255,0.05)"
+                  vertical={false}
+                  strokeDasharray="3 3"
+                />
                 <XAxis
                   dataKey="label"
-                  tick={{ fill: "#94A3B8", fontSize: 12 }}
+                  tick={{ fill: "#94A3B8", fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
+                  dy={8}
                 />
                 <YAxis
-                  tick={{ fill: "#94A3B8", fontSize: 12 }}
+                  tick={{ fill: "#94A3B8", fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                   allowDecimals={false}
@@ -133,42 +125,42 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
                     borderRadius: "16px",
                     color: "#FFFFFF",
                   }}
+                  labelStyle={{ color: "#94A3B8", marginBottom: "4px" }}
                 />
-                <Legend wrapperStyle={{ color: "#94A3B8" }} />
+                <Legend
+                  verticalAlign="top"
+                  align="right"
+                  iconType="circle"
+                  wrapperStyle={{ paddingBottom: "20px", fontSize: "12px" }}
+                />
                 <Line
                   type="monotone"
                   dataKey="projectsCreated"
-                  name="Projects Created"
+                  name="Projects"
                   stroke="#7F56D9"
                   strokeWidth={2.5}
-                  dot={{ r: 3 }}
-                  isAnimationActive={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="projectsCompleted"
-                  name="Projects Completed"
-                  stroke="#CBB5FF"
-                  strokeWidth={2.5}
-                  dot={{ r: 3 }}
+                  dot={{ r: 0 }}
+                  activeDot={{ r: 4, strokeWidth: 0 }}
                   isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
                   dataKey="tasksCreated"
-                  name="Tasks Created"
-                  stroke="#6941C6"
+                  name="Tasks"
+                  stroke="#12B76A"
                   strokeWidth={2.5}
-                  dot={{ r: 3 }}
+                  dot={{ r: 0 }}
+                  activeDot={{ r: 4, strokeWidth: 0 }}
                   isAnimationActive={false}
                 />
                 <Line
                   type="monotone"
                   dataKey="tasksCompleted"
-                  name="Tasks Completed"
-                  stroke="#12B76A"
-                  strokeWidth={2.5}
-                  dot={{ r: 3 }}
+                  name="Completed"
+                  stroke="#F79009"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={{ r: 0 }}
                   isAnimationActive={false}
                 />
               </LineChart>

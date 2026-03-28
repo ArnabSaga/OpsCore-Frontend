@@ -28,7 +28,7 @@ export type DashboardOverview = {
     trialEndsAt: string | null;
     billingCycleStartsAt: string;
     billingCycleEndsAt: string;
-  };
+  } | null;
   projects: {
     total: number;
     active: number;
@@ -84,22 +84,28 @@ export type DashboardMetricsPeriod =
   | "last_12_months";
 
 export type DashboardRevenueMetricPoint = {
+  key: string;
+  bucketStart: string;
+  bucketEnd: string;
   label: string;
-  date: string;
-  currency: string;
   paidAmount: number;
+  currency: string;
 };
 
 export type DashboardProjectMetricPoint = {
+  key: string;
+  bucketStart: string;
+  bucketEnd: string;
   label: string;
-  date: string;
   created: number;
   completed: number;
 };
 
 export type DashboardTaskMetricPoint = {
+  key: string;
+  bucketStart: string;
+  bucketEnd: string;
   label: string;
-  date: string;
   created: number;
   completed: number;
 };
@@ -116,31 +122,35 @@ export type PlatformDashboardOverview = {
   workspaces: {
     total: number;
     active: number;
-    newThisMonth?: number;
+    newThisMonth: number;
   };
   users: {
     total: number;
     active: number;
-    newThisMonth?: number;
+    newThisMonth: number;
   };
   subscriptions: {
     total: number;
-    active: number;
-    revenue?: number;
+    paid: number;
+    trial: number;
   };
   invoices: {
     total: number;
     paid: number;
-    amount?: number;
+    overdue: number;
+    totalPaidAmount: number;
   };
 };
 
 export type PlatformDashboardActivityResponse = DashboardActivityResponse;
 
 export type PlatformGenericMetricPoint = {
+  key: string;
+  bucketStart: string;
+  bucketEnd: string;
   label: string;
-  date: string;
-  [key: string]: string | number;
+  value?: number;
+  [key: string]: string | number | undefined;
 };
 
 export type PlatformDashboardMetrics = {

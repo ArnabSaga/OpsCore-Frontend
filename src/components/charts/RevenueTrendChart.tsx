@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
+import { TrendingUp } from "lucide-react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   Area,
   AreaChart,
@@ -11,11 +12,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { TrendingUp } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { DashboardRevenueMetricPoint } from "@/types/dashboard.types";
 import { useContainerDimensions } from "@/hooks/useContainerDimensions";
+import type { DashboardRevenueMetricPoint } from "@/types/dashboard.types";
 
 type RevenueTrendChartProps = {
   data: DashboardRevenueMetricPoint[];
@@ -49,34 +49,31 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
   }, []);
 
   const chartData = useMemo(() => {
-    const grouped = new Map<string, { label: string; paidAmount: number }>();
-
-    data.forEach((item) => {
-      const existing = grouped.get(item.label);
-
-      if (existing) {
-        existing.paidAmount += Number(item.paidAmount || 0);
-      } else {
-        grouped.set(item.label, {
-          label: item.label,
-          paidAmount: Number(item.paidAmount || 0),
-        });
-      }
-    });
-
-    return Array.from(grouped.values());
+    return data.map((item) => ({
+      ...item,
+      paidAmount: Number(item.paidAmount || 0),
+    }));
   }, [data]);
+
+  const hasData = useMemo(() => {
+    return chartData.some((p) => p.paidAmount > 0);
+  }, [chartData]);
 
   return (
     <Card
       ref={cardRef}
       className="border-white/10 bg-[#1D2939]/80 text-white shadow-[0_10px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl"
     >
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-3 flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2 text-lg text-white">
-          <TrendingUp className="h-5 w-5 text-[#CBB5FF]" />
+          <TrendingUp className="h-5 w-5 text-[#12B76A]" />
           Revenue Trend
         </CardTitle>
+        {!hasData && (
+          <span className="text-[10px] uppercase tracking-widest text-[#94A3B8] opacity-60">
+            No revenue recorded
+          </span>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -94,12 +91,13 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
                 <XAxis
                   dataKey="label"
-                  tick={{ fill: "#94A3B8", fontSize: 12 }}
+                  tick={{ fill: "#94A3B8", fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
+                  dy={8}
                 />
                 <YAxis
-                  tick={{ fill: "#94A3B8", fontSize: 12 }}
+                  tick={{ fill: "#94A3B8", fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                   allowDecimals={false}
@@ -111,10 +109,12 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
                     borderRadius: "16px",
                     color: "#FFFFFF",
                   }}
+                  labelStyle={{ color: "#94A3B8", marginBottom: "4px" }}
                 />
                 <Area
                   type="monotone"
                   dataKey="paidAmount"
+                  name="Paid Revenue"
                   stroke="#12B76A"
                   fill="url(#revenueFill)"
                   strokeWidth={2.5}
