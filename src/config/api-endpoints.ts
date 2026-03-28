@@ -88,4 +88,14 @@ export const API_ENDPOINTS = {
     attachment: (taskId: string, attachmentId: string) =>
       `${API_PREFIX}/tasks/${taskId}/attachments/${attachmentId}`,
   },
+
+  invoice: {
+    list: `${API_PREFIX}/invoices`,
+    create: `${API_PREFIX}/invoices`,
+    details: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}`,
+    send: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}/send`,
+    markPaid: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}/mark-paid`,
+    cancel: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}/cancel`,
+    pdf: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}/pdf`,
+  },
 } as const;
