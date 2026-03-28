@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import type { WorkspaceInvitation } from "@/types/workspace.types";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { workspaceQueryKeys } from "@/components/features/workspace/hooks/workspace.query-keys";
 
 const InvitationCard = ({ invitation }: { invitation: WorkspaceInvitation }) => {
   const router = useRouter();
@@ -19,13 +20,13 @@ const InvitationCard = ({ invitation }: { invitation: WorkspaceInvitation }) => 
 
   const handleAccept = async () => {
     await accept(invitation.token);
-    await queryClient.invalidateQueries({ queryKey: ["my-invitations"] });
+    await queryClient.invalidateQueries({ queryKey: workspaceQueryKeys.myInvitations() });
     router.push("/dashboard");
   };
 
   const handleDecline = async () => {
     await decline(invitation.token);
-    await queryClient.invalidateQueries({ queryKey: ["my-invitations"] });
+    await queryClient.invalidateQueries({ queryKey: workspaceQueryKeys.myInvitations() });
   };
 
   return (

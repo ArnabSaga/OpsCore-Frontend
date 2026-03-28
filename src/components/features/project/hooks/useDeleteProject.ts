@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { taskQueryKeys } from "@/components/features/task/hooks/task.query-keys";
+import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import { deleteProject } from "../api/project.types";
 
@@ -48,7 +49,7 @@ export const useDeleteProject = ({ workspaceId }: UseDeleteProjectOptions = {}) 
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["dashboard"],
+        queryKey: dashboardQueryKeys.all,
       });
     },
     onError: (error: Error) => {

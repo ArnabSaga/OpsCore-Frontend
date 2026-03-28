@@ -3,6 +3,7 @@
 import { updateWorkspaceBrandingSettings } from "@/components/features/workspace/api/workspace.api";
 import type { WorkspaceBrandingSettings } from "@/types/workspace.types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { workspaceQueryKeys } from "@/components/features/workspace/hooks/workspace.query-keys";
 
 export const useUpdateWorkspaceBrandingSettings = (workspaceId: string) => {
   const queryClient = useQueryClient();
@@ -12,10 +13,10 @@ export const useUpdateWorkspaceBrandingSettings = (workspaceId: string) => {
       updateWorkspaceBrandingSettings(workspaceId, payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["workspace-branding-settings", workspaceId],
+        queryKey: workspaceQueryKeys.brandingSettings(workspaceId),
       });
       await queryClient.invalidateQueries({
-        queryKey: ["workspace-settings-summary", workspaceId],
+        queryKey: workspaceQueryKeys.settingsSummary(workspaceId),
       });
     },
   });

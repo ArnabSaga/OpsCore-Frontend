@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getPlatformDashboardActivity } from "@/components/features/dashboard/api/dashboard.api";
+import { dashboardQueryKeys } from "./dashboard.query-keys";
 
 export const usePlatformDashboardActivity = ({
   page = 1,
@@ -11,7 +12,7 @@ export const usePlatformDashboardActivity = ({
   limit?: number;
 } = {}) => {
   return useQuery({
-    queryKey: ["dashboard", "platform", "activity", page, limit],
+    queryKey: dashboardQueryKeys.platformActivity({ page, limit }),
     queryFn: () => getPlatformDashboardActivity({ page, limit }),
     staleTime: 1000 * 30,
     retry: false,

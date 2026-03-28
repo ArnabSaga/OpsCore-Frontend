@@ -1,16 +1,54 @@
 export const workspaceQueryKeys = {
-  all: ["workspace"] as const,
-  detail: (workspaceId: string) => ["workspace", workspaceId] as const,
-  capabilities: (workspaceId: string) => ["workspace-capabilities", workspaceId] as const,
-  settingsSummary: (workspaceId: string) => ["workspace-settings-summary", workspaceId] as const,
-  generalSettings: (workspaceId: string) => ["workspace-general-settings", workspaceId] as const,
-  brandingSettings: (workspaceId: string) => ["workspace-branding-settings", workspaceId] as const,
-  permissions: (workspaceId: string) => ["workspace-permissions", workspaceId] as const,
-  activityLogs: (workspaceId: string, page = 1, limit = 20) =>
-    ["workspace-activity-logs", workspaceId, page, limit] as const,
-  members: (workspaceId: string) => ["workspace-members", workspaceId] as const,
-  invitations: (workspaceId: string) => ["workspace-invitations", workspaceId] as const,
-  subscription: (workspaceId: string) => ["workspace-subscription", workspaceId] as const,
-  billingHistory: (workspaceId: string) => ["workspace-billing-history", workspaceId] as const,
-  billingUsage: (workspaceId: string) => ["workspace-billing-usage", workspaceId] as const,
-};
+  all: ["workspaces"] as const,
+
+  lists: () => [...workspaceQueryKeys.all, "list"] as const,
+  list: () => [...workspaceQueryKeys.lists(), "my"] as const,
+
+  details: () => [...workspaceQueryKeys.all, "detail"] as const,
+  detail: (workspaceId: string) => [...workspaceQueryKeys.details(), workspaceId] as const,
+
+  capabilities: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "capabilities", workspaceId] as const,
+
+  settingsSummary: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "settings-summary", workspaceId] as const,
+
+  generalSettings: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "general-settings", workspaceId] as const,
+
+  brandingSettings: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "branding-settings", workspaceId] as const,
+
+  permissions: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "permissions", workspaceId] as const,
+
+  activityLogs: (workspaceId: string, params?: { page?: number; limit?: number }) =>
+    [
+      ...workspaceQueryKeys.all,
+      "activity-logs",
+      workspaceId,
+      {
+        page: params?.page ?? 1,
+        limit: params?.limit ?? 20,
+      },
+    ] as const,
+
+  members: (workspaceId: string) => [...workspaceQueryKeys.all, "members", workspaceId] as const,
+
+  invitations: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "invitations", workspaceId] as const,
+
+  invitationDetails: (token: string) =>
+    [...workspaceQueryKeys.all, "invitation-details", token] as const,
+
+  myInvitations: () => [...workspaceQueryKeys.all, "my-invitations"] as const,
+
+  subscription: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "subscription", workspaceId] as const,
+
+  billingHistory: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "billing-history", workspaceId] as const,
+
+  billingUsage: (workspaceId: string) =>
+    [...workspaceQueryKeys.all, "billing-usage", workspaceId] as const,
+} as const;

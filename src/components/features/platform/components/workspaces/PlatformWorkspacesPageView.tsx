@@ -10,6 +10,7 @@ import PlatformPagination from "../PlatformPagination";
 import PlatformWorkspacesToolbar from "./PlatformWorkspacesToolbar";
 import PlatformWorkspacesTable from "./PlatformWorkspacesTable";
 import { usePlatformReveal } from "../usePlatformReveal";
+import { platformQueryKeys } from "../../hooks/platform.query-keys";
 
 export default function PlatformWorkspacesPageView() {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -19,7 +20,7 @@ export default function PlatformWorkspacesPageView() {
   usePlatformReveal(containerRef);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["platform-workspaces", { search, page }],
+    queryKey: platformQueryKeys.workspaces({ search, page }),
     queryFn: () => getPlatformWorkspaces({ search, page, limit: 10 }),
   });
 

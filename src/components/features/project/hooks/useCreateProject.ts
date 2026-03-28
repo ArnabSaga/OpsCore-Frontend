@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
+import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import type { CreateProjectPayload } from "@/types/project.types";
 import { createProject } from "../api/project.types";
@@ -28,7 +29,7 @@ export const useCreateProject = ({ workspaceId }: UseCreateProjectOptions = {}) 
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["dashboard"],
+        queryKey: dashboardQueryKeys.all,
       });
     },
     onError: (error: Error) => {

@@ -5,10 +5,11 @@ import httpStatus from "http-status";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/fetcher";
 import type { User } from "@/components/features/auth/api/auth.api";
+import { authQueryKeys } from "@/components/features/auth/hooks/auth.query-keys";
 
 export const useUser = () => {
   return useQuery<User | null>({
-    queryKey: ["auth", "current-user"],
+    queryKey: authQueryKeys.currentUser(),
     queryFn: async () => {
       try {
         const response = await apiFetch<{

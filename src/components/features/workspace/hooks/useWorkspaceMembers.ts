@@ -3,12 +3,15 @@
 import { getWorkspaceMembers } from "@/components/features/workspace/api/workspace.api";
 import type { WorkspaceMember } from "@/types/workspace.types";
 import { useQuery } from "@tanstack/react-query";
+import { workspaceQueryKeys } from "@/components/features/workspace/hooks/workspace.query-keys";
 
 type QueryError = Error & { status?: number };
 
 export const useWorkspaceMembers = (workspaceId: string) => {
   const query = useQuery<WorkspaceMember[], QueryError>({
-    queryKey: ["workspace-members", workspaceId],
+    queryKey: workspaceId
+      ? workspaceQueryKeys.members(workspaceId)
+      : [...workspaceQueryKeys.all, "members", "disabled"],
     queryFn: () => getWorkspaceMembers(workspaceId),
     enabled: !!workspaceId,
     retry: (failureCount, error) => {

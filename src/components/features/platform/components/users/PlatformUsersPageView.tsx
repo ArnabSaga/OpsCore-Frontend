@@ -10,6 +10,7 @@ import PlatformPagination from "../PlatformPagination";
 import PlatformUsersToolbar from "./PlatformUsersToolbar";
 import PlatformUsersTable from "./PlatformUsersTable";
 import { usePlatformReveal } from "../usePlatformReveal";
+import { platformQueryKeys } from "../../hooks/platform.query-keys";
 
 export default function PlatformUsersPageView() {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -19,7 +20,7 @@ export default function PlatformUsersPageView() {
   usePlatformReveal(containerRef);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["platform-users", { search, page }],
+    queryKey: platformQueryKeys.users({ search, page }),
     queryFn: () => getPlatformUsers({ search, page, limit: 12 }),
   });
 

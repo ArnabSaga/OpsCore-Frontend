@@ -9,6 +9,12 @@ import { useSwitchWorkspace } from "@/components/features/workspace/hooks/useSwi
 import { useWorkspaces } from "@/components/features/workspace/hooks/useWorkspaces";
 import { useUser } from "@/hooks/useUser";
 import type { WorkspaceSummary } from "@/types/workspace.types";
+import { workspaceQueryKeys } from "@/components/features/workspace/hooks/workspace.query-keys";
+import { authQueryKeys } from "@/components/features/auth/hooks/auth.query-keys";
+import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
+import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
+import { taskQueryKeys } from "@/components/features/task/hooks/task.query-keys";
+import { analyticsQueryKeys } from "@/components/features/analytics/hooks/analytics.query-keys";
 
 type WorkspaceContextValue = {
   workspaces: WorkspaceSummary[];
@@ -84,9 +90,9 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
 
     void mutateAsync(firstWorkspaceId)
       .then(async () => {
-        await queryClient.invalidateQueries({ queryKey: ["workspaces"] });
-        await queryClient.invalidateQueries({ queryKey: ["auth", "current-user"] });
-        await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+        await queryClient.invalidateQueries({ queryKey: workspaceQueryKeys.all });
+        await queryClient.invalidateQueries({ queryKey: authQueryKeys.currentUser() });
+        await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.all });
         router.refresh();
       })
       .catch((error) => {
@@ -114,12 +120,12 @@ export const WorkspaceProvider = ({ children }: { children: React.ReactNode }) =
 
         await mutateAsync(workspaceId);
 
-        await queryClient.invalidateQueries({ queryKey: ["workspaces"] });
-        await queryClient.invalidateQueries({ queryKey: ["auth", "current-user"] });
-        await queryClient.invalidateQueries({ queryKey: ["projects"] });
-        await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-        await queryClient.invalidateQueries({ queryKey: ["members"] });
-        await queryClient.invalidateQueries({ queryKey: ["analytics"] });
+        await queryClient.invalidateQueries({ queryKey: workspaceQueryKeys.all });
+        await queryClient.invalidateQueries({ queryKey: authQueryKeys.currentUser() });
+        await queryClient.invalidateQueries({ queryKey: projectQueryKeys.all });
+        await queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
+        await queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.all });
+        await queryClient.invalidateQueries({ queryKey: analyticsQueryKeys.all });
 
         router.refresh();
 

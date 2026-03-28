@@ -4,6 +4,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { deleteTask } from "@/components/features/task/api/task.api";
 import { taskQueryKeys } from "@/components/features/task/hooks/task.query-keys";
+import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
+import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
 type UseDeleteTaskOptions = {
@@ -32,11 +34,11 @@ export const useDeleteTask = ({ workspaceId }: UseDeleteTaskOptions = {}) => {
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["projects"],
+        queryKey: projectQueryKeys.all,
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["dashboard"],
+        queryKey: dashboardQueryKeys.all,
       });
     },
     onError: (error: Error) => {

@@ -3,6 +3,7 @@
 import { updateWorkspaceGeneralSettings } from "@/components/features/workspace/api/workspace.api";
 import type { WorkspaceGeneralSettings } from "@/types/workspace.types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { workspaceQueryKeys } from "@/components/features/workspace/hooks/workspace.query-keys";
 
 export const useUpdateWorkspaceGeneralSettings = (workspaceId: string) => {
   const queryClient = useQueryClient();
@@ -12,16 +13,16 @@ export const useUpdateWorkspaceGeneralSettings = (workspaceId: string) => {
       updateWorkspaceGeneralSettings(workspaceId, payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["workspace-general-settings", workspaceId],
+        queryKey: workspaceQueryKeys.generalSettings(workspaceId),
       });
       await queryClient.invalidateQueries({
-        queryKey: ["workspace", workspaceId],
+        queryKey: workspaceQueryKeys.detail(workspaceId),
       });
       await queryClient.invalidateQueries({
-        queryKey: ["workspaces"],
+        queryKey: workspaceQueryKeys.all,
       });
       await queryClient.invalidateQueries({
-        queryKey: ["workspace-settings-summary", workspaceId],
+        queryKey: workspaceQueryKeys.settingsSummary(workspaceId),
       });
     },
   });

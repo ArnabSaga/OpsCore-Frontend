@@ -2,12 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getPlatformDashboardOverview } from "@/components/features/dashboard/api/dashboard.api";
+import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
 
 export const usePlatformDashboardOverview = () => {
   return useQuery({
-    queryKey: ["dashboard", "platform", "overview"],
+    queryKey: dashboardQueryKeys.platformOverview(),
     queryFn: getPlatformDashboardOverview,
-    staleTime: 1000 * 60,
-    retry: false,
+    staleTime: 5 * 60 * 1000,
   });
 };

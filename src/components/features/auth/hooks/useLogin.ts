@@ -3,6 +3,7 @@
 import { LoginPayload, loginUser } from "../api/auth.api";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { authQueryKeys } from "./auth.query-keys";
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
@@ -11,7 +12,7 @@ export const useLogin = () => {
     mutationFn: (payload: LoginPayload) => loginUser(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["auth", "me"],
+        queryKey: authQueryKeys.me(),
       });
     },
   });
