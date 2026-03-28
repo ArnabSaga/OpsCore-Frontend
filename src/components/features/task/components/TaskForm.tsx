@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { CheckCircle2, ShieldCheck, SquareKanban } from "lucide-react";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import TaskFormFields from "@/components/features/task/components/TaskFormFields";
 import { createTaskSchema } from "@/components/features/task/validations/task.validation";
@@ -85,44 +85,54 @@ const TaskForm = ({
     [initialValues]
   );
 
+  const [localSubmitError, setLocalSubmitError] = useState<string | null>(null);
   const form = useForm({
     defaultValues: mergedValues,
     onSubmit: async ({ value }) => {
+      setLocalSubmitError(null);
       const parsed = createTaskSchema.safeParse(value);
-      if (!parsed.success) return;
 
-      if (mode === "create") {
-        const payload: CreateTaskPayload = {
-          projectId: parsed.data.projectId,
+      if (!parsed.success) {
+        setLocalSubmitError(parsed.error.errors[0]?.message || "Invalid form data.");
+        return;
+      }
+
+      try {
+        if (mode === "create") {
+          const payload: CreateTaskPayload = {
+            projectId: parsed.data.projectId,
+            title: parsed.data.title.trim(),
+            description: parsed.data.description?.trim() || undefined,
+            assignedToUserId:
+              parsed.data.assignedToUserId && parsed.data.assignedToUserId !== ""
+                ? parsed.data.assignedToUserId
+                : null,
+            status: parsed.data.status || "TODO",
+            priority: parsed.data.priority || "MEDIUM",
+            dueDate: parsed.data.dueDate ? toIsoDateTime(parsed.data.dueDate) : undefined,
+          };
+
+          await onSubmit(payload);
+          return;
+        }
+
+        const payload: UpdateTaskPayload = {
+          projectId: parsed.data.projectId || undefined,
           title: parsed.data.title.trim(),
-          description: parsed.data.description?.trim() || undefined,
+          description: parsed.data.description?.trim() ? parsed.data.description.trim() : null,
           assignedToUserId:
             parsed.data.assignedToUserId && parsed.data.assignedToUserId !== ""
               ? parsed.data.assignedToUserId
               : null,
           status: parsed.data.status || "TODO",
           priority: parsed.data.priority || "MEDIUM",
-          dueDate: parsed.data.dueDate ? toIsoDateTime(parsed.data.dueDate) : undefined,
+          dueDate: parsed.data.dueDate ? toNullableIsoDateTime(parsed.data.dueDate) : null,
         };
 
         await onSubmit(payload);
-        return;
+      } catch (error) {
+        setLocalSubmitError(error instanceof Error ? error.message : "Failed to submit task.");
       }
-
-      const payload: UpdateTaskPayload = {
-        projectId: parsed.data.projectId || undefined,
-        title: parsed.data.title.trim(),
-        description: parsed.data.description?.trim() ? parsed.data.description.trim() : null,
-        assignedToUserId:
-          parsed.data.assignedToUserId && parsed.data.assignedToUserId !== ""
-            ? parsed.data.assignedToUserId
-            : null,
-        status: parsed.data.status || "TODO",
-        priority: parsed.data.priority || "MEDIUM",
-        dueDate: parsed.data.dueDate ? toNullableIsoDateTime(parsed.data.dueDate) : null,
-      };
-
-      await onSubmit(payload);
     },
   });
 
@@ -167,9 +177,9 @@ const TaskForm = ({
               lockProjectSelection={lockProjectSelection}
             />
 
-            {submitError ? (
+            {localSubmitError || submitError ? (
               <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-                {submitError}
+                {localSubmitError || submitError}
               </div>
             ) : null}
 

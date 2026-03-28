@@ -18,7 +18,8 @@ export const createTaskSchema = z.object({
     .or(z.literal("")),
   assignedToUserId: z
     .string()
-    .uuid("Assigned user must be a valid member")
+    .trim()
+    .min(1, "Assigned user must be a valid member")
     .optional()
     .or(z.literal(""))
     .nullable(),
@@ -42,7 +43,8 @@ export const updateTaskSchema = z.object({
     .or(z.literal("")),
   assignedToUserId: z
     .string()
-    .uuid("Assigned user must be a valid member")
+    .trim()
+    .min(1, "Assigned user must be a valid member")
     .optional()
     .or(z.literal(""))
     .nullable(),
