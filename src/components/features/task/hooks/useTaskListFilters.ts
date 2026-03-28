@@ -1,79 +1,133 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useMemo, useState } from "react";
 
-import type { GetTasksParams, TaskOverdueFilter, TaskStatus, TaskPriority } from "@/types/task.types";
+import type { GetTasksParams, TaskPriority, TaskStatus } from "@/types/task.types";
 
-export type TaskListFilters = {
-  searchTerm: string;
-  status: TaskStatus | "";
-  priority: TaskPriority | "";
-  overdue: TaskOverdueFilter;
-  assignedToUserId: string;
-  dueFrom: string;
-  dueTo: string;
-  sortBy: GetTasksParams["sortBy"];
-  sortOrder: GetTasksParams["sortOrder"];
+export type TaskViewMode = "list" | "table";
+
+export type TaskSortPreset =
+  | "updated-desc"
+  | "updated-asc"
+  | "created-desc"
+  | "created-asc"
+  | "due-asc"
+  | "due-desc"
+  | "priority-desc"
+  | "priority-asc";
+
+const getSortConfig = (preset: TaskSortPreset): Pick<GetTasksParams, "sortBy" | "sortOrder"> => {
+  switch (preset) {
+    case "updated-asc":
+      return { sortBy: "updatedAt", sortOrder: "asc" };
+    case "created-desc":
+      return { sortBy: "createdAt", sortOrder: "desc" };
+    case "created-asc":
+      return { sortBy: "createdAt", sortOrder: "asc" };
+    case "due-asc":
+      return { sortBy: "dueDate", sortOrder: "asc" };
+    case "due-desc":
+      return { sortBy: "dueDate", sortOrder: "desc" };
+    case "priority-desc":
+      return { sortBy: "priority", sortOrder: "desc" };
+    case "priority-asc":
+      return { sortBy: "priority", sortOrder: "asc" };
+    case "updated-desc":
+    default:
+      return { sortBy: "updatedAt", sortOrder: "desc" };
+  }
 };
 
-const DEFAULT_FILTERS: TaskListFilters = {
-  searchTerm: "",
-  status: "",
-  priority: "",
-  overdue: "ALL",
-  assignedToUserId: "",
-  dueFrom: "",
-  dueTo: "",
-  sortBy: "createdAt",
-  sortOrder: "desc",
+const toIsoDate = (value?: string) => {
+  if (!value) return undefined;
+  return new Date(`${value}T00:00:00.000Z`).toISOString();
 };
 
-/**
- * Manages filter state for the flat /tasks list view.
- * Converts the local state into a backend-compatible GetTasksParams object.
- */
-export const useTaskListFilters = (initial?: Partial<TaskListFilters>) => {
-  const [filters, setFilters] = useState<TaskListFilters>({
-    ...DEFAULT_FILTERS,
-    ...initial,
-  });
+export const useTaskListFilters = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState<TaskStatus | "ALL">("ALL");
+  const [priority, setPriority] = useState<TaskPriority | "ALL">("ALL");
+  const [assignedToUserId, setAssignedToUserId] = useState<string>("ALL");
+  const [assignedToMe, setAssignedToMe] = useState(false);
+  const [overdue, setOverdue] = useState<"ALL" | "true" | "false">("ALL");
+  const [dueFrom, setDueFrom] = useState("");
+  const [dueTo, setDueTo] = useState("");
+  const [sortPreset, setSortPreset] = useState<TaskSortPreset>("updated-desc");
+  const [viewMode, setViewMode] = useState<TaskViewMode>("list");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  const setFilter = useCallback(
-    <K extends keyof TaskListFilters>(key: K, value: TaskListFilters[K]) => {
-      setFilters((prev) => ({ ...prev, [key]: value }));
-    },
-    []
-  );
+  const params = useMemo<GetTasksParams>(() => {
+    const sort = getSortConfig(sortPreset);
 
-  const resetFilters = useCallback(() => {
-    setFilters({ ...DEFAULT_FILTERS, ...initial });
-  }, [initial]);
+    return {
+      searchTerm: searchTerm.trim() || undefined,
+      status: status === "ALL" ? undefined : status,
+      priority: priority === "ALL" ? undefined : priority,
+      assignedToUserId: assignedToUserId === "ALL" ? undefined : assignedToUserId,
+      assignedToMe: assignedToMe || undefined,
+      overdue: overdue === "ALL" ? undefined : overdue === "true",
+      dueFrom: toIsoDate(dueFrom),
+      dueTo: toIsoDate(dueTo),
+      page,
+      limit,
+      sortBy: sort.sortBy,
+      sortOrder: sort.sortOrder,
+    };
+  }, [
+    searchTerm,
+    status,
+    priority,
+    assignedToUserId,
+    assignedToMe,
+    overdue,
+    dueFrom,
+    dueTo,
+    sortPreset,
+    page,
+    limit,
+  ]);
 
-  /** Derives the backend-compatible params from current filter state */
-  const toParams = useCallback((): GetTasksParams => {
-    const params: GetTasksParams = {};
+  const resetFilters = () => {
+    setSearchTerm("");
+    setStatus("ALL");
+    setPriority("ALL");
+    setAssignedToUserId("ALL");
+    setAssignedToMe(false);
+    setOverdue("ALL");
+    setDueFrom("");
+    setDueTo("");
+    setSortPreset("updated-desc");
+    setPage(1);
+  };
 
-    if (filters.searchTerm) params.searchTerm = filters.searchTerm;
-    if (filters.status) params.status = filters.status;
-    if (filters.priority) params.priority = filters.priority;
-    if (filters.overdue !== "ALL") params.overdue = filters.overdue === "true";
-    if (filters.assignedToUserId) params.assignedToUserId = filters.assignedToUserId;
-    if (filters.dueFrom) params.dueFrom = filters.dueFrom;
-    if (filters.dueTo) params.dueTo = filters.dueTo;
-    if (filters.sortBy) params.sortBy = filters.sortBy;
-    if (filters.sortOrder) params.sortOrder = filters.sortOrder;
+  return {
+    searchTerm,
+    status,
+    priority,
+    assignedToUserId,
+    assignedToMe,
+    overdue,
+    dueFrom,
+    dueTo,
+    sortPreset,
+    viewMode,
+    page,
+    limit,
+    params,
 
-    return params;
-  }, [filters]);
-
-  const hasActiveFilters =
-    filters.searchTerm !== "" ||
-    filters.status !== "" ||
-    filters.priority !== "" ||
-    filters.overdue !== "ALL" ||
-    filters.assignedToUserId !== "" ||
-    filters.dueFrom !== "" ||
-    filters.dueTo !== "";
-
-  return { filters, setFilter, resetFilters, toParams, hasActiveFilters };
+    setSearchTerm,
+    setStatus,
+    setPriority,
+    setAssignedToUserId,
+    setAssignedToMe,
+    setOverdue,
+    setDueFrom,
+    setDueTo,
+    setSortPreset,
+    setViewMode,
+    setPage,
+    setLimit,
+    resetFilters,
+  };
 };
