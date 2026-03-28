@@ -78,6 +78,7 @@ const EditTaskDialog = ({ open, onOpenChange, task, workspaceMembers }: EditTask
       try {
         await mutateAsync({
           taskId: task.id,
+          currentProjectId: task.projectId,
           payload: {
             title: parsed.data.title.trim(),
             description: parsed.data.description?.trim() ? parsed.data.description.trim() : null,
@@ -88,6 +89,7 @@ const EditTaskDialog = ({ open, onOpenChange, task, workspaceMembers }: EditTask
             status: parsed.data.status,
             priority: parsed.data.priority,
             dueDate: parsed.data.dueDate ? toIsoDate(parsed.data.dueDate) : null,
+            projectId: task.projectId,
           },
         });
 
