@@ -1,30 +1,29 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
-import type { TaskStatus, TaskPriority, TaskOverdueFilter, GetTasksParams } from "@/types/task.types";
+import type { GetTasksParams, TaskPriority, TaskStatus } from "@/types/task.types";
 
 export type TaskBoardFilters = {
   searchTerm: string;
-  priority: TaskPriority | "";
-  overdue: TaskOverdueFilter;
+  priority: TaskPriority | "ALL";
   assignedToUserId: string;
+  assignedToMe: boolean;
+  overdue: "ALL" | "true" | "false";
+  projectId: string;
 };
+
+export const BOARD_COLUMNS: TaskStatus[] = ["TODO", "IN_PROGRESS", "REVIEW", "DONE"];
 
 const DEFAULT_FILTERS: TaskBoardFilters = {
   searchTerm: "",
-  priority: "",
+  priority: "ALL",
+  assignedToUserId: "ALL",
+  assignedToMe: false,
   overdue: "ALL",
-  assignedToUserId: "",
+  projectId: "ALL",
 };
 
-/** The board view groups tasks by status column, so status is handled separately */
-const BOARD_COLUMNS: TaskStatus[] = ["TODO", "IN_PROGRESS", "REVIEW", "DONE"];
-
-/**
- * Manages filter state for the Kanban board view (/tasks/board).
- * Does NOT include a status filter since the board columns already encode status.
- */
 export const useTaskBoardFilters = (initial?: Partial<TaskBoardFilters>) => {
   const [filters, setFilters] = useState<TaskBoardFilters>({
     ...DEFAULT_FILTERS,
@@ -33,38 +32,49 @@ export const useTaskBoardFilters = (initial?: Partial<TaskBoardFilters>) => {
 
   const setFilter = useCallback(
     <K extends keyof TaskBoardFilters>(key: K, value: TaskBoardFilters[K]) => {
-      setFilters((prev) => ({ ...prev, [key]: value }));
+      setFilters((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
     },
     []
   );
 
   const resetFilters = useCallback(() => {
-    setFilters({ ...DEFAULT_FILTERS, ...initial });
+    setFilters({
+      ...DEFAULT_FILTERS,
+      ...initial,
+    });
   }, [initial]);
 
-  /** Derives backend-compatible params that apply across all board columns */
-  const toParams = useCallback((): Omit<GetTasksParams, "status"> => {
-    const params: Omit<GetTasksParams, "status"> = {};
-
-    if (filters.searchTerm) params.searchTerm = filters.searchTerm;
-    if (filters.priority) params.priority = filters.priority;
-    if (filters.overdue !== "ALL") params.overdue = filters.overdue === "true";
-    if (filters.assignedToUserId) params.assignedToUserId = filters.assignedToUserId;
-
-    return params;
+  const params = useMemo<GetTasksParams>(() => {
+    return {
+      searchTerm: filters.searchTerm.trim() || undefined,
+      priority: filters.priority === "ALL" ? undefined : filters.priority,
+      assignedToUserId: filters.assignedToUserId === "ALL" ? undefined : filters.assignedToUserId,
+      assignedToMe: filters.assignedToMe || undefined,
+      overdue: filters.overdue === "ALL" ? undefined : filters.overdue === "true",
+      projectId: filters.projectId === "ALL" ? undefined : filters.projectId,
+      page: 1,
+      limit: 100,
+      sortBy: "updatedAt",
+      sortOrder: "desc",
+    };
   }, [filters]);
 
   const hasActiveFilters =
     filters.searchTerm !== "" ||
-    filters.priority !== "" ||
+    filters.priority !== "ALL" ||
+    filters.assignedToUserId !== "ALL" ||
+    filters.assignedToMe !== false ||
     filters.overdue !== "ALL" ||
-    filters.assignedToUserId !== "";
+    filters.projectId !== "ALL";
 
   return {
     filters,
+    params,
     setFilter,
     resetFilters,
-    toParams,
     hasActiveFilters,
     BOARD_COLUMNS,
   };
