@@ -4,7 +4,7 @@ export const taskStatusEnum = z.enum(["TODO", "IN_PROGRESS", "REVIEW", "DONE"]);
 export const taskPriorityEnum = z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]);
 
 export const createTaskSchema = z.object({
-  projectId: z.string().min(1, "Project ID is required"),
+  projectId: z.string().uuid("Project is required"),
   title: z
     .string()
     .trim()
@@ -18,7 +18,7 @@ export const createTaskSchema = z.object({
     .or(z.literal("")),
   assignedToUserId: z
     .string()
-    .min(1, "Assigned user ID is required")
+    .uuid("Assigned user must be a valid member")
     .optional()
     .or(z.literal(""))
     .nullable(),
@@ -28,7 +28,7 @@ export const createTaskSchema = z.object({
 });
 
 export const updateTaskSchema = z.object({
-  projectId: z.string().min(1, "Project ID is required").optional(),
+  projectId: z.string().uuid("Project is required").optional(),
   title: z
     .string()
     .trim()
@@ -42,7 +42,7 @@ export const updateTaskSchema = z.object({
     .or(z.literal("")),
   assignedToUserId: z
     .string()
-    .min(1, "Assigned user ID is required")
+    .uuid("Assigned user must be a valid member")
     .optional()
     .or(z.literal(""))
     .nullable(),
