@@ -6,7 +6,7 @@ import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashbo
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { taskQueryKeys } from "@/components/features/task/hooks/task.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
-import { deleteProject } from "../api/project.types";
+import { deleteProject } from "../api/project.api";
 
 type UseDeleteProjectOptions = {
   workspaceId?: string | null;

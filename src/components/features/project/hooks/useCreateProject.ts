@@ -6,7 +6,7 @@ import { projectQueryKeys } from "@/components/features/project/hooks/project.qu
 import { dashboardQueryKeys } from "@/components/features/dashboard/hooks/dashboard.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import type { CreateProjectPayload } from "@/types/project.types";
-import { createProject } from "../api/project.types";
+import { createProject } from "../api/project.api";
 
 type UseCreateProjectOptions = {
   workspaceId?: string | null;

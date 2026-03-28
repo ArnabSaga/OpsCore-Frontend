@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { taskQueryKeys } from "@/components/features/task/hooks/task.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
-import { removeProjectMember } from "../api/project.types";
+import { removeProjectMember } from "../api/project.api";
 
 type UseRemoveProjectMemberOptions = {
   workspaceId?: string | null;

@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import type { AssignProjectMembersPayload } from "@/types/project.types";
-import { assignProjectMembers } from "../api/project.types";
+import { assignProjectMembers } from "../api/project.api";
 
 type UseAssignProjectMembersOptions = {
   workspaceId?: string | null;

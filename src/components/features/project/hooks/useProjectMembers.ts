@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
-import { getProjectMembers } from "../api/project.types";
+import { getProjectMembers } from "../api/project.api";
 
 type UseProjectMembersOptions = {
   workspaceId?: string | null;

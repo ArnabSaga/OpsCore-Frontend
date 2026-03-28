@@ -6,9 +6,9 @@ import type {
   AssignProjectMembersResponse,
   GetProjectsParams,
   GetProjectTasksParams,
-  PaginatedProjectsResponse,
   PaginatedProjectTasksResponse,
   ProjectDetails,
+  ProjectListItem,
   ProjectMember,
   ProjectSummary,
   CreateProjectPayload,
@@ -50,24 +50,14 @@ const buildProjectTaskQuery = (params?: GetProjectTasksParams) => {
 export const getProjects = async (
   workspaceId: string,
   params?: GetProjectsParams
-): Promise<PaginatedProjectsResponse> => {
+): Promise<ApiResponse<ProjectListItem[]>> => {
   const query = buildProjectListQuery(params);
 
-  const response = await apiFetch<ApiResponse<ProjectDetails[]>>({
+  return apiFetch<ApiResponse<ProjectListItem[]>>({
     endpoint: `${API_ENDPOINTS.project.list}${query ? `?${query}` : ""}`,
     method: "GET",
     workspaceId,
   });
-
-  return {
-    data: (response.data ?? []) as unknown as PaginatedProjectsResponse["data"],
-    meta: response.meta ?? {
-      page: params?.page ?? 1,
-      limit: params?.limit ?? 10,
-      total: Array.isArray(response.data) ? response.data.length : 0,
-      totalPages: 1,
-    },
-  };
 };
 
 export const getProjectById = async (

@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { projectQueryKeys } from "@/components/features/project/hooks/project.query-keys";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import type { UpdateProjectPayload } from "@/types/project.types";
-import { updateProject } from "../api/project.types";
+import { updateProject } from "../api/project.api";
 
 type UseUpdateProjectOptions = {
   workspaceId?: string | null;
