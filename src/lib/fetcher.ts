@@ -6,9 +6,6 @@ type ApiFetchOptions = Omit<RequestInit, "body"> & {
   workspaceId?: string | null;
 };
 
-/**
- * Base fetcher for API requests. Prepends the base URL if the endpoint is relative.
- */
 export const apiFetch = async <T>({
   endpoint,
   headers,
@@ -37,8 +34,10 @@ export const apiFetch = async <T>({
     body = options.body as BodyInit | null | undefined;
   }
 
+  const isFormData = body instanceof FormData;
+
   const finalHeaders: Record<string, string> = {
-    "Content-Type": "application/json",
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
     ...(headers as Record<string, string>),
   };
 
