@@ -2,103 +2,121 @@
 
 import { useCallback, useMemo, useState } from "react";
 
-import type { GetTasksParams, TaskCalendarItem, TaskSummary } from "@/types/task.types";
+import type { GetTasksParams, TaskPriority } from "@/types/task.types";
 
 export type TaskCalendarFilters = {
+  searchTerm: string;
+  priority: TaskPriority | "ALL";
   assignedToUserId: string;
-  priority: string;
+  assignedToMe: boolean;
+  projectId: string;
 };
 
 const DEFAULT_FILTERS: TaskCalendarFilters = {
-  assignedToUserId: "",
-  priority: "",
+  searchTerm: "",
+  priority: "ALL",
+  assignedToUserId: "ALL",
+  assignedToMe: false,
+  projectId: "ALL",
 };
 
-/**
- * Manages filter state and month navigation for the calendar view (/tasks/calendar).
- * Provides helpers to derive the current ISO date range and group tasks by day.
- */
 export const useTaskCalendarFilters = (initial?: Partial<TaskCalendarFilters>) => {
   const [filters, setFilters] = useState<TaskCalendarFilters>({
     ...DEFAULT_FILTERS,
     ...initial,
   });
 
-  const [currentMonth, setCurrentMonth] = useState<Date>(() => {
+  const [currentMonth, setCurrentMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
   const setFilter = useCallback(
     <K extends keyof TaskCalendarFilters>(key: K, value: TaskCalendarFilters[K]) => {
-      setFilters((prev) => ({ ...prev, [key]: value }));
+      setFilters((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
     },
     []
   );
 
   const resetFilters = useCallback(() => {
-    setFilters({ ...DEFAULT_FILTERS, ...initial });
+    setFilters({
+      ...DEFAULT_FILTERS,
+      ...initial,
+    });
   }, [initial]);
 
-  const prevMonth = useCallback(() => {
-    setCurrentMonth((d) => new Date(d.getFullYear(), d.getMonth() - 1, 1));
+  const goToPreviousMonth = useCallback(() => {
+    setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
   }, []);
 
-  const nextMonth = useCallback(() => {
-    setCurrentMonth((d) => new Date(d.getFullYear(), d.getMonth() + 1, 1));
+  const goToNextMonth = useCallback(() => {
+    setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
   }, []);
 
   const goToToday = useCallback(() => {
     const now = new Date();
     setCurrentMonth(new Date(now.getFullYear(), now.getMonth(), 1));
+    setSelectedDate(now.toISOString().slice(0, 10));
   }, []);
 
-  /** ISO date range for the currently displayed month */
-  const monthRange = useMemo(() => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-    const dueFrom = new Date(year, month, 1).toISOString().slice(0, 10);
-    const dueTo = new Date(year, month + 1, 0).toISOString().slice(0, 10);
-    return { dueFrom, dueTo };
-  }, [currentMonth]);
+  const monthStart = useMemo(
+    () => new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1),
+    [currentMonth]
+  );
 
-  /** Derives backend-compatible params for the current calendar view */
-  const toParams = useCallback((): GetTasksParams => {
-    const params: GetTasksParams = {
-      dueFrom: monthRange.dueFrom,
-      dueTo: monthRange.dueTo,
+  const monthEnd = useMemo(
+    () => new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0),
+    [currentMonth]
+  );
+
+  const params = useMemo<GetTasksParams>(() => {
+    return {
+      searchTerm: filters.searchTerm.trim() || undefined,
+      priority: filters.priority === "ALL" ? undefined : filters.priority,
+      assignedToUserId: filters.assignedToUserId === "ALL" ? undefined : filters.assignedToUserId,
+      assignedToMe: filters.assignedToMe || undefined,
+      projectId: filters.projectId === "ALL" ? undefined : filters.projectId,
+      dueFrom: new Date(
+        monthStart.getFullYear(),
+        monthStart.getMonth(),
+        1,
+        0,
+        0,
+        0,
+        0
+      ).toISOString(),
+      dueTo: new Date(
+        monthEnd.getFullYear(),
+        monthEnd.getMonth(),
+        monthEnd.getDate(),
+        23,
+        59,
+        59,
+        999
+      ).toISOString(),
+      page: 1,
       limit: 200,
+      sortBy: "dueDate",
+      sortOrder: "asc",
     };
-
-    if (filters.assignedToUserId) params.assignedToUserId = filters.assignedToUserId;
-
-    return params;
-  }, [filters, monthRange]);
-
-  /** Groups a flat task array into a map keyed by ISO date string */
-  const groupByDay = useCallback((tasks: TaskSummary[]): Map<string, TaskCalendarItem[]> => {
-    const map = new Map<string, TaskCalendarItem[]>();
-
-    for (const task of tasks) {
-      if (!task.dueDate) continue;
-      const date = task.dueDate.slice(0, 10);
-      if (!map.has(date)) map.set(date, []);
-      map.get(date)!.push({ task, date });
-    }
-
-    return map;
-  }, []);
+  }, [filters, monthStart, monthEnd]);
 
   return {
     filters,
-    setFilter,
-    resetFilters,
+    params,
     currentMonth,
-    prevMonth,
-    nextMonth,
+    selectedDate,
+    setFilter,
+    setSelectedDate,
+    setCurrentMonth,
+    goToPreviousMonth,
+    goToNextMonth,
     goToToday,
-    monthRange,
-    toParams,
-    groupByDay,
+    resetFilters,
   };
 };
