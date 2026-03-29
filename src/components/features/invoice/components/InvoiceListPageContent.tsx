@@ -57,7 +57,7 @@ const InvoiceListPageContent = () => {
   useEffect(() => {
     if (!containerRef.current || isLoading) return;
 
-    const ctx = gsap.context(() => {
+    const ctx = gsap.context((self) => {
       gsap.fromTo(
         "[data-invoice-hero]",
         { opacity: 0, y: 18 },
@@ -70,19 +70,24 @@ const InvoiceListPageContent = () => {
         { opacity: 1, y: 0, duration: 0.45, delay: 0.05, ease: "power3.out" }
       );
 
-      gsap.fromTo(
-        "[data-invoice-card]",
-        { opacity: 0, y: 20, scale: 0.985 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.42,
-          stagger: 0.05,
-          delay: 0.08,
-          ease: "power3.out",
+      if (viewMode === "grid") {
+        const cardNodes = self.selector?.("[data-invoice-card]");
+        if (cardNodes && cardNodes.length > 0) {
+          gsap.fromTo(
+            cardNodes,
+            { opacity: 0, y: 20, scale: 0.985 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.42,
+              stagger: 0.05,
+              delay: 0.08,
+              ease: "power3.out",
+            }
+          );
         }
-      );
+      }
     }, containerRef);
 
     return () => ctx.revert();

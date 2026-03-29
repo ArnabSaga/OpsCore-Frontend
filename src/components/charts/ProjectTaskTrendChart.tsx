@@ -97,8 +97,8 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
 
       <CardContent>
         <div ref={chartContainerRef} className="h-[320px] w-full min-h-0 min-w-0">
-          {dimensions.isReady && (
-            <ResponsiveContainer width={dimensions.width} height={dimensions.height}>
+          {dimensions.isReady && dimensions.width > 0 && dimensions.height > 0 && (
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <CartesianGrid
                   stroke="rgba(255,255,255,0.05)"
