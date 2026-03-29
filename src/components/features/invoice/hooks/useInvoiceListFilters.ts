@@ -7,7 +7,7 @@ import type {
   InvoiceStatus,
 } from "@/components/features/invoice/types/invoice.types";
 
-export type InvoiceViewMode = "list" | "table";
+export type InvoiceViewMode = "grid" | "table";
 export type InvoiceSortPreset =
   | "created-desc"
   | "created-asc"
@@ -60,9 +60,9 @@ export const useInvoiceListFilters = () => {
   const [overdue, setOverdue] = useState<"ALL" | "true" | "false">("ALL");
   const [issued, setIssued] = useState<"ALL" | "true" | "false">("ALL");
   const [sortPreset, setSortPreset] = useState<InvoiceSortPreset>("created-desc");
-  const [viewMode, setViewMode] = useState<InvoiceViewMode>("table");
+  const [viewMode, setViewMode] = useState<InvoiceViewMode>("grid");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
 
   const params = useMemo<GetInvoicesParams>(() => {
     const sort = getSortConfig(sortPreset);
@@ -86,7 +86,6 @@ export const useInvoiceListFilters = () => {
     setIssued("ALL");
     setSortPreset("created-desc");
     setPage(1);
-    setLimit(10);
   };
 
   return {
@@ -99,7 +98,6 @@ export const useInvoiceListFilters = () => {
     page,
     limit,
     params,
-
     setSearchTerm,
     setStatus,
     setOverdue,
@@ -107,7 +105,6 @@ export const useInvoiceListFilters = () => {
     setSortPreset,
     setViewMode,
     setPage,
-    setLimit,
     resetFilters,
   };
 };
