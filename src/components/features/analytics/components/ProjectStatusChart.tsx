@@ -1,0 +1,51 @@
+"use client";
+
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+
+import AnalyticsSectionCard from "@/components/features/analytics/components/AnalyticsSectionCard";
+import type { ProjectsStatusBreakdown } from "@/components/features/analytics/types/analytics.types";
+
+type ProjectStatusChartProps = {
+  projects: ProjectsStatusBreakdown;
+};
+
+const ProjectStatusChart = ({ projects }: ProjectStatusChartProps) => {
+  const data = [
+    { name: "Active", value: projects.active },
+    { name: "Completed", value: projects.completed },
+    { name: "On Hold", value: projects.onHold },
+    { name: "Archived", value: projects.archived },
+  ].filter((item) => item.value > 0);
+
+  return (
+    <AnalyticsSectionCard
+      title="Project status"
+      description="Distribution of project states across the workspace."
+      className="h-[360px]"
+    >
+      <div className="h-[260px] min-w-0">
+        {data.length === 0 ? (
+          <div className="flex h-full items-center justify-center text-sm text-[#94A3B8]">
+            No project status data available.
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={data} dataKey="value" nameKey="name" outerRadius={92} innerRadius={55}>
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`${entry.name}-${index}`}
+                    fill={["#7F56D9", "#12B76A", "#F79009", "#667085"][index % 4]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </AnalyticsSectionCard>
+  );
+};
+
+export default ProjectStatusChart;

@@ -103,4 +103,9 @@ export const API_ENDPOINTS = {
     list: `${API_PREFIX}/activity-logs`,
     details: (logId: string) => `${API_PREFIX}/activity-logs/${logId}`,
   },
+
+  analytics: {
+    projects: `${API_PREFIX}/analytics/projects`,
+    revenue: `${API_PREFIX}/analytics/revenue`,
+  },
 } as const;
