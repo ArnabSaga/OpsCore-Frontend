@@ -41,13 +41,13 @@ const WorkspaceSummaryCards = ({
       title: "Effective Plan",
       value: planLabel,
       icon: CreditCard,
-      href: `/workspaces/${workspaceId}/billing`,
+      href: "/billing",
     },
     {
       title: "Trial Status",
       value: workspace.planMeta?.isTrialActive ? "Active Trial" : "No Active Trial",
       icon: ShieldCheck,
-      href: `/workspaces/${workspaceId}/billing`,
+      href: "/billing",
     },
   ];
 

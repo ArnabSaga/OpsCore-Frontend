@@ -10,8 +10,8 @@ export const env = createEnv({
     NEXT_PUBLIC_API_PREFIX: z.string().default("/api/v1"),
   },
   runtimeEnv: {
-    NODE_ENV: process.env.NODE_ENV as string,
-    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL as string,
-    NEXT_PUBLIC_API_PREFIX: process.env.NEXT_PUBLIC_API_PREFIX as string,
+    NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    NEXT_PUBLIC_API_PREFIX: process.env.NEXT_PUBLIC_API_PREFIX,
   },
 });

@@ -198,72 +198,13 @@ export type CreateWorkspaceInvitationPayload = {
   role: Exclude<WorkspaceRole, "OWNER">;
 };
 
-export type BillingSubscriptionResponse = {
-  workspace: {
-    id: string;
-    name: string;
-    slug: string;
-    stripeCustomerId: string | null;
-  };
-  subscription: {
-    id: string | null;
-    stripeSubscriptionId: string | null;
-    stripePriceId: string | null;
-    plan: WorkspacePlan;
-    status: string;
-    currentPeriodStart: string | null;
-    currentPeriodEnd: string | null;
-    canceledAt: string | null;
-    createdAt: string | null;
-    updatedAt: string | null;
-  };
-  planSummary: {
-    basePlan: WorkspacePlan;
-    effectivePlan: WorkspacePlan;
-    isTrialActive: boolean;
-    trialStartsAt: string | null;
-    trialEndsAt: string | null;
-    billingCycleStartsAt: string;
-    billingCycleEndsAt: string;
-  };
-  capabilities: {
-    canCheckout: boolean;
-    canOpenCustomerPortal: boolean;
-  };
-};
 
-export type BillingHistoryItem = {
-  id: string;
-  number: string | null;
-  status: string | null;
-  currency: string | null;
-  total: string | null;
-  subtotal: string | null;
-  amountPaid: string | null;
-  amountDue: string | null;
-  hostedInvoiceUrl: string | null;
-  invoicePdf: string | null;
-  periodStart: string | null;
-  periodEnd: string | null;
-  createdAt: string | null;
-};
 
-export type BillingHistoryResponse = {
-  items: BillingHistoryItem[];
-  meta: {
-    limit: number;
-    hasMore: boolean;
-    nextCursor: string | null;
-  };
-};
 
-export type BillingUsageResponse = {
-  metrics: {
-    resource: string;
-    used: number;
-    limit: number | null;
-  }[];
-};
+
+
+
+
 export type PlatformWorkspaceItem = WorkspaceSummary & {
   createdBy?: WorkspaceCreatedBy;
   _count: {

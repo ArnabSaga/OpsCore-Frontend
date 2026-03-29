@@ -284,15 +284,15 @@ const SuperAdminDashboardPage = () => {
       icon: CreditCard,
       color: "text-[#B692F6]",
       ring: "from-[#B692F6]/20 to-transparent",
-      subLabel: `Revenue: $${overview.invoices.totalPaidAmount.toLocaleString()}`,
+      subLabel: `Est. Revenue: $${(overview.invoices.subscriptionRevenueEstimate ?? 0).toLocaleString()}`,
     },
     {
-      label: "Total Invoices",
-      value: overview.invoices.total,
+      label: "Manual Invoices",
+      value: overview.invoices.paid,
       icon: Receipt,
       color: "text-[#F79009]",
       ring: "from-[#F79009]/20 to-transparent",
-      subLabel: `${overview.invoices.paid} paid, ${overview.invoices.overdue} overdue`,
+      subLabel: `Paid Revenue: $${(overview.invoices.manualInvoiceRevenue ?? 0).toLocaleString()}`,
     },
   ];
 
@@ -325,8 +325,9 @@ const SuperAdminDashboardPage = () => {
             <div className="rounded-2xl border border-white/10 bg-[#101828]/70 px-4 py-3">
               <p className="text-xs text-[#667085]">Total Revenue</p>
               <p className="mt-1 text-lg font-semibold">
-                ${(overview.invoices.totalPaidAmount ?? 0).toLocaleString()}
+                ${(overview.invoices.totalPlatformRevenue ?? 0).toLocaleString()}
               </p>
+              <p className="mt-0.5 text-[10px] text-[#94A3B8]/80 uppercase tracking-wider">Estimated Total</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-[#101828]/70 px-4 py-3">
               <p className="text-xs text-[#667085]">Workspace Health</p>
@@ -382,7 +383,7 @@ const SuperAdminDashboardPage = () => {
           <div>
             <h2 className="text-lg font-semibold text-white">Platform Trends</h2>
             <p className="text-sm text-[#94A3B8]">
-              Revenue and growth metrics over the selected period.
+              Estimated revenue and growth metrics over the selected period.
             </p>
           </div>
 

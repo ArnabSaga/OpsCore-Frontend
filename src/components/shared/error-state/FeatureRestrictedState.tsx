@@ -6,7 +6,6 @@ import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
 interface FeatureRestrictedStateProps {
   title?: string;
@@ -27,10 +26,8 @@ const FeatureRestrictedState = ({
   ctaHref,
   className,
 }: FeatureRestrictedStateProps) => {
-  const { activeWorkspaceId } = useWorkspaceContext();
-
-  // Default to workspace billing settings if not provided
-  const resolvedCtaHref = ctaHref ?? (activeWorkspaceId ? `/workspaces/${activeWorkspaceId}/settings/billing` : undefined);
+  // Default to canonical billing page if not provided
+  const resolvedCtaHref = ctaHref ?? "/billing";
   const resolvedCtaLabel = ctaLabel ?? "Upgrade Plan";
 
   if (variant === "section-compact") {

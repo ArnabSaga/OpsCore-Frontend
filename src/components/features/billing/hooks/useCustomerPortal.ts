@@ -1,35 +1,27 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/fetcher";
+
+import { createCustomerPortalSession } from "@/components/features/billing/api/billing.api";
+import type { CreateCustomerPortalPayload } from "@/components/features/billing/types/billing.types";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
-type CustomerPortalResponse = {
-  success?: boolean;
-  message?: string;
-  data?: {
-    url: string;
-  };
-  url?: string;
+type UseCustomerPortalOptions = {
+  workspaceId?: string | null;
 };
 
-export function useCustomerPortal() {
+export const useCustomerPortal = ({ workspaceId }: UseCustomerPortalOptions = {}) => {
   const { activeWorkspaceId } = useWorkspaceContext();
+  const resolvedWorkspaceId = workspaceId ?? activeWorkspaceId;
 
   return useMutation({
-    mutationFn: async () => {
-      const response = (await apiFetch({
-        endpoint: "/api/v1/billing/customer-portal",
-        method: "POST",
-        workspaceId: activeWorkspaceId,
-        body: {
-          returnUrl: typeof window !== "undefined" ? window.location.href : undefined,
-        },
-      })) as CustomerPortalResponse;
+    mutationFn: async (payload?: CreateCustomerPortalPayload) => {
+      if (!resolvedWorkspaceId) {
+        throw new Error("No active workspace selected.");
+      }
 
-      return {
-        url: response?.data?.url ?? response?.url ?? "",
-      };
+      const response = await createCustomerPortalSession(resolvedWorkspaceId, payload);
+      return response.data;
     },
   });
-}
+};

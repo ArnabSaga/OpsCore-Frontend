@@ -47,7 +47,7 @@ const WorkspaceSettingsSidebar = () => {
     },
     {
       label: "Billing",
-      href: `/workspaces/${workspaceId}/billing`,
+      href: "/billing",
       icon: BadgeDollarSign,
     },
     {

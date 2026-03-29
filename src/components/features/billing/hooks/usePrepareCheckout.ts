@@ -1,43 +1,27 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/fetcher";
+
+import { prepareCheckoutSession } from "@/components/features/billing/api/billing.api";
+import type { PrepareCheckoutPayload } from "@/components/features/billing/types/billing.types";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 
-type PrepareCheckoutPayload = {
-  plan: "PRO" | "ENTERPRISE";
-  billingInterval?: "month" | "year";
-  successUrl?: string;
-  cancelUrl?: string;
+type UsePrepareCheckoutOptions = {
+  workspaceId?: string | null;
 };
 
-type PrepareCheckoutResponse = {
-  success?: boolean;
-  message?: string;
-  data?: {
-    checkoutSessionId: string;
-    checkoutUrl: string;
-  };
-  checkoutSessionId?: string;
-  checkoutUrl?: string;
-};
-
-export function usePrepareCheckout() {
+export const usePrepareCheckout = ({ workspaceId }: UsePrepareCheckoutOptions = {}) => {
   const { activeWorkspaceId } = useWorkspaceContext();
+  const resolvedWorkspaceId = workspaceId ?? activeWorkspaceId;
 
   return useMutation({
     mutationFn: async (payload: PrepareCheckoutPayload) => {
-      const response = (await apiFetch({
-        endpoint: "/api/v1/billing/checkout-session",
-        method: "POST",
-        workspaceId: activeWorkspaceId,
-        body: payload,
-      })) as PrepareCheckoutResponse;
+      if (!resolvedWorkspaceId) {
+        throw new Error("No active workspace selected.");
+      }
 
-      return {
-        checkoutSessionId: response?.data?.checkoutSessionId ?? response?.checkoutSessionId ?? "",
-        checkoutUrl: response?.data?.checkoutUrl ?? response?.checkoutUrl ?? "",
-      };
+      const response = await prepareCheckoutSession(resolvedWorkspaceId, payload);
+      return response.data;
     },
   });
-}
+};

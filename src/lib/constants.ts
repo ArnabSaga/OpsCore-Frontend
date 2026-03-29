@@ -53,6 +53,7 @@ export const APP_ROUTES = {
   accountProfile: "/account/profile",
   accountSecurity: "/account/security",
   settingsGeneral: "/settings/general",
+  billing: "/billing",
 } as const;
 
 export const DASHBOARD_NAV_GROUPS: NavGroup[] = [
@@ -93,6 +94,13 @@ export const DASHBOARD_NAV_GROUPS: NavGroup[] = [
         href: APP_ROUTES.invoices,
         icon: Receipt,
         roles: ["OWNER", "ADMIN"],
+        matchStartsWith: true,
+      },
+      {
+        title: "Billing",
+        href: APP_ROUTES.billing,
+        icon: CreditCard,
+        roles: ["OWNER"],
         matchStartsWith: true,
       },
     ],
@@ -279,8 +287,8 @@ export const canAccessNavItem = (item: NavItem, role?: string | null): boolean =
   if (!item.roles?.length) return true;
   if (!role) return false;
 
-  // System-level admins should have access to everything
-  if (role === "SUPER_ADMIN" || role === "ADMIN" || role === "OWNER") return true;
+  // System-level super admins always have access
+  if (role === "SUPER_ADMIN") return true;
 
   return item.roles.includes(role as AppRole);
 };

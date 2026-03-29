@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import type { DashboardOverview } from "@/types/dashboard.types";
 import { usePrepareCheckout } from "@/components/features/billing/hooks/usePrepareCheckout";
 import { useCustomerPortal } from "@/components/features/billing/hooks/useCustomerPortal";
+import type { CheckoutBillingInterval } from "@/components/features/billing/types/billing.types";
 
 type SubscriptionCardProps = {
   overview: DashboardOverview;
@@ -21,7 +22,7 @@ const SubscriptionCard = ({ overview }: SubscriptionCardProps) => {
   const { mutateAsync: prepareCheckout, isPending: isPreparingCheckout } = usePrepareCheckout();
   const { mutateAsync: openPortal, isPending: isOpeningPortal } = useCustomerPortal();
 
-  const [billingInterval] = useState<"month" | "year">("month");
+  const [billingInterval] = useState<CheckoutBillingInterval>("month");
 
   if (!subscription) return null;
 
@@ -43,7 +44,9 @@ const SubscriptionCard = ({ overview }: SubscriptionCardProps) => {
   };
 
   const handleManageBilling = async () => {
-    const result = await openPortal();
+    const result = await openPortal({
+      returnUrl: typeof window !== "undefined" ? `${window.location.origin}/billing` : undefined,
+    });
 
     if (result.url) {
       window.location.href = result.url;

@@ -51,12 +51,14 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
   const chartData = useMemo(() => {
     return data.map((item) => ({
       ...item,
-      paidAmount: Number(item.paidAmount || 0),
+      subscriptionEstimate: Number(item.subscriptionEstimate || 0),
+      manualInvoiceRevenue: Number(item.manualInvoiceRevenue || 0),
+      totalPlatformRevenue: Number(item.totalPlatformRevenue || 0),
     }));
   }, [data]);
 
   const hasData = useMemo(() => {
-    return chartData.some((p) => p.paidAmount > 0);
+    return chartData.some((p) => p.totalPlatformRevenue > 0);
   }, [chartData]);
 
   return (
@@ -86,6 +88,10 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
                     <stop offset="5%" stopColor="#12B76A" stopOpacity={0.35} />
                     <stop offset="95%" stopColor="#12B76A" stopOpacity={0.02} />
                   </linearGradient>
+                  <linearGradient id="estimateFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#7F56D9" stopOpacity={0.35} />
+                    <stop offset="95%" stopColor="#7F56D9" stopOpacity={0.02} />
+                  </linearGradient>
                 </defs>
 
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
@@ -113,11 +119,22 @@ const RevenueTrendChart = ({ data }: RevenueTrendChartProps) => {
                 />
                 <Area
                   type="monotone"
-                  dataKey="paidAmount"
-                  name="Paid Revenue"
+                  dataKey="manualInvoiceRevenue"
+                  name="Paid Invoices"
+                  stackId="1"
                   stroke="#12B76A"
                   fill="url(#revenueFill)"
-                  strokeWidth={2.5}
+                  strokeWidth={2}
+                  isAnimationActive={false}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="subscriptionEstimate"
+                  name="Subscription Estimates"
+                  stackId="1"
+                  stroke="#7F56D9"
+                  fill="url(#estimateFill)"
+                  strokeWidth={2}
                   isAnimationActive={false}
                 />
               </AreaChart>

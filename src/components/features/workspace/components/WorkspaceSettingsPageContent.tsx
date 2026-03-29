@@ -71,7 +71,7 @@ const WorkspaceSettingsPageContent = () => {
         {
           label: "Billing",
           description: "View subscription, invoices, usage, and upgrade options.",
-          href: `/workspaces/${workspaceId}/billing`,
+          href: "/billing",
           icon: BadgeDollarSign,
           visible: capabilities?.canManageBilling ?? true,
         },

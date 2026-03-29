@@ -88,7 +88,9 @@ export type DashboardRevenueMetricPoint = {
   bucketStart: string;
   bucketEnd: string;
   label: string;
-  paidAmount: number;
+  subscriptionEstimate: number;
+  manualInvoiceRevenue: number;
+  totalPlatformRevenue: number;
   currency: string;
 };
 
@@ -138,7 +140,9 @@ export type PlatformDashboardOverview = {
     total: number;
     paid: number;
     overdue: number;
-    totalPaidAmount: number;
+    manualInvoiceRevenue: number;
+    subscriptionRevenueEstimate: number;
+    totalPlatformRevenue: number;
   };
 };
 

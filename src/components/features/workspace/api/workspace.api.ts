@@ -1,7 +1,4 @@
 import type {
-  BillingHistoryResponse,
-  BillingSubscriptionResponse,
-  BillingUsageResponse,
   CreateWorkspaceInvitationPayload,
   CreateWorkspacePayload,
   EnhancedWorkspaceDetails,
@@ -339,39 +336,7 @@ export const deleteWorkspaceInvitation = async (
   });
 };
 
-// --- BILLING API ---
 
-export const getWorkspaceSubscription = async (
-  workspaceId: string
-): Promise<BillingSubscriptionResponse> => {
-  const response = await apiFetch<ApiResponse<BillingSubscriptionResponse>>({
-    endpoint: API_ENDPOINTS.billing.subscription,
-    method: "GET",
-    workspaceId,
-  });
-
-  return response.data;
-};
-
-export const getBillingHistory = async (workspaceId: string): Promise<BillingHistoryResponse> => {
-  const response = await apiFetch<ApiResponse<BillingHistoryResponse>>({
-    endpoint: API_ENDPOINTS.billing.invoices,
-    method: "GET",
-    workspaceId,
-  });
-
-  return response.data;
-};
-
-export const getBillingUsage = async (workspaceId: string): Promise<BillingUsageResponse> => {
-  const response = await apiFetch<ApiResponse<BillingUsageResponse>>({
-    endpoint: API_ENDPOINTS.billing.usage,
-    method: "GET",
-    workspaceId,
-  });
-
-  return response.data;
-};
 
 // --- PUBLIC INVITATION API ---
 

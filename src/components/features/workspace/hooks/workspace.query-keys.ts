@@ -32,12 +32,4 @@ export const workspaceQueryKeys = {
 
   myInvitations: () => [...workspaceQueryKeys.all, "my-invitations"] as const,
 
-  subscription: (workspaceId: string) =>
-    [...workspaceQueryKeys.all, "subscription", workspaceId] as const,
-
-  billingHistory: (workspaceId: string) =>
-    [...workspaceQueryKeys.all, "billing-history", workspaceId] as const,
-
-  billingUsage: (workspaceId: string) =>
-    [...workspaceQueryKeys.all, "billing-usage", workspaceId] as const,
 } as const;
