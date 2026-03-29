@@ -16,7 +16,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type AppRole = "OWNER" | "ADMIN" | "MEMBER";
+export type AppRole = "OWNER" | "ADMIN" | "MEMBER" | "USER";
 
 export type NavItem = {
   title: string;
@@ -45,6 +45,7 @@ export const APP_ROUTES = {
   projects: "/projects",
   tasks: "/tasks",
   invoices: "/invoices",
+  platformInvoices: "/platform/invoices",
   analytics: "/analytics",
   activityLogs: "/activity-logs",
   notifications: "/notifications",
@@ -182,6 +183,12 @@ export const PLATFORM_NAV_GROUPS: NavGroup[] = [
         matchStartsWith: true,
       },
       {
+        title: "Invoice Oversight",
+        href: APP_ROUTES.platformInvoices,
+        icon: Receipt,
+        matchStartsWith: true,
+      },
+      {
         title: "Subscriptions",
         href: "/platform/subscriptions",
         icon: CreditCard,
@@ -240,6 +247,8 @@ export const ROUTE_META: Record<string, RouteMeta> = {
   invoices: { label: "Invoices" },
   "[invoiceId]": { label: "Invoice", parent: "invoices", dynamic: true },
   preview: { label: "Preview" },
+
+  "platform/invoices": { label: "Invoice Oversight", parent: "platform" },
 
   analytics: { label: "Analytics" },
   revenue: { label: "Revenue" },

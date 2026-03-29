@@ -6,16 +6,21 @@ import type { ApiResponse } from "@/types/api.types";
 import type {
   CreateInvoicePayload,
   GetInvoicesParams,
+  GetPlatformInvoicesParams,
   InvoiceDetails,
-  InvoiceListItem,
   PaginatedInvoicesResponse,
+  PlatformInvoicesResponse,
   UpdateInvoicePayload,
 } from "@/components/features/invoice/types/invoice.types";
 
-type InvoiceListApiResponse = ApiResponse<InvoiceListItem[]>;
+import { emptyPlatformStats } from "@/components/features/invoice/types/invoice.types";
+
+
+// --- WORKSPACE INVOICES ---
 
 const buildInvoiceListQuery = (params?: GetInvoicesParams) => {
   const searchParams = new URLSearchParams();
+
 
   if (params?.searchTerm) searchParams.set("searchTerm", params.searchTerm);
   if (params?.status) searchParams.set("status", params.status);
@@ -48,22 +53,13 @@ export const getInvoices = async (
 ): Promise<PaginatedInvoicesResponse> => {
   const query = buildInvoiceListQuery(params);
 
-  const response = await apiFetch<InvoiceListApiResponse>({
+  return apiFetch<PaginatedInvoicesResponse>({
     endpoint: `${API_ENDPOINTS.invoice.list}${query ? `?${query}` : ""}`,
     method: "GET",
     workspaceId,
   });
-
-  return {
-    data: response.data ?? [],
-    meta: response.meta ?? {
-      page: params?.page ?? 1,
-      limit: params?.limit ?? 10,
-      total: Array.isArray(response.data) ? response.data.length : 0,
-      totalPages: 1,
-    },
-  };
 };
+
 
 export const getInvoiceById = async (
   workspaceId: string,
@@ -180,3 +176,47 @@ export const getInvoicePdf = async (workspaceId: string, invoiceId: string): Pro
 
   return response.blob();
 };
+
+const buildPlatformInvoiceListQuery = (params?: GetPlatformInvoicesParams) => {
+  const searchParams = new URLSearchParams();
+
+  if (params?.searchTerm) searchParams.set("searchTerm", params.searchTerm);
+  if (params?.status) searchParams.set("status", params.status);
+  if (params?.workspaceId) searchParams.set("workspaceId", params.workspaceId);
+
+  if (typeof params?.overdue === "boolean") {
+    searchParams.set("overdue", String(params.overdue));
+  }
+
+  if (typeof params?.page === "number") {
+    searchParams.set("page", String(params.page));
+  }
+
+  if (typeof params?.limit === "number") {
+    searchParams.set("limit", String(params.limit));
+  }
+
+  if (params?.sortBy) searchParams.set("sortBy", params.sortBy);
+  if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder);
+
+  return searchParams.toString();
+};
+
+export const getPlatformInvoices = async (
+  params?: GetPlatformInvoicesParams
+): Promise<PlatformInvoicesResponse> => {
+  const query = buildPlatformInvoiceListQuery(params);
+
+  const response = await apiFetch<PlatformInvoicesResponse>({
+    endpoint: `${API_ENDPOINTS.invoice.platformAll}${query ? `?${query}` : ""}`,
+    method: "GET",
+  });
+
+  return {
+    ...response,
+    data: response.data ?? [],
+    stats: response.stats ?? emptyPlatformStats,
+  };
+};
+
+

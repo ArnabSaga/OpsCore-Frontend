@@ -1,4 +1,7 @@
+import { ApiResponse } from "@/types/api.types";
+
 export type InvoiceStatus = "PENDING" | "PAID" | "OVERDUE" | "CANCELED";
+
 
 export type InvoiceUser = {
   id: string;
@@ -83,6 +86,17 @@ export type GetInvoicesParams = {
   sortOrder?: "asc" | "desc";
 };
 
+export type GetPlatformInvoicesParams = {
+  searchTerm?: string;
+  status?: InvoiceStatus;
+  workspaceId?: string;
+  overdue?: boolean;
+  page?: number;
+  limit?: number;
+  sortBy?: "createdAt" | "updatedAt" | "dueAt" | "amount" | "invoiceNumber" | "status";
+  sortOrder?: "asc" | "desc";
+};
+
 export type PaginationMeta = {
   page: number;
   limit: number;
@@ -90,10 +104,8 @@ export type PaginationMeta = {
   totalPages: number;
 };
 
-export type PaginatedInvoicesResponse = {
-  data: InvoiceListItem[];
-  meta: PaginationMeta;
-};
+export type PaginatedInvoicesResponse = ApiResponse<InvoiceListItem[]>;
+
 
 export type InvoiceActionFlags = {
   canEdit: boolean;
@@ -103,3 +115,30 @@ export type InvoiceActionFlags = {
   canCancel: boolean;
   canPreviewPdf: boolean;
 };
+
+export type PlatformInvoiceListItem = InvoiceListItem & {
+  workspaceName: string;
+};
+
+export type PlatformInvoiceOverviewStats = {
+  totalInvoices: number;
+  activeWorkspaces: number;
+  overdueInvoices: number;
+  overdueAmount: string;
+  paidAmount: string;
+  pendingAmount: string;
+};
+
+export const emptyPlatformStats: PlatformInvoiceOverviewStats = {
+  totalInvoices: 0,
+  activeWorkspaces: 0,
+  overdueInvoices: 0,
+  overdueAmount: "0",
+  paidAmount: "0",
+  pendingAmount: "0",
+};
+
+export type PlatformInvoicesResponse = ApiResponse<PlatformInvoiceListItem[]> & {
+  stats: PlatformInvoiceOverviewStats;
+};
+

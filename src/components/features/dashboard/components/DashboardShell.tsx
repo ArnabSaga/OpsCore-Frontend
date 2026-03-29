@@ -11,6 +11,7 @@ import NoWorkspaceState from "@/components/shared/empty-state/NoWorkspaceState";
 import DashboardShellLoader from "@/components/shared/loaders/DashboardShellLoader";
 import { useUser } from "@/hooks/useUser";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
+import { UserRole } from "@/lib/authUtils";
 
 type DashboardShellProps = {
   children: React.ReactNode;
@@ -45,10 +46,16 @@ const DashboardShellContent = ({
     return <DashboardShellLoader />;
   }
 
+ 
+  const effectiveRole: UserRole | null =
+    user.systemRole === "SUPER_ADMIN"
+      ? "SUPER_ADMIN"
+      : (activeWorkspace?.role as UserRole) ?? user.systemRole ?? null;
+
   if (!activeWorkspace && user.systemRole !== "SUPER_ADMIN") {
     return (
       <div className="flex h-screen overflow-hidden bg-[#0B0B0B] text-white">
-        <AppSidebar userRole={user?.systemRole ?? null} />
+        <AppSidebar userRole={effectiveRole} />
 
         <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <AppHeader user={user} />
@@ -65,7 +72,7 @@ const DashboardShellContent = ({
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0B0B0B] text-white">
-      <AppSidebar userRole={user?.systemRole ?? null} />
+      <AppSidebar userRole={effectiveRole} />
 
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <AppHeader user={user} />

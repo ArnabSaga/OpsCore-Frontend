@@ -91,6 +91,7 @@ export const API_ENDPOINTS = {
 
   invoice: {
     list: `${API_PREFIX}/invoices`,
+    platformAll: `${API_PREFIX}/platform/invoices`,
     create: `${API_PREFIX}/invoices`,
     details: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}`,
     send: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}/send`,
