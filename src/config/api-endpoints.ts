@@ -47,7 +47,6 @@ export const API_ENDPOINTS = {
     permissions: (workspaceId: string) =>
       `${API_PREFIX}/workspaces/${workspaceId}/settings/permissions`,
     capabilities: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/capabilities`,
-    activityLogs: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/activity-logs`,
     archive: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/archive`,
   },
 
@@ -98,5 +97,10 @@ export const API_ENDPOINTS = {
     markPaid: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}/mark-paid`,
     cancel: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}/cancel`,
     pdf: (invoiceId: string) => `${API_PREFIX}/invoices/${invoiceId}/pdf`,
+  },
+
+  activityLog: {
+    list: `${API_PREFIX}/activity-logs`,
+    details: (logId: string) => `${API_PREFIX}/activity-logs/${logId}`,
   },
 } as const;

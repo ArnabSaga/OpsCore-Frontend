@@ -188,31 +188,6 @@ export type WorkspacePermissionMatrix = {
   };
 };
 
-export type ActivityLogItem = {
-  id: string;
-  action: string;
-  entityType: string;
-  entityId: string | null;
-  metadata: Record<string, unknown> | null;
-  createdAt: string;
-  user?: {
-    id: string;
-    name: string;
-    email: string;
-    image: string | null;
-  } | null;
-};
-
-export type ActivityLogResponse = {
-  items: ActivityLogItem[];
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-};
-
 export type UpdateWorkspaceMemberPayload = {
   role?: WorkspaceRole;
   status?: Extract<WorkspaceMemberStatus, "ACTIVE" | "INACTIVE">;

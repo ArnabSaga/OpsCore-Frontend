@@ -22,17 +22,6 @@ export const workspaceQueryKeys = {
   permissions: (workspaceId: string) =>
     [...workspaceQueryKeys.all, "permissions", workspaceId] as const,
 
-  activityLogs: (workspaceId: string, params?: { page?: number; limit?: number }) =>
-    [
-      ...workspaceQueryKeys.all,
-      "activity-logs",
-      workspaceId,
-      {
-        page: params?.page ?? 1,
-        limit: params?.limit ?? 20,
-      },
-    ] as const,
-
   members: (workspaceId: string) => [...workspaceQueryKeys.all, "members", workspaceId] as const,
 
   invitations: (workspaceId: string) =>

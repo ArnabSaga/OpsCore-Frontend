@@ -1,24 +1,23 @@
 import type {
-  ActivityLogResponse,
   BillingHistoryResponse,
   BillingSubscriptionResponse,
   BillingUsageResponse,
   CreateWorkspaceInvitationPayload,
   CreateWorkspacePayload,
   EnhancedWorkspaceDetails,
+  PlatformWorkspacesResponse,
   SwitchWorkspaceResponse,
   UpdateWorkspaceMemberPayload,
   WorkspaceBrandingSettings,
   WorkspaceCapabilities,
+  WorkspaceDetails,
   WorkspaceGeneralSettings,
+  WorkspaceInvitation,
+  WorkspaceMember,
   WorkspacePermissionMatrix,
   WorkspaceSettingsSummary,
-  WorkspaceInvitation,
   WorkspaceSummary,
   WorkspacesResponse,
-  WorkspaceMember,
-  WorkspaceDetails,
-  PlatformWorkspacesResponse,
 } from "@/types/workspace.types";
 
 import { ApiResponse } from "@/types/api.types";
@@ -28,7 +27,9 @@ import { apiFetch } from "@/lib/fetcher";
 
 // --- CORE WORKSPACE API ---
 
-export const createWorkspace = async (payload: CreateWorkspacePayload): Promise<WorkspaceSummary> => {
+export const createWorkspace = async (
+  payload: CreateWorkspacePayload
+): Promise<WorkspaceSummary> => {
   const response = await apiFetch<ApiResponse<WorkspaceSummary>>({
     endpoint: API_ENDPOINTS.workspace.create,
     method: "POST",
@@ -45,8 +46,7 @@ export const getWorkspaces = async (): Promise<WorkspacesResponse> => {
   });
 
   const workspaces = response.data ?? [];
-  const activeWorkspace =
-    workspaces.find((workspace) => workspace.isActiveWorkspace) ?? null;
+  const activeWorkspace = workspaces.find((workspace) => workspace.isActiveWorkspace) ?? null;
 
   return {
     workspaces,
@@ -189,30 +189,6 @@ export const getWorkspacePermissions = async (
 ): Promise<WorkspacePermissionMatrix> => {
   const response = await apiFetch<ApiResponse<WorkspacePermissionMatrix>>({
     endpoint: API_ENDPOINTS.workspace.permissions(workspaceId),
-    method: "GET",
-    workspaceId,
-  });
-
-  return response.data;
-};
-
-// --- ACTIVITY & ARCHIVE ---
-
-export const getWorkspaceActivityLogs = async (
-  workspaceId: string,
-  params?: { page?: number; limit?: number }
-): Promise<ActivityLogResponse> => {
-  const searchParams = new URLSearchParams();
-
-  if (params?.page) searchParams.set("page", String(params.page));
-  if (params?.limit) searchParams.set("limit", String(params.limit));
-
-  const endpoint = `${API_ENDPOINTS.workspace.activityLogs(workspaceId)}${
-    searchParams.toString() ? `?${searchParams.toString()}` : ""
-  }`;
-
-  const response = await apiFetch<ApiResponse<ActivityLogResponse>>({
-    endpoint,
     method: "GET",
     workspaceId,
   });
