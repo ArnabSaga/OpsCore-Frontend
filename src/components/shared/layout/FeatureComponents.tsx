@@ -491,126 +491,64 @@ export default function FeatureComponents() {
 
   useEffect(() => {
     const section = sectionRef.current;
-    const hero = heroRef.current;
-    const capabilityCards = capabilitiesRefs.current.filter(Boolean);
-    const securityCards = securityRefs.current.filter(Boolean);
-
-    if (!section || !hero) return;
+    if (!section) return;
 
     const ctx = gsap.context(() => {
-      gsap.set(hero.children, { opacity: 0, y: 28 });
-
-      gsap.to(hero.children, {
-        opacity: 1,
-        y: 0,
-        duration: 0.82,
-        stagger: 0.12,
-        ease: "power4.out",
-        force3D: true,
-        scrollTrigger: {
-          trigger: hero,
-          start: "top 84%",
-          once: true,
-        },
-      });
-
-      if (capabilityCards.length) {
-        gsap.set(capabilityCards, { opacity: 0, y: 34, scale: 0.985 });
-
-        gsap.to(capabilityCards, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.84,
-          stagger: 0.1,
-          ease: "power4.out",
-          force3D: true,
-          scrollTrigger: {
-            trigger: capabilityCards[0]?.parentElement,
-            start: "top 82%",
-            once: true,
-          },
+      const startFloating = (node: Element, index: number) => {
+        gsap.to(node, {
+          y: index % 2 === 0 ? -5 : 5,
+          duration: 2.8 + index * 0.12,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          overwrite: "auto",
         });
-      }
+      };
 
-      if (automationLeftRef.current && automationRightRef.current) {
-        gsap.set([automationLeftRef.current, automationRightRef.current], {
-          opacity: 0,
-          y: 38,
-          scale: 0.985,
-        });
+      const reveal = (trigger: HTMLElement | null, start: string = "top 84%") => {
+        if (!trigger) return;
+        const elements = Array.from(trigger.children);
 
-        gsap.to([automationLeftRef.current, automationRightRef.current], {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.92,
-          stagger: 0.12,
-          ease: "power4.out",
-          force3D: true,
-          scrollTrigger: {
-            trigger: automationLeftRef.current,
-            start: "top 82%",
-            once: true,
-          },
-        });
-      }
-
-      if (securityCards.length) {
-        gsap.set(securityCards, { opacity: 0, y: 32, scale: 0.985 });
-
-        gsap.to(securityCards, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power4.out",
-          force3D: true,
-          scrollTrigger: {
-            trigger: securityCards[0]?.parentElement,
-            start: "top 84%",
-            once: true,
-          },
-        });
-      }
-
-      if (ctaRef.current) {
-        gsap.set(ctaRef.current, { opacity: 0, y: 36, scale: 0.985 });
-
-        gsap.to(ctaRef.current, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.92,
-          ease: "power4.out",
-          force3D: true,
-          scrollTrigger: {
-            trigger: ctaRef.current,
-            start: "top 88%",
-            once: true,
-          },
-        });
-      }
-
-      const floatEls = section.querySelectorAll("[data-float]");
-      if (floatEls.length) {
-        floatEls.forEach((node, index) => {
-          gsap.to(node, {
-            y: index % 2 === 0 ? -8 : 8,
-            duration: 2.8 + index * 0.12,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
+        gsap.fromTo(
+          elements,
+          { opacity: 0, y: 30, scale: 0.985 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1.05,
+            stagger: 0.1,
+            ease: "expo.out",
             force3D: true,
-            delay: 1.2,
+            overwrite: "auto",
             scrollTrigger: {
-              trigger: node,
-              start: "top 85%",
+              trigger,
+              start,
+              once: true,
             },
-          });
-        });
-      }
+            onComplete: () => {
+              elements.forEach((el, index) => {
+                if (el.hasAttribute("data-float")) {
+                  startFloating(el, index);
+                }
+                const floatingChildren = el.querySelectorAll("[data-float]");
+                floatingChildren.forEach((child, cIndex) => {
+                  startFloating(child, cIndex);
+                });
+              });
+            },
+          }
+        );
+      };
+
+      reveal(heroRef.current);
+      reveal(
+        capabilitiesRefs.current[0]?.parentElement as HTMLElement | null,
+        "top 82%"
+      );
+      reveal(automationLeftRef.current?.parentElement as HTMLElement | null, "top 82%");
+      reveal(securityRefs.current[0]?.parentElement as HTMLElement | null, "top 84%");
+      reveal(ctaRef.current, "top 88%");
 
       const glowEls = section.querySelectorAll("[data-glow]");
       if (glowEls.length) {

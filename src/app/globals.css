@@ -123,8 +123,8 @@
 
   /* Custom Selection Color */
   ::selection {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: #e0aaff;
+    color: #003049;
   }
 
   /* Custom Scrollbar */
@@ -144,5 +144,10 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.2);
+  }
+
+  [data-float],
+  .animate-gpu {
+    will-change: transform, opacity;
   }
 }

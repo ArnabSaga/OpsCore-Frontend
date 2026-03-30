@@ -108,57 +108,56 @@ export default function AboutComponents() {
 
   useEffect(() => {
     const section = sectionRef.current;
-    const hero = heroRef.current;
-    const story = storyRef.current;
-    const pillars = pillarsRef.current;
-    const outcomesBlock = outcomesRef.current;
-    const cta = ctaRef.current;
-
-    if (!section || !hero || !story || !pillars || !outcomesBlock || !cta) return;
+    if (!section) return;
 
     const ctx = gsap.context(() => {
-      const reveal = (target: Element | Element[] | NodeListOf<Element>, trigger: Element) => {
+      const startFloating = (node: Element, index: number) => {
+        gsap.to(node, {
+          y: index % 2 === 0 ? -5 : 5,
+          duration: 3 + index * 0.2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          overwrite: "auto",
+        });
+      };
+
+      const reveal = (trigger: HTMLElement | null) => {
+        if (!trigger) return;
+        const elements = Array.from(trigger.children);
+
         gsap.fromTo(
-          target,
-          { opacity: 0, y: 28 },
+          elements,
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.85,
-            stagger: 0.12,
-            ease: "power4.out",
+            duration: 1.05,
+            stagger: 0.1,
+            ease: "expo.out",
             force3D: true,
+            overwrite: "auto",
             scrollTrigger: {
               trigger,
               start: "top 84%",
               once: true,
             },
+            onComplete: () => {
+              elements.forEach((el, index) => {
+                if (el.hasAttribute("data-float")) {
+                  startFloating(el, index);
+                }
+              });
+            },
           }
         );
       };
 
-      reveal(Array.from(hero.children), hero);
-      reveal(Array.from(story.children), story);
-      reveal(Array.from(pillars.children), pillars);
-      reveal(Array.from(outcomesBlock.children), outcomesBlock);
-      reveal(Array.from(cta.children), cta);
-
-      const floatingNodes = section.querySelectorAll("[data-float]");
-      floatingNodes.forEach((node, index) => {
-        gsap.to(node, {
-          y: index % 2 === 0 ? -8 : 8,
-          duration: 3 + index * 0.2,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          force3D: true,
-          delay: 1.2,
-          scrollTrigger: {
-            trigger: node,
-            start: "top 84%",
-          },
-        });
-      });
+      reveal(heroRef.current);
+      reveal(storyRef.current);
+      reveal(pillarsRef.current);
+      reveal(outcomesRef.current);
+      reveal(ctaRef.current);
     }, section);
 
     return () => ctx.revert();
@@ -277,8 +276,7 @@ export default function AboutComponents() {
               return (
                 <div
                   key={item.title}
-                  data-float
-                  className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.68)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.26)] backdrop-blur-2xl"
+                className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.68)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.26)] backdrop-blur-2xl"
                 >
                   <div className="pointer-events-none absolute inset-x-10 bottom-0 h-20 rounded-full bg-[#7F56D9]/14 blur-3xl" />
                   <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
@@ -319,7 +317,6 @@ export default function AboutComponents() {
               return (
                 <div
                   key={item.title}
-                  data-float
                   className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.7)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl"
                 >
                   <div className="pointer-events-none absolute inset-x-8 top-0 h-20 rounded-full bg-[#8E72FF]/16 blur-3xl" />
@@ -370,7 +367,6 @@ export default function AboutComponents() {
             {outcomes.map((item) => (
               <div
                 key={item}
-                data-float
                 className="rounded-[24px] border border-white/10 bg-white/3 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl"
               >
                 <div className="flex items-start gap-3">

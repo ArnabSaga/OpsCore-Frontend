@@ -128,57 +128,56 @@ export default function HowItWorksComponents() {
 
   useEffect(() => {
     const section = sectionRef.current;
-    const hero = heroRef.current;
-    const steps = stepsRef.current;
-    const workflow = workflowRef.current;
-    const highlight = highlightRef.current;
-    const cta = ctaRef.current;
-
-    if (!section || !hero || !steps || !workflow || !highlight || !cta) return;
+    if (!section) return;
 
     const ctx = gsap.context(() => {
-      const reveal = (target: Element | NodeListOf<Element> | Element[], trigger: Element) => {
+      const startFloating = (node: Element, index: number) => {
+        gsap.to(node, {
+          y: index % 2 === 0 ? -5 : 5,
+          duration: 3 + index * 0.18,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          overwrite: "auto",
+        });
+      };
+
+      const reveal = (trigger: HTMLElement | null) => {
+        if (!trigger) return;
+        const elements = Array.from(trigger.children);
+
         gsap.fromTo(
-          target,
-          { opacity: 0, y: 28 },
+          elements,
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.85,
-            stagger: 0.12,
-            ease: "power4.out",
+            duration: 1.05,
+            stagger: 0.1,
+            ease: "expo.out",
             force3D: true,
+            overwrite: "auto",
             scrollTrigger: {
               trigger,
               start: "top 84%",
               once: true,
             },
+            onComplete: () => {
+              elements.forEach((el, index) => {
+                if (el.hasAttribute("data-float")) {
+                  startFloating(el, index);
+                }
+              });
+            },
           }
         );
       };
 
-      reveal(Array.from(hero.children), hero);
-      reveal(Array.from(steps.children), steps);
-      reveal(Array.from(workflow.children), workflow);
-      reveal(Array.from(highlight.children), highlight);
-      reveal(Array.from(cta.children), cta);
-
-      const floatingNodes = section.querySelectorAll("[data-float]");
-      floatingNodes.forEach((node, index) => {
-        gsap.to(node, {
-          y: index % 2 === 0 ? -8 : 8,
-          duration: 3 + index * 0.18,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          force3D: true,
-          delay: 1.2,
-          scrollTrigger: {
-            trigger: node,
-            start: "top 84%",
-          },
-        });
-      });
+      reveal(heroRef.current);
+      reveal(stepsRef.current);
+      reveal(workflowRef.current);
+      reveal(highlightRef.current);
+      reveal(ctaRef.current);
     }, section);
 
     return () => ctx.revert();
@@ -237,7 +236,6 @@ export default function HowItWorksComponents() {
             return (
               <div
                 key={item.step}
-                data-float
                 className={cn(
                   "relative grid gap-6 overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-7 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:p-8 lg:grid-cols-[0.3fr_1fr]",
                   isReverse && "lg:grid-cols-[1fr_0.3fr]"
@@ -330,7 +328,6 @@ export default function HowItWorksComponents() {
               return (
                 <div
                   key={item.title}
-                  data-float
                   className="rounded-[24px] border border-white/10 bg-white/3 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl"
                 >
                   <div className="flex items-start gap-3">
@@ -355,7 +352,6 @@ export default function HowItWorksComponents() {
             return (
               <div
                 key={item.title}
-                data-float
                 className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.7)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl"
               >
                 <div className="pointer-events-none absolute inset-x-8 top-0 h-20 rounded-full bg-[#8E72FF]/16 blur-3xl" />
