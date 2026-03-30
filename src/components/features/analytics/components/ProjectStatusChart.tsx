@@ -37,7 +37,7 @@ const ProjectStatusChart = ({ projects }: ProjectStatusChartProps) => {
           dimensions.isReady &&
           dimensions.width > 0 &&
           dimensions.height > 0 && (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width={dimensions.width} height={dimensions.height} minWidth={0} minHeight={0}>
               <PieChart>
                 <Pie data={data} dataKey="value" nameKey="name" outerRadius={92} innerRadius={55}>
                   {data.map((entry, index) => (

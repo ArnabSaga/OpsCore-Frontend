@@ -46,7 +46,7 @@ const RevenueTrendChart = ({ series }: RevenueTrendChartProps) => {
           dimensions.isReady &&
           dimensions.width > 0 &&
           dimensions.height > 0 && (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width={dimensions.width} height={dimensions.height} minWidth={0} minHeight={0}>
               <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.16)" />
                 <XAxis dataKey="month" stroke="#94A3B8" />

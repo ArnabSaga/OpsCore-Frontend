@@ -39,7 +39,7 @@ const TaskStatusChart = ({ tasks }: TaskStatusChartProps) => {
     >
       <div ref={chartContainerRef} className="h-[260px] min-w-0">
         {dimensions.isReady && dimensions.width > 0 && dimensions.height > 0 && (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width={dimensions.width} height={dimensions.height} minWidth={0} minHeight={0}>
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.16)" />
               <XAxis dataKey="name" stroke="#94A3B8" />

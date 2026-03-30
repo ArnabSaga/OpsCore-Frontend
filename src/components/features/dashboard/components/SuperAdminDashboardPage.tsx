@@ -485,7 +485,7 @@ const SuperAdminDashboardPage = () => {
                       {growthDimensions.isReady &&
                         growthDimensions.width > 0 &&
                         growthDimensions.height > 0 && (
-                          <ResponsiveContainer width="100%" height="100%">
+                          <ResponsiveContainer width={growthDimensions.width} height={growthDimensions.height} minWidth={0} minHeight={0}>
                             <BarChart
                               data={growthData}
                               margin={{ top: 16, right: 8, left: -20, bottom: 8 }}

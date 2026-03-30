@@ -55,7 +55,7 @@ const MobileNav = ({ userRole }: MobileNavProps) => {
               <div className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-[#0F172A]">
                 <div className="absolute inset-0 rounded-xl bg-[#7F56D9]/20 blur-xl" />
                 <Image
-                  src="/icons/logo.png"
+                  src="/icons/logo.svg"
                   alt="OpsCore logo"
                   width={28}
                   height={28}

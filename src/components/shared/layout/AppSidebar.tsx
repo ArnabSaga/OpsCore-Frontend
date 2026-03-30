@@ -56,15 +56,15 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
     >
       <div className="mb-6">
         <div className="flex items-center gap-3">
-          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[#0F172A] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-            <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-xl" />
+          <div className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-[#111111] shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
+            <div className="absolute inset-0 rounded-xl bg-[#7F56D9]/15 blur-lg" />
             <Image
-              src="/icons/logo.png"
+              src="/icons/logo.svg"
               alt="OpsCore logo"
-              width={36}
-              height={36}
+              width={24}
+              height={24}
               style={{ width: "auto", height: "auto" }}
-              className="relative object-contain drop-shadow-[0_6px_14px_rgba(255,255,255,0.35)]"
+              className="relative object-contain drop-shadow-[0_4px_10px_rgba(255,255,255,0.25)]"
               priority
             />
           </div>

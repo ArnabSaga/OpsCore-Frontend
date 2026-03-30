@@ -62,10 +62,10 @@ const ResendVerificationForm = () => {
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-[#7F56D9]/25 blur-xl" />
             <Image
-              src="/icons/logo.png"
+              src="/icons/logo.svg"
               alt="OpsCore Logo"
-              width={84}
-              height={84}
+              width={64}
+              height={64}
               style={{ width: "auto", height: "auto" }}
               className="relative mx-auto rounded-2xl"
               priority
