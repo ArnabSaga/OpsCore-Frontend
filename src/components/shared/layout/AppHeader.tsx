@@ -177,7 +177,7 @@ const AppHeader: React.FC<HeaderProps> = ({ user }) => {
 
               <DropdownMenuItem
                 className="cursor-pointer rounded-lg hover:bg-white/10 focus:bg-white/10"
-                onClick={() => router.push("/account/profile")}
+                onClick={() => router.push("/account")}
               >
                 <UserIcon className="mr-2 h-4 w-4" />
                 Profile

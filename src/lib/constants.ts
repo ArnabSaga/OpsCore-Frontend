@@ -50,7 +50,7 @@ export const APP_ROUTES = {
   activityLogs: "/activity-logs",
   notifications: "/notifications",
   automations: "/automations",
-  accountProfile: "/account/profile",
+  accountProfile: "/account",
   accountSecurity: "/account/security",
   settingsGeneral: "/settings/general",
   billing: "/billing",
