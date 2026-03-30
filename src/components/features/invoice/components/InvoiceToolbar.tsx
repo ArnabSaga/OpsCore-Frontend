@@ -71,7 +71,7 @@ const InvoiceToolbar = ({
               <SelectTrigger className="h-11 min-w-[180px] rounded-xl border-white/10 bg-white/5 text-white">
                 <SelectValue placeholder="Sort invoices" />
               </SelectTrigger>
-              <SelectContent className="border-white/10 bg-[#101828] text-white">
+              <SelectContent>
                 <SelectItem value="created-desc">Newest first</SelectItem>
                 <SelectItem value="created-asc">Oldest first</SelectItem>
                 <SelectItem value="due-asc">Due soonest</SelectItem>
@@ -123,7 +123,7 @@ const InvoiceToolbar = ({
             <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 text-white">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
-            <SelectContent className="border-white/10 bg-[#101828] text-white">
+            <SelectContent>
               <SelectItem value="ALL">All status</SelectItem>
               <SelectItem value="PENDING">Pending</SelectItem>
               <SelectItem value="PAID">Paid</SelectItem>
@@ -139,7 +139,7 @@ const InvoiceToolbar = ({
             <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 text-white">
               <SelectValue placeholder="Overdue" />
             </SelectTrigger>
-            <SelectContent className="border-white/10 bg-[#101828] text-white">
+            <SelectContent>
               <SelectItem value="ALL">All overdue</SelectItem>
               <SelectItem value="true">Overdue only</SelectItem>
               <SelectItem value="false">Not overdue</SelectItem>
@@ -153,7 +153,7 @@ const InvoiceToolbar = ({
             <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 text-white">
               <SelectValue placeholder="Issued" />
             </SelectTrigger>
-            <SelectContent className="border-white/10 bg-[#101828] text-white">
+            <SelectContent>
               <SelectItem value="ALL">All issue states</SelectItem>
               <SelectItem value="true">Issued</SelectItem>
               <SelectItem value="false">Draft / not issued</SelectItem>

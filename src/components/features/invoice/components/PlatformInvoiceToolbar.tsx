@@ -64,7 +64,7 @@ const PlatformInvoiceToolbar = ({
               <SelectTrigger className="h-12 min-w-[200px] rounded-[18px] border-white/10 bg-white/5 text-sm text-white hover:bg-white/8 transition-colors">
                 <SelectValue placeholder="Newest first" />
               </SelectTrigger>
-              <SelectContent className="border-white/10 bg-[#0B0F1A] text-white">
+              <SelectContent>
                 <SelectItem value="created-desc">Newest first</SelectItem>
                 <SelectItem value="created-asc">Oldest first</SelectItem>
                 <SelectItem value="due-asc">Due soonest</SelectItem>
@@ -87,7 +87,7 @@ const PlatformInvoiceToolbar = ({
               <SelectTrigger className="h-11 rounded-2xl border-white/10 bg-black/20 text-sm text-white hover:bg-black/30 transition-colors">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent className="border-white/10 bg-[#0B0F1A] text-white">
+              <SelectContent>
                 <SelectItem value="ALL">All Statuses</SelectItem>
                 <SelectItem value="PENDING">Pending</SelectItem>
                 <SelectItem value="PAID">Paid</SelectItem>
@@ -103,7 +103,7 @@ const PlatformInvoiceToolbar = ({
               <SelectTrigger className="h-11 rounded-2xl border-white/10 bg-black/20 text-sm text-white hover:bg-black/30 transition-colors">
                 <SelectValue placeholder="Overdue" />
               </SelectTrigger>
-              <SelectContent className="border-white/10 bg-[#0B0F1A] text-white">
+              <SelectContent>
                 <SelectItem value="ALL">Timeline: All</SelectItem>
                 <SelectItem value="true">Overdue only</SelectItem>
                 <SelectItem value="false">On time</SelectItem>

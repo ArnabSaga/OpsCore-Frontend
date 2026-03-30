@@ -59,7 +59,7 @@ const TaskFilters = ({
         <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 px-4 text-white">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
-        <SelectContent className="rounded-2xl border border-white/10 bg-[#101828] text-white">
+        <SelectContent>
           <SelectItem value="ALL">All statuses</SelectItem>
           <SelectItem value="TODO">To Do</SelectItem>
           <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
@@ -75,7 +75,7 @@ const TaskFilters = ({
         <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 px-4 text-white">
           <SelectValue placeholder="Priority" />
         </SelectTrigger>
-        <SelectContent className="rounded-2xl border border-white/10 bg-[#101828] text-white">
+        <SelectContent>
           <SelectItem value="ALL">All priorities</SelectItem>
           <SelectItem value="LOW">Low</SelectItem>
           <SelectItem value="MEDIUM">Medium</SelectItem>
@@ -88,7 +88,7 @@ const TaskFilters = ({
         <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 px-4 text-white">
           <SelectValue placeholder="Assignee" />
         </SelectTrigger>
-        <SelectContent className="rounded-2xl border border-white/10 bg-[#101828] text-white">
+        <SelectContent>
           <SelectItem value="ALL">All assignees</SelectItem>
           {workspaceMembers
             .filter((member) => member.status === "ACTIVE")
@@ -107,7 +107,7 @@ const TaskFilters = ({
         <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 px-4 text-white">
           <SelectValue placeholder="Overdue" />
         </SelectTrigger>
-        <SelectContent className="rounded-2xl border border-white/10 bg-[#101828] text-white">
+        <SelectContent>
           <SelectItem value="ALL">All deadlines</SelectItem>
           <SelectItem value="true">Overdue only</SelectItem>
           <SelectItem value="false">Not overdue</SelectItem>

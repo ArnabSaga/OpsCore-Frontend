@@ -108,4 +108,16 @@ export const API_ENDPOINTS = {
     projects: `${API_PREFIX}/analytics/projects`,
     revenue: `${API_PREFIX}/analytics/revenue`,
   },
+
+  notification: {
+    list: `${API_PREFIX}/notifications`,
+    unreadSummary: `${API_PREFIX}/notifications/unread-summary`,
+    preferences: `${API_PREFIX}/notifications/preferences`,
+    details: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}`,
+    markRead: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}/read`,
+    markUnread: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}/unread`,
+    archive: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}/archive`,
+    delete: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}`,
+    markAllRead: `${API_PREFIX}/notifications/read-all`,
+  },
 } as const;

@@ -37,7 +37,7 @@ const ProjectFilters = ({
         <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 px-4 text-white">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
-        <SelectContent className="rounded-2xl border border-white/10 bg-[#101828] text-white">
+        <SelectContent>
           <SelectItem value="ALL">All statuses</SelectItem>
           <SelectItem value="ACTIVE">Active</SelectItem>
           <SelectItem value="COMPLETED">Completed</SelectItem>
@@ -53,7 +53,7 @@ const ProjectFilters = ({
         <SelectTrigger className="h-11 rounded-xl border-white/10 bg-white/5 px-4 text-white">
           <SelectValue placeholder="Archive mode" />
         </SelectTrigger>
-        <SelectContent className="rounded-2xl border border-white/10 bg-[#101828] text-white">
+        <SelectContent>
           <SelectItem value="false">Active projects</SelectItem>
           <SelectItem value="true">Archived projects</SelectItem>
         </SelectContent>
