@@ -14,6 +14,7 @@ import type { PlatformMetricsPeriod } from "@/types/dashboard.types";
 import { ArrowUpRight, Briefcase, CreditCard, Receipt, Sparkles, Users } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
+import { useContainerDimensions } from "@/hooks/useContainerDimensions";
 import {
   ResponsiveContainer,
   BarChart,
@@ -49,6 +50,8 @@ const resolveMetricValue = (point?: GrowthMetricLike | null) => {
 const SuperAdminDashboardPage = () => {
   const rootRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<HTMLDivElement>(null);
+  const growthChartContainerRef = useRef<HTMLDivElement>(null);
+  const growthDimensions = useContainerDimensions(growthChartContainerRef);
   const [metricPeriod, setMetricPeriod] = useState<PlatformMetricsPeriod>("last_30_days");
 
   const {
@@ -475,120 +478,124 @@ const SuperAdminDashboardPage = () => {
                     </div>
                   </div>
 
-                    <div className="relative h-[340px] w-full min-h-0 min-w-0">
+                    <div ref={growthChartContainerRef} className="relative h-[340px] w-full min-h-0 min-w-0">
                       <div className="pointer-events-none absolute inset-x-8 bottom-10 h-10 rounded-full bg-[#FF4DDF]/25 blur-2xl" />
                       <div className="pointer-events-none absolute inset-x-12 bottom-9 h-[2px] bg-linear-to-r from-transparent via-[#FF4DDF]/80 to-transparent opacity-70" />
 
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                        data={growthData}
-                        margin={{ top: 16, right: 8, left: -20, bottom: 8 }}
-                        barGap={14}
-                        barCategoryGap="18%"
-                      >
-                        <defs>
-                          <linearGradient id="usersNeonBar" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#C084FC" stopOpacity={0.95} />
-                            <stop offset="55%" stopColor="#8B5CF6" stopOpacity={0.88} />
-                            <stop offset="100%" stopColor="#2A133D" stopOpacity={0.35} />
-                          </linearGradient>
+                      {growthDimensions.isReady &&
+                        growthDimensions.width > 0 &&
+                        growthDimensions.height > 0 && (
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={growthData}
+                              margin={{ top: 16, right: 8, left: -20, bottom: 8 }}
+                              barGap={14}
+                              barCategoryGap="18%"
+                            >
+                              <defs>
+                                <linearGradient id="usersNeonBar" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#C084FC" stopOpacity={0.95} />
+                                  <stop offset="55%" stopColor="#8B5CF6" stopOpacity={0.88} />
+                                  <stop offset="100%" stopColor="#2A133D" stopOpacity={0.35} />
+                                </linearGradient>
 
-                          <linearGradient id="workspaceNeonBar" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#F472B6" stopOpacity={1} />
-                            <stop offset="55%" stopColor="#D946EF" stopOpacity={0.92} />
-                            <stop offset="100%" stopColor="#3B0D2E" stopOpacity={0.35} />
-                          </linearGradient>
+                                <linearGradient id="workspaceNeonBar" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#F472B6" stopOpacity={1} />
+                                  <stop offset="55%" stopColor="#D946EF" stopOpacity={0.92} />
+                                  <stop offset="100%" stopColor="#3B0D2E" stopOpacity={0.35} />
+                                </linearGradient>
 
-                          <linearGradient id="subscriptionNeonBar" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#E9D5FF" stopOpacity={0.95} />
-                            <stop offset="55%" stopColor="#A855F7" stopOpacity={0.85} />
-                            <stop offset="100%" stopColor="#24103A" stopOpacity={0.3} />
-                          </linearGradient>
+                                <linearGradient id="subscriptionNeonBar" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#E9D5FF" stopOpacity={0.95} />
+                                  <stop offset="55%" stopColor="#A855F7" stopOpacity={0.85} />
+                                  <stop offset="100%" stopColor="#24103A" stopOpacity={0.3} />
+                                </linearGradient>
 
-                          <filter id="pinkGlow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="4" result="blur" />
-                            <feMerge>
-                              <feMergeNode in="blur" />
-                              <feMergeNode in="SourceGraphic" />
-                            </feMerge>
-                          </filter>
-                        </defs>
+                                <filter id="pinkGlow" x="-50%" y="-50%" width="200%" height="200%">
+                                  <feGaussianBlur stdDeviation="4" result="blur" />
+                                  <feMerge>
+                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                  </feMerge>
+                                </filter>
+                              </defs>
 
-                        <CartesianGrid
-                          vertical={false}
-                          stroke="rgba(255,255,255,0.05)"
-                          strokeDasharray="4 6"
-                        />
+                              <CartesianGrid
+                                vertical={false}
+                                stroke="rgba(255,255,255,0.05)"
+                                strokeDasharray="4 6"
+                              />
 
-                        <XAxis
-                          dataKey="label"
-                          stroke="#667085"
-                          fontSize={11}
-                          tickLine={false}
-                          axisLine={false}
-                          dy={10}
-                        />
+                              <XAxis
+                                dataKey="label"
+                                stroke="#667085"
+                                fontSize={11}
+                                tickLine={false}
+                                axisLine={false}
+                                dy={10}
+                              />
 
-                        <YAxis
-                          stroke="#667085"
-                          fontSize={11}
-                          tickLine={false}
-                          axisLine={false}
-                          allowDecimals={false}
-                        />
+                              <YAxis
+                                stroke="#667085"
+                                fontSize={11}
+                                tickLine={false}
+                                axisLine={false}
+                                allowDecimals={false}
+                              />
 
-                        <Tooltip
-                          cursor={{ fill: "rgba(255,255,255,0.04)" }}
-                          contentStyle={{
-                            background: "rgba(12, 17, 29, 0.88)",
-                            border: "1px solid rgba(255,255,255,0.08)",
-                            borderRadius: "18px",
-                            boxShadow: "0 12px 40px rgba(0,0,0,0.45)",
-                            backdropFilter: "blur(16px)",
-                            color: "#FFFFFF",
-                          }}
-                          labelStyle={{ color: "#E2E8F0", marginBottom: "6px" }}
-                          itemStyle={{ color: "#C7D7FE" }}
-                        />
+                              <Tooltip
+                                cursor={{ fill: "rgba(255,255,255,0.04)" }}
+                                contentStyle={{
+                                  background: "rgba(12, 17, 29, 0.88)",
+                                  border: "1px solid rgba(255,255,255,0.08)",
+                                  borderRadius: "18px",
+                                  boxShadow: "0 12px 40px rgba(0,0,0,0.45)",
+                                  backdropFilter: "blur(16px)",
+                                  color: "#FFFFFF",
+                                }}
+                                labelStyle={{ color: "#E2E8F0", marginBottom: "6px" }}
+                                itemStyle={{ color: "#C7D7FE" }}
+                              />
 
-                        <Legend
-                          wrapperStyle={{ paddingTop: "18px" }}
-                          iconType="circle"
-                          formatter={(value) => (
-                            <span className="text-xs font-medium text-[#94A3B8]">{value}</span>
-                          )}
-                        />
+                              <Legend
+                                wrapperStyle={{ paddingTop: "18px" }}
+                                iconType="circle"
+                                formatter={(value) => (
+                                  <span className="text-xs font-medium text-[#94A3B8]">{value}</span>
+                                )}
+                              />
 
-                        <Bar
-                          dataKey="users"
-                          name="Users"
-                          fill="url(#usersNeonBar)"
-                          radius={[10, 10, 4, 4]}
-                          maxBarSize={28}
-                          filter="url(#pinkGlow)"
-                          isAnimationActive={false}
-                        />
-                        <Bar
-                          dataKey="workspaces"
-                          name="Workspaces"
-                          fill="url(#workspaceNeonBar)"
-                          radius={[10, 10, 4, 4]}
-                          maxBarSize={28}
-                          filter="url(#pinkGlow)"
-                          isAnimationActive={false}
-                        />
-                        <Bar
-                          dataKey="subscriptions"
-                          name="Subscriptions"
-                          fill="url(#subscriptionNeonBar)"
-                          radius={[10, 10, 4, 4]}
-                          maxBarSize={28}
-                          filter="url(#pinkGlow)"
-                          isAnimationActive={false}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+                              <Bar
+                                dataKey="users"
+                                name="Users"
+                                fill="url(#usersNeonBar)"
+                                radius={[10, 10, 4, 4]}
+                                maxBarSize={28}
+                                filter="url(#pinkGlow)"
+                                isAnimationActive={false}
+                              />
+                              <Bar
+                                dataKey="workspaces"
+                                name="Workspaces"
+                                fill="url(#workspaceNeonBar)"
+                                radius={[10, 10, 4, 4]}
+                                maxBarSize={28}
+                                filter="url(#pinkGlow)"
+                                isAnimationActive={false}
+                              />
+                              <Bar
+                                dataKey="subscriptions"
+                                name="Subscriptions"
+                                fill="url(#subscriptionNeonBar)"
+                                radius={[10, 10, 4, 4]}
+                                maxBarSize={28}
+                                filter="url(#pinkGlow)"
+                                isAnimationActive={false}
+                              />
+                            </BarChart>
+                          </ResponsiveContainer>
+                        )}
+                    </div>
                 </div>
               ) : (
                 <NoTrendDataState title="Growth trend not available" />

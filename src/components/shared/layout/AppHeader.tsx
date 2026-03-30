@@ -8,6 +8,8 @@ import Breadcrumbs from "@/components/shared/layout/Breadcrumbs";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import { useLogout } from "@/components/features/auth/hooks/useLogout";
 import type { User } from "@/components/features/auth/api/auth.api";
+import MobileNav from "./MobileNav";
+import type { UserRole } from "@/lib/authUtils";
 
 import {
   DropdownMenu,
@@ -71,9 +73,20 @@ const AppHeader: React.FC<HeaderProps> = ({ user }) => {
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0B]/80 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8">
       <div className="flex items-center justify-between gap-4">
-        <div className="min-w-0 space-y-2">
-          <h1 className="truncate text-xl font-semibold text-white">{getPageTitle(pathname)}</h1>
-          <Breadcrumbs />
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="lg:hidden flex items-center">
+            <MobileNav 
+              userRole={
+                user.systemRole === "SUPER_ADMIN"
+                  ? "SUPER_ADMIN"
+                  : (activeWorkspace?.role as UserRole) ?? user.systemRole ?? null
+              } 
+            />
+          </div>
+          <div className="min-w-0 space-y-1">
+            <h1 className="truncate text-lg font-semibold text-white sm:text-xl">{getPageTitle(pathname)}</h1>
+            <Breadcrumbs />
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
