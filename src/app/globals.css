@@ -121,6 +121,12 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
+  /* Custom Selection Color */
+  ::selection {
+    background-color: #000000;
+    color: #ffffff;
+  }
+
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
