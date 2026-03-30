@@ -111,6 +111,11 @@ export const API_ENDPOINTS = {
     revenue: `${API_PREFIX}/analytics/revenue`,
   },
 
+  platform: {
+    subscriptions: `${API_PREFIX}/platform/subscriptions`,
+    logs: `${API_PREFIX}/platform/logs`,
+  },
+
   notification: {
     list: `${API_PREFIX}/notifications`,
     unreadSummary: `${API_PREFIX}/notifications/unread-summary`,

@@ -6,4 +6,11 @@ export const platformQueryKeys = {
 
   users: (query: { search?: string; page?: number }) =>
     ["platform-users", query] as const,
+
+  subscriptions: (query: { search?: string; page?: number }) =>
+    ["platform-subscriptions", query] as const,
+
+  logs: (query: { search?: string; page?: number }) =>
+    ["platform-logs", query] as const,
 } as const;
+
