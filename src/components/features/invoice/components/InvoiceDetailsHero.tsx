@@ -67,17 +67,21 @@ const InvoiceDetailsHero = ({ invoice }: InvoiceDetailsHeroProps) => {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 xl:w-[360px]">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-[#94A3B8]">
-            <div className="flex items-center gap-2">
-              <User2 className="h-4 w-4 text-[#CBB5FF]" />
-              <span>{invoice.customerName || "No customer name"}</span>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-[#94A3B8] overflow-hidden">
+            <div className="flex items-center gap-2 min-w-0">
+              <User2 className="h-4 w-4 shrink-0 text-[#CBB5FF]" />
+              <span className="truncate" title={invoice.customerName || "No customer name"}>
+                {invoice.customerName || "No customer name"}
+              </span>
+            </div>
+            <div className="mt-3 flex items-center gap-2 min-w-0">
+              <Mail className="h-4 w-4 shrink-0 text-[#CBB5FF]" />
+              <span className="truncate" title={invoice.customerEmail || "No customer email"}>
+                {invoice.customerEmail || "No customer email"}
+              </span>
             </div>
             <div className="mt-3 flex items-center gap-2">
-              <Mail className="h-4 w-4 text-[#CBB5FF]" />
-              <span>{invoice.customerEmail || "No customer email"}</span>
-            </div>
-            <div className="mt-3 flex items-center gap-2">
-              <CalendarClock className="h-4 w-4 text-[#CBB5FF]" />
+              <CalendarClock className="h-4 w-4 shrink-0 text-[#CBB5FF]" />
               <span>Issued {formatInvoiceDate(invoice.issuedAt, "Not issued")}</span>
             </div>
           </div>
