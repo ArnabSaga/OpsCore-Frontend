@@ -103,7 +103,7 @@ export default function Footer() {
                   width={28}
                   height={28}
                   style={{ width: "auto", height: "auto" }}
-                  className="relative object-contain drop-shadow-[0_6px_18px_rgba(255,255,255,0.3)]"
+                  className="relative drop-shadow-[0_6px_18px_rgba(255,255,255,0.3)]"
                   priority
                 />
               </div>

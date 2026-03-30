@@ -28,6 +28,9 @@ export default function Header() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const navTarget = gsap.utils.toArray(navRef.current?.children || []);
+      const actionsTarget = gsap.utils.toArray(actionsRef.current?.children || []);
+
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
       });
@@ -38,7 +41,7 @@ export default function Header() {
         { y: 0, opacity: 1, scale: 1, duration: 0.75 }
       )
         .fromTo(
-          navRef.current?.children || [],
+          navTarget,
           { x: -20, opacity: 0 },
           { x: 0, opacity: 1, stagger: 0.08, duration: 0.45 },
           "-=0.4"
@@ -50,7 +53,7 @@ export default function Header() {
           "-=0.3"
         )
         .fromTo(
-          actionsRef.current?.children || [],
+          actionsTarget,
           { x: 16, opacity: 0 },
           { x: 0, opacity: 1, stagger: 0.08, duration: 0.4 },
           "-=0.35"
@@ -102,7 +105,8 @@ export default function Header() {
               alt="OpsCore logo"
               width={22}
               height={22}
-              className="relative object-contain"
+              className="relative"
+              style={{ width: "auto", height: "auto" }}
               priority
             />
           </div>
@@ -181,7 +185,8 @@ export default function Header() {
                         alt="OpsCore logo"
                         width={22}
                         height={22}
-                        className="relative object-contain"
+                        className="relative"
+                        style={{ width: "auto", height: "auto" }}
                       />
                     </div>
 

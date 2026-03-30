@@ -439,7 +439,8 @@ export default function HeroSection() {
                       alt="OpsCore logo"
                       width={20}
                       height={20}
-                      className="relative object-contain"
+                      className="relative"
+                      style={{ width: "auto", height: "auto" }}
                     />
                   </div>
 

@@ -60,7 +60,7 @@ const MobileNav = ({ userRole }: MobileNavProps) => {
                   width={28}
                   height={28}
                   style={{ width: "auto", height: "auto" }}
-                  className="relative object-contain"
+                  className="relative"
                   priority
                 />
               </div>
