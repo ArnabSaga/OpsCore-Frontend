@@ -19,7 +19,7 @@ export const API_ENDPOINTS = {
   user: {
     profile: `${API_PREFIX}/auth/me`,
     password: `${API_PREFIX}/users/password`,
-    platformAll: `${API_PREFIX}/users/platform/all`,
+    platformAll: `${API_PREFIX}/platform/users`,
   },
 
   workspace: {
