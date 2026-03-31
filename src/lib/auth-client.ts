@@ -1,15 +1,14 @@
-import { env } from "@/env";
 import { nextCookies } from "better-auth/next-js";
 import { createAuthClient } from "better-auth/react";
 
 const getBaseUrl = () => {
-  // Use relative path in the browser to automatically match the current origin
+  // In the browser, automatically match the current origin to form an absolute URL
   if (typeof window !== "undefined") {
-    return "/api/auth";
+    return `${window.location.origin}/api/auth`;
   }
 
   // Fallback for SSR: Normalize the app URL to remove any trailing slashes
-  const appUrl = env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   return `${appUrl.replace(/\/+$/, "")}/api/auth`;
 };
 
@@ -28,7 +27,7 @@ const getAppUrl = () => {
   if (typeof window !== "undefined") return window.location.origin;
 
   // Fallback for SSR
-  if (env.NEXT_PUBLIC_APP_URL) return env.NEXT_PUBLIC_APP_URL.replace(/\/+$/, "");
+  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL.replace(/\/+$/, "");
 
   return "http://localhost:3000";
 };
