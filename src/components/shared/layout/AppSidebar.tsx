@@ -5,11 +5,10 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-import NavMenu from "./NavMenu";
 import WorkspaceSwitcher from "@/components/features/workspace/components/WorkspaceSwitcher";
-import { DASHBOARD_NAV_GROUPS, PLATFORM_NAV_GROUPS, canAccessNavItem } from "@/lib/constants";
-
 import { UserRole } from "@/lib/authUtils";
+import { DASHBOARD_NAV_GROUPS, PLATFORM_NAV_GROUPS, canAccessNavItem } from "@/lib/constants";
+import NavMenu from "./NavMenu";
 
 type AppSidebarProps = {
   userRole?: UserRole | null;
@@ -32,7 +31,7 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
 
       if (groupRefs.current.length) {
         gsap.fromTo(
-          groupRefs.current,
+          groupRefs.current.filter(Boolean),
           { y: 8, opacity: 0 },
           {
             y: 0,
@@ -49,14 +48,21 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
     return () => ctx.revert();
   }, []);
 
+  const navGroups = (userRole === "SUPER_ADMIN" ? PLATFORM_NAV_GROUPS : DASHBOARD_NAV_GROUPS)
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => canAccessNavItem(item, userRole)),
+    }))
+    .filter((group) => group.items.length > 0);
+
   return (
     <aside
       ref={sidebarRef}
-      className="sticky top-0 hidden h-screen w-[280px] border-r border-white/10 bg-[#111111]/95 px-5 py-6 lg:flex lg:flex-col"
+      className="sticky top-0 hidden h-screen w-[264px] shrink-0 border-r border-white/10 bg-[#111111]/95 px-4 py-5 xl:flex xl:flex-col 2xl:w-[280px] 2xl:px-5 2xl:py-6"
     >
-      <div className="mb-6">
+      <div className="mb-5">
         <div className="flex items-center gap-3">
-          <div className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-[#111111] shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
+          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-[#111111] shadow-[0_8px_20px_rgba(0,0,0,0.4)] 2xl:h-11 2xl:w-11">
             <div className="absolute inset-0 rounded-xl bg-[#7F56D9]/15 blur-lg" />
             <Image
               src="/icons/logo.svg"
@@ -70,23 +76,21 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
           </div>
 
           <div className="min-w-0">
-            <h2 className="truncate text-lg font-bold leading-none text-white">OpsCore</h2>
-            <p className="mt-1 text-xs text-[#94A3B8]">Workspace Manager</p>
+            <h2 className="truncate text-base font-bold leading-none text-white 2xl:text-lg">
+              OpsCore
+            </h2>
+            <p className="mt-1 truncate text-[11px] text-[#94A3B8] 2xl:text-xs">
+              Workspace Manager
+            </p>
           </div>
         </div>
 
-        {/* Workspace Switcher under logo */}
-        {userRole !== "SUPER_ADMIN" ? <WorkspaceSwitcher /> : null}
+        <div className="mt-4">{userRole !== "SUPER_ADMIN" ? <WorkspaceSwitcher /> : null}</div>
       </div>
 
-      <div className="flex-1 space-y-6 overflow-y-auto pr-1">
+      <div className="flex-1 overflow-y-auto pr-1">
         <NavMenu
-          groups={(
-            userRole === "SUPER_ADMIN" ? PLATFORM_NAV_GROUPS : DASHBOARD_NAV_GROUPS
-          ).map((group) => ({
-            ...group,
-            items: group.items.filter((item) => canAccessNavItem(item, userRole)),
-          })).filter(group => group.items.length > 0)}
+          groups={navGroups}
           pathname={pathname}
           onGroupRender={(index, el) => {
             groupRefs.current[index] = el;
@@ -94,7 +98,7 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
         />
       </div>
 
-      <div className="mt-8 rounded-xl border border-white/5 bg-white/2 p-4 text-sm text-[#94A3B8]">
+      <div className="mt-6 rounded-xl border border-white/5 bg-white/2 p-4 text-sm text-[#94A3B8]">
         <p className="font-medium text-white">OpsCore v1.0</p>
         <p className="mt-1 text-xs text-[#667085]">Multi-tenant operations platform</p>
       </div>

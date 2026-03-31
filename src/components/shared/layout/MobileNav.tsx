@@ -1,21 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import { useLogout } from "@/components/features/auth/hooks/useLogout";
+import WorkspaceSwitcher from "@/components/features/workspace/components/WorkspaceSwitcher";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
+import { UserRole } from "@/lib/authUtils";
+import { DASHBOARD_NAV_GROUPS, PLATFORM_NAV_GROUPS, canAccessNavItem } from "@/lib/constants";
+import { LogOut, Menu } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, LogOut } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import NavMenu from "./NavMenu";
-import WorkspaceSwitcher from "@/components/features/workspace/components/WorkspaceSwitcher";
-import { DASHBOARD_NAV_GROUPS, PLATFORM_NAV_GROUPS, canAccessNavItem } from "@/lib/constants";
-import { useLogout } from "@/components/features/auth/hooks/useLogout";
-import { UserRole } from "@/lib/authUtils";
 
 interface MobileNavProps {
   userRole: UserRole | null;
@@ -26,12 +21,12 @@ const MobileNav = ({ userRole }: MobileNavProps) => {
   const pathname = usePathname();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
-  const navGroups = (
-    userRole === "SUPER_ADMIN" ? PLATFORM_NAV_GROUPS : DASHBOARD_NAV_GROUPS
-  ).map((group) => ({
-    ...group,
-    items: group.items.filter((item) => canAccessNavItem(item, userRole)),
-  })).filter(group => group.items.length > 0);
+  const navGroups = (userRole === "SUPER_ADMIN" ? PLATFORM_NAV_GROUPS : DASHBOARD_NAV_GROUPS)
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => canAccessNavItem(item, userRole)),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -45,9 +40,10 @@ const MobileNav = ({ userRole }: MobileNavProps) => {
           <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
+
       <SheetContent
         side="left"
-        className="flex h-full w-[300px] flex-col border-r border-white/10 bg-[#111111] p-0 text-white"
+        className="flex h-full w-[300px] flex-col border-r border-white/10 bg-[#111111] p-0 text-white [&>button]:hidden"
       >
         <div className="flex-1 overflow-y-auto">
           <SheetHeader className="p-6">
@@ -64,23 +60,18 @@ const MobileNav = ({ userRole }: MobileNavProps) => {
                   priority
                 />
               </div>
-              <div className="min-w-0">
-                <h2 className="truncate text-base font-bold text-white">OpsCore</h2>
+
+              <div className="min-w-0 flex items-center gap-2">
+                <h2 className="shrink-0 text-base font-bold text-white">OpsCore</h2>
                 <p className="truncate text-[11px] text-[#94A3B8]">Workspace Manager</p>
               </div>
             </div>
           </SheetHeader>
 
-          <div className="px-6 py-2">
-            {userRole !== "SUPER_ADMIN" && <WorkspaceSwitcher />}
-          </div>
+          <div className="px-6 py-2">{userRole !== "SUPER_ADMIN" && <WorkspaceSwitcher />}</div>
 
           <div className="px-4 py-6">
-            <NavMenu
-              groups={navGroups}
-              pathname={pathname}
-              onNavigate={() => setOpen(false)}
-            />
+            <NavMenu groups={navGroups} pathname={pathname} onNavigate={() => setOpen(false)} />
           </div>
         </div>
 

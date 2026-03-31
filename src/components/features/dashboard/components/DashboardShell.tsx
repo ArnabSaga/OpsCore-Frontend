@@ -61,7 +61,7 @@ const DashboardShellContent = ({
           <AppHeader user={user} />
 
           <div className="flex-1 overflow-y-auto">
-            <div className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-[1600px] px-3 py-6 sm:px-6 lg:px-8">
               <NoWorkspaceState />
             </div>
           </div>
@@ -78,7 +78,7 @@ const DashboardShellContent = ({
         <AppHeader user={user} />
 
         <div ref={contentRef} className="flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+          <div className="mx-auto w-full max-w-[1600px] px-3 py-6 sm:px-6 lg:px-8">{children}</div>
         </div>
       </main>
     </div>

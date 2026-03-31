@@ -167,7 +167,7 @@ export default function AboutComponents() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative overflow-hidden bg-[#0C111D] py-24 text-white sm:py-28"
+      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
     >
       <SectionGlow />
 
@@ -182,7 +182,7 @@ export default function AboutComponents() {
             About OpsCore
           </Badge>
 
-          <h1 className="mt-6 max-w-5xl text-[2.7rem] font-semibold leading-[0.96] tracking-[-0.05em] text-white sm:text-[4rem] lg:text-[5rem]">
+          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[2.9rem] lg:text-[5rem]">
             A premium operating system
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               for modern business execution
@@ -200,7 +200,7 @@ export default function AboutComponents() {
               <div
                 key={item.value}
                 data-float
-                className="rounded-full border border-white/10 bg-white/3 px-4 py-2 text-sm backdrop-blur-xl"
+                className="rounded-full border border-white/10 bg-white/3 px-3 py-2 text-xs sm:px-4 sm:text-sm backdrop-blur-xl"
               >
                 <span className="font-semibold text-white">{item.value}</span>
                 <span className="ml-2 text-[#94A3B8]">{item.label}</span>
@@ -212,7 +212,7 @@ export default function AboutComponents() {
         {/* 2. Story / Why OpsCore */}
         <div
           ref={storyRef}
-          className="mb-16 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch sm:mb-20"
+          className="mb-12 grid gap-4 sm:gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch sm:mb-16 lg:mb-20"
         >
           <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-7 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:p-8">
             <div className="pointer-events-none absolute inset-x-12 top-0 h-24 rounded-full bg-[#8E72FF]/18 blur-3xl" />
@@ -276,7 +276,7 @@ export default function AboutComponents() {
               return (
                 <div
                   key={item.title}
-                className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.68)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.26)] backdrop-blur-2xl"
+                className="relative overflow-hidden rounded-[22px] p-4 sm:rounded-[26px] sm:p-5 lg:rounded-[28px] lg:p-6 border border-white/10 bg-[rgba(16,24,40,0.68)] shadow-[0_24px_70px_rgba(0,0,0,0.26)] backdrop-blur-2xl"
                 >
                   <div className="pointer-events-none absolute inset-x-10 bottom-0 h-20 rounded-full bg-[#7F56D9]/14 blur-3xl" />
                   <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
@@ -317,7 +317,7 @@ export default function AboutComponents() {
               return (
                 <div
                   key={item.title}
-                  className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.7)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl"
+                className="relative overflow-hidden rounded-[22px] p-4 sm:rounded-[26px] sm:p-5 lg:rounded-[28px] lg:p-6 border border-white/10 bg-[rgba(16,24,40,0.7)] shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl"
                 >
                   <div className="pointer-events-none absolute inset-x-8 top-0 h-20 rounded-full bg-[#8E72FF]/16 blur-3xl" />
                   <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />

@@ -187,7 +187,7 @@ export default function HowItWorksComponents() {
     <section
       ref={sectionRef}
       id="how-it-works-page"
-      className="relative overflow-hidden bg-[#0C111D] py-24 text-white sm:py-28"
+      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
     >
       <SectionGlow />
 
@@ -202,7 +202,7 @@ export default function HowItWorksComponents() {
             How It Works
           </Badge>
 
-          <h1 className="mt-6 max-w-5xl text-[2.7rem] font-semibold leading-[0.96] tracking-[-0.05em] text-white sm:text-[4rem] lg:text-[5rem]">
+          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[2.8rem] lg:text-[5rem]">
             A cleaner way to move
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               from structure to execution
@@ -237,8 +237,8 @@ export default function HowItWorksComponents() {
               <div
                 key={item.step}
                 className={cn(
-                  "relative grid gap-6 overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-7 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:p-8 lg:grid-cols-[0.3fr_1fr]",
-                  isReverse && "lg:grid-cols-[1fr_0.3fr]"
+                  "relative grid gap-6 overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-7 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:p-8 xl:grid-cols-[0.3fr_1fr]",
+                  isReverse && "xl:grid-cols-[1fr_0.3fr]"
                 )}
               >
                 <div className="pointer-events-none absolute inset-x-10 top-0 h-24 rounded-full bg-[#8E72FF]/16 blur-3xl" />
@@ -280,7 +280,7 @@ export default function HowItWorksComponents() {
                     ))}
                   </div>
 
-                  <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                  <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {["Cleaner ownership", "Better visibility", "Premium control"].map(
                       (benefit) => (
                         <div
@@ -301,7 +301,7 @@ export default function HowItWorksComponents() {
         {/* 3. Workflow explanation strip */}
         <div
           ref={workflowRef}
-          className="mb-16 grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center sm:mb-20"
+          className="mb-12 grid gap-4 sm:gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center sm:mb-16 lg:mb-20"
         >
           <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-7 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:p-8">
             <div className="pointer-events-none absolute inset-x-12 top-0 h-24 rounded-full bg-[#8E72FF]/18 blur-3xl" />

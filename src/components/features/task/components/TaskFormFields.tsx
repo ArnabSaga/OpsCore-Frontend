@@ -70,7 +70,7 @@ const TaskFormFields = ({
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <form.Field
           name="projectId"
           validators={{
@@ -204,7 +204,7 @@ const TaskFormFields = ({
         }}
       </form.Field>
 
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
         <form.Field name="status">
           {(field) => {
             const value = (field.state.value as TaskStatus | undefined) ?? "TODO";

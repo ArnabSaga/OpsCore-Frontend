@@ -139,11 +139,11 @@ export default function HeroSection() {
         left: "50%",
         xPercent: -50,
         top: "auto",
-        width: "min(1360px, calc(100vw - 48px))",
+        width: "min(1360px, calc(100vw - 24px))",
         maxWidth: "1360px",
-        height: "clamp(420px, 52vw, 760px)",
-        borderRadius: "36px",
-        clipPath: "inset(0% 0% 0% 0% round 36px)",
+        height: "clamp(260px, 62vw, 760px)",
+        borderRadius: "24px",
+        clipPath: "inset(0% 0% 0% 0% round 24px)",
         transformOrigin: "center center",
         zIndex: 20,
       });
@@ -246,7 +246,7 @@ export default function HeroSection() {
           start: "top top",
           end: "+=220%",
           scrub: 1.1,
-          pin: true,
+          pin: typeof window !== "undefined" && window.innerWidth >= 1024,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onEnterBack: () => {
@@ -328,7 +328,7 @@ export default function HeroSection() {
       </div>
 
       <div ref={pinWrapRef} className="relative min-h-screen">
-        <div className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 pb-10 pt-24 sm:px-6 lg:px-8 lg:pt-28">
+        <div className="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 pb-8 pt-20 sm:px-6 lg:px-8 lg:pb-10 lg:pt-28">
           <div className="mx-auto flex w-full max-w-6xl flex-col items-center text-center">
             <div
               ref={badgeRef}
@@ -342,7 +342,7 @@ export default function HeroSection() {
               ref={titleRef}
               className={cn(
                 "max-w-6xl font-semibold tracking-[-0.05em] text-white",
-                "text-[2.9rem] leading-[0.94] sm:text-[4.4rem] lg:text-[5.8rem]"
+                "text-[2.1rem] leading-[1.02] sm:text-[3.2rem] lg:text-[5.8rem]"
               )}
             >
               Run Your Entire Operation
@@ -360,7 +360,7 @@ export default function HeroSection() {
               unified system.
             </p>
 
-            <div ref={actionsRef} className="mt-9 flex flex-col items-center gap-4 sm:flex-row">
+            <div ref={actionsRef} className="mt-8 flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center">
               <Button
                 asChild
                 size="lg"
@@ -389,7 +389,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div ref={mediaShellRef} className="relative mt-12 w-full lg:mt-14">
+          <div ref={mediaShellRef} className="relative mt-10 w-full lg:mt-14">
             <div
               ref={mediaFrameRef}
               className={cn(
@@ -460,7 +460,7 @@ export default function HeroSection() {
                 </p>
               </div>
 
-              <div className="absolute right-6 top-6 z-20 hidden gap-3 xl:flex">
+              <div className="absolute right-6 top-6 z-20 hidden gap-3 lg:flex">
                 <div className="rounded-2xl border border-white/10 bg-[rgba(12,17,29,0.52)] px-4 py-3 backdrop-blur-xl">
                   <div className="flex items-center gap-3">
                     <div className="rounded-xl bg-[#7F56D9]/15 p-2 text-[#C4B5FD]">
@@ -488,7 +488,7 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              <div className="absolute right-6 bottom-6 z-20 hidden max-w-sm rounded-[24px] border border-white/10 bg-[rgba(12,17,29,0.5)] p-4 backdrop-blur-xl lg:block">
+              <div className="absolute right-6 bottom-6 z-20 hidden max-w-sm rounded-[24px] border border-white/10 bg-[rgba(12,17,29,0.5)] p-4 backdrop-blur-xl xl:block">
                 <div className="flex items-start gap-3">
                   <div className="rounded-xl bg-emerald-500/15 p-2 text-emerald-400">
                     <ShieldCheck className="h-4 w-4" />
@@ -503,7 +503,7 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              <div className="absolute left-1/2 top-4 z-20 hidden -translate-x-1/2 xl:block">
+              <div className="absolute left-1/2 top-4 z-20 hidden -translate-x-1/2 lg:block">
                 <div className="rounded-full border border-white/10 bg-[rgba(12,17,29,0.45)] px-4 py-2 backdrop-blur-xl">
                   <div className="flex items-center gap-2 text-sm text-white/80">
                     <BarChart3 className="h-4 w-4 text-[#7F56D9]" />

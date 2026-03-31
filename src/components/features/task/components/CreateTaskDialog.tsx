@@ -3,6 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { CalendarDays, FileText, Plus, Type, User2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { useCreateTask } from "@/components/features/task/hooks/useCreateTask";
 import { createTaskSchema } from "@/components/features/task/validations/task.validation";
@@ -73,7 +74,9 @@ const CreateTaskDialog = ({
       });
 
       if (!parsed.success) {
-        setSubmitError(parsed.error.errors[0]?.message || "Invalid form data.");
+        const message = parsed.error.issues[0]?.message || "Invalid form data.";
+        setSubmitError(message);
+        toast.error(message);
         return;
       }
 
@@ -163,7 +166,7 @@ const CreateTaskDialog = ({
             )}
           </form.Field>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <form.Field name="assignedToUserId">
               {(field) => (
                 <div className="space-y-2">

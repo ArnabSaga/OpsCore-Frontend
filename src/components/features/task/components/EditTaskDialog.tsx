@@ -3,6 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { CalendarDays, FileText, Pencil, Type, User2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { useUpdateTask } from "@/components/features/task/hooks/useUpdateTask";
 import { updateTaskSchema } from "@/components/features/task/validations/task.validation";
@@ -71,7 +72,9 @@ const EditTaskDialog = ({ open, onOpenChange, task, workspaceMembers }: EditTask
 
       const parsed = updateTaskSchema.safeParse(value);
       if (!parsed.success) {
-        setSubmitError(parsed.error.errors[0]?.message || "Invalid form data.");
+        const message = parsed.error.issues[0]?.message || "Invalid form data.";
+        setSubmitError(message);
+        toast.error(message);
         return;
       }
 

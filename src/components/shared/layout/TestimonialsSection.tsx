@@ -146,7 +146,7 @@ function TestimonialCard({ item }: { item: Testimonial }) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-[24px] border border-white/10 bg-[rgba(16,24,40,0.7)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl",
+        "relative overflow-hidden rounded-[20px] border border-white/10 bg-[rgba(16,24,40,0.7)] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:rounded-[24px] sm:p-5",
         "transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_30px_80px_rgba(0,0,0,0.36)]",
         item.featured && "bg-[rgba(22,24,54,0.82)]"
       )}
@@ -277,7 +277,7 @@ export default function TestimonialsSection() {
     <section
       ref={sectionRef}
       id="testimonials"
-      className="relative overflow-hidden bg-[#0C111D] py-24 text-white sm:py-28"
+      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl" />
@@ -289,14 +289,14 @@ export default function TestimonialsSection() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headerRef}
-          className="mx-auto mb-14 flex max-w-4xl flex-col items-center text-center sm:mb-16"
+          className="mx-auto mb-12 flex max-w-4xl flex-col items-center text-center sm:mb-16"
         >
           <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/4 px-4 py-2 text-sm font-medium text-[#E4DFFF] backdrop-blur-xl hover:bg-white/6">
             <MessageSquareQuote className="mr-2 h-4 w-4 text-[#7F56D9]" />
             Testimonials
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2.5rem] font-semibold leading-[0.96] tracking-[-0.045em] text-white sm:text-[3.7rem] lg:text-[4.5rem]">
+          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem] lg:text-[4.5rem]">
             What teams say after
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               running operations with OpsCore
@@ -311,7 +311,7 @@ export default function TestimonialsSection() {
 
         <div
           ref={gridRef}
-          className="grid gap-5 overflow-hidden mask-[linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] lg:grid-cols-3 lg:items-start"
+          className="grid gap-4 sm:gap-5 overflow-hidden lg:grid-cols-3 lg:items-start lg:mask-[linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]"
         >
           <div ref={leftColRef} className="space-y-5 will-change-[transform,opacity]">
             {[...leftColumn, ...leftColumn, ...leftColumn].map((item, idx) => (

@@ -4,6 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { CheckCircle2, ShieldCheck, SquareKanban } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import TaskFormFields from "@/components/features/task/components/TaskFormFields";
 import { createTaskSchema } from "@/components/features/task/validations/task.validation";
@@ -93,7 +94,9 @@ const TaskForm = ({
       const parsed = createTaskSchema.safeParse(value);
 
       if (!parsed.success) {
-        setLocalSubmitError(parsed.error.errors[0]?.message || "Invalid form data.");
+        const message = parsed.error.issues[0]?.message || "Invalid form data.";
+        setLocalSubmitError(message);
+        toast.error(message);
         return;
       }
 

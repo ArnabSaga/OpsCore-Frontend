@@ -149,7 +149,7 @@ export default function WorkProcessSection() {
     <section
       ref={sectionRef}
       id="how-it-works"
-      className="relative my-14 overflow-hidden bg-[#0C111D] py-24 text-white sm:py-28"
+      className="relative my-10 overflow-hidden bg-[#0C111D] py-16 text-white sm:my-12 sm:py-20 lg:my-14 lg:py-24"
     >
       {/* ── Background decorations ── */}
       <div className="pointer-events-none absolute inset-0">
@@ -170,7 +170,7 @@ export default function WorkProcessSection() {
             Work Process
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.045em] text-white sm:text-[3.7rem] lg:text-[4.6rem]">
+          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem] lg:text-[4.6rem]">
             From setup to execution
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               in one premium operational flow
@@ -221,7 +221,7 @@ export default function WorkProcessSection() {
                   cardRefs.current[index] = el;
                 }}
                 className={cn(
-                  "relative w-full rounded-[32px] border border-white/10 bg-[rgba(16,24,40,0.6)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.25)] backdrop-blur-2xl sm:p-8 lg:p-10",
+                  "relative w-full rounded-[22px] border border-white/10 bg-[rgba(16,24,40,0.6)] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.25)] backdrop-blur-2xl sm:rounded-[28px] sm:p-6 lg:rounded-[32px] lg:p-10",
                   "transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/30 hover:shadow-[0_30px_80px_rgba(0,0,0,0.35)]",
                   "max-w-4xl mx-auto"
                 )}
@@ -235,7 +235,7 @@ export default function WorkProcessSection() {
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/40 to-transparent" />
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.06),transparent_40%,rgba(255,255,255,0.01)_100%)]" />
 
-                <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-12">
+                <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-12">
                   {/* Left: Content Area */}
                   <div className="flex-1">
                     <div className="mb-6 flex items-center justify-between">
@@ -247,10 +247,10 @@ export default function WorkProcessSection() {
                       </div>
                     </div>
 
-                    <h3 className="text-[1.85rem] font-bold leading-tight tracking-tight text-white sm:text-[2.2rem]">
+                    <h3 className="text-[1.5rem] font-bold leading-tight tracking-tight text-white sm:text-[1.9rem] lg:text-[2.2rem]">
                       {item.title}
                     </h3>
-                    <p className="mt-5 text-base leading-relaxed text-[#94A3B8] sm:text-lg">
+                    <p className="mt-4 text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8 lg:text-lg">
                       {item.description}
                     </p>
 
@@ -268,9 +268,9 @@ export default function WorkProcessSection() {
                   {/* Right: Premium Image Preview */}
                   <div
                     data-step-preview
-                    className="group relative flex-1 overflow-hidden rounded-[24px] border border-white/10 bg-[#0B1220] shadow-2xl"
+                    className="group relative flex-1 overflow-hidden rounded-[20px] border border-white/10 bg-[#0B1220] shadow-2xl sm:rounded-[24px]"
                   >
-                    <div className="relative aspect-auto min-h-[280px] sm:min-h-[340px]">
+                    <div className="relative min-h-[220px] sm:min-h-[280px] lg:min-h-[340px]">
                       <Image
                         src={item.imageSrc}
                         alt={item.title}

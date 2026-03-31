@@ -160,7 +160,7 @@ export default function ContactComponents() {
     <section
       ref={sectionRef}
       id="contact"
-      className="relative overflow-hidden bg-[#0C111D] py-24 text-white sm:py-28"
+      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
     >
       <SectionGlow />
 
@@ -175,7 +175,7 @@ export default function ContactComponents() {
             Contact OpsCore
           </Badge>
 
-          <h1 className="mt-6 max-w-5xl text-[2.7rem] font-semibold leading-[0.96] tracking-[-0.05em] text-white sm:text-[4rem] lg:text-[5rem]">
+          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[2.8rem] lg:text-[5rem]">
             Reach the right team
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               for your next operational move
@@ -201,7 +201,7 @@ export default function ContactComponents() {
         </div>
 
         {/* 2. Channel cards */}
-        <div ref={channelsRef} className="mb-16 grid gap-6 md:grid-cols-2 xl:grid-cols-3 sm:mb-20">
+        <div ref={channelsRef} className="mb-12 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3 sm:mb-16 lg:mb-20">
           {contactChannels.map((item) => {
             const Icon = item.icon;
             return (
@@ -243,9 +243,9 @@ export default function ContactComponents() {
         {/* 3. Contact form + contact facts */}
         <div
           ref={contactGridRef}
-          className="mb-16 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start sm:mb-20"
+          className="mb-12 grid gap-4 sm:gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start sm:mb-16 lg:mb-20"
         >
-          <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-7 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:p-8">
+          <div className="relative overflow-hidden rounded-[22px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:rounded-[26px] sm:p-6 lg:rounded-[30px] lg:p-7">
             <div className="pointer-events-none absolute inset-x-12 top-0 h-24 rounded-full bg-[#8E72FF]/18 blur-3xl" />
             <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
@@ -266,23 +266,23 @@ export default function ContactComponents() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Input
                     placeholder="Your name"
-                    className="h-12 rounded-2xl border-white/10 bg-white/4 text-white placeholder:text-[#94A3B8] backdrop-blur-xl"
+                    className="h-11 sm:h-12 rounded-2xl border-white/10 bg-white/4 text-white placeholder:text-[#94A3B8] backdrop-blur-xl"
                   />
                   <Input
                     placeholder="Work email"
                     type="email"
-                    className="h-12 rounded-2xl border-white/10 bg-white/4 text-white placeholder:text-[#94A3B8] backdrop-blur-xl"
+                    className="h-11 sm:h-12 rounded-2xl border-white/10 bg-white/4 text-white placeholder:text-[#94A3B8] backdrop-blur-xl"
                   />
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Input
                     placeholder="Company or team"
-                    className="h-12 rounded-2xl border-white/10 bg-white/4 text-white placeholder:text-[#94A3B8] backdrop-blur-xl"
+                    className="h-11 sm:h-12 rounded-2xl border-white/10 bg-white/4 text-white placeholder:text-[#94A3B8] backdrop-blur-xl"
                   />
                   <Input
                     placeholder="What can we help with?"
-                    className="h-12 rounded-2xl border-white/10 bg-white/4 text-white placeholder:text-[#94A3B8] backdrop-blur-xl"
+                    className="h-11 sm:h-12 rounded-2xl border-white/10 bg-white/4 text-white placeholder:text-[#94A3B8] backdrop-blur-xl"
                   />
                 </div>
 
@@ -386,7 +386,7 @@ export default function ContactComponents() {
                 visibility, and operational structure can come together in one system.
               </p>
 
-              <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+              <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <Button
                   asChild
                   className={cn(

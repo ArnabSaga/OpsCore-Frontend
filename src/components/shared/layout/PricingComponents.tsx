@@ -245,7 +245,7 @@ export default function PricingComponents() {
     <section
       ref={sectionRef}
       id="pricing-page"
-      className="relative overflow-hidden bg-[#0C111D] py-24 text-white sm:py-28"
+      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
     >
       <SectionGlow />
 
@@ -260,7 +260,7 @@ export default function PricingComponents() {
             Pricing
           </Badge>
 
-          <h1 className="mt-6 max-w-5xl text-[2.7rem] font-semibold leading-[0.96] tracking-[-0.05em] text-white sm:text-[4rem] lg:text-[5rem]">
+          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[2.8rem] lg:text-[5rem]">
             Pricing built for
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               serious operational growth
@@ -316,7 +316,7 @@ export default function PricingComponents() {
             </div>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {pricingPlans.map((plan: PricingPlan) => {
               const Icon = plan.icon;
               const currentPrice = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
@@ -325,7 +325,7 @@ export default function PricingComponents() {
                 <div
                   key={plan.id}
                   className={cn(
-                    "group relative overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl",
+                    "group relative overflow-hidden rounded-[22px] p-4 sm:rounded-[26px] sm:p-5 lg:rounded-[30px] lg:p-6 border border-white/10 bg-[rgba(16,24,40,0.72)] shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl",
                     "transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.38)]",
                     plan.highlighted && "border-[#8B6CFF]/25 bg-[rgba(25,22,52,0.8)]"
                   )}
@@ -363,7 +363,7 @@ export default function PricingComponents() {
                     </p>
 
                     <div className="mt-6 flex items-end gap-2">
-                      <span className="text-[3rem] font-semibold leading-none tracking-[-0.04em] text-white">
+                      <span className="text-[2.4rem] font-semibold leading-none tracking-[-0.04em] text-white sm:text-[3rem]">
                         {formatPrice(currentPrice)}
                       </span>
                       <span className="pb-1 text-sm text-[#94A3B8]">
@@ -423,7 +423,7 @@ export default function PricingComponents() {
         </div>
 
         {/* 3. Highlights / why pricing works */}
-        <div ref={highlightsRef} className="mb-16 grid gap-6 md:grid-cols-3 sm:mb-20">
+        <div ref={highlightsRef} className="mb-12 grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3 sm:mb-16 lg:mb-20">
           {pricingHighlights.map((item: (typeof pricingHighlights)[number]) => {
             const Icon = item.icon;
             return (
@@ -454,7 +454,7 @@ export default function PricingComponents() {
         {/* 4. Comparison / CTA */}
         <div
           ref={comparisonRef}
-          className="mb-12 grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-start"
+          className="mb-12 grid gap-4 sm:gap-6 xl:grid-cols-[0.95fr_1.05fr] xl:items-start"
         >
           <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-7 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:p-8">
             <div className="pointer-events-none absolute inset-x-12 top-0 h-24 rounded-full bg-[#8E72FF]/18 blur-3xl" />

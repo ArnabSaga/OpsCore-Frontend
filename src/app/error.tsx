@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { env } from '@/env';
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import { useEffect } from "react";
 
@@ -34,7 +35,7 @@ export default function Error({
         </p>
 
         {/* Error message (only helpful during dev) */}
-        {process.env.NODE_ENV !== "production" && (
+        {env.NODE_ENV !== "production" && (
           <div className="mt-4 rounded-lg border border-white/10 bg-black/40 p-3 text-left text-xs text-red-400">
             {error.message}
           </div>

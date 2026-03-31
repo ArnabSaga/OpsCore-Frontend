@@ -127,7 +127,7 @@ function FeatureHero() {
         OpsCore Features
       </Badge>
 
-      <h1 className="mt-6 max-w-6xl text-[2.8rem] font-semibold leading-[0.94] tracking-[-0.05em] text-white sm:text-[4.4rem] lg:text-[5.6rem]">
+      <h1 className="mt-6 max-w-6xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem] lg:text-[5.2rem]">
         A premium operating system
         <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
           for modern business execution
@@ -188,7 +188,7 @@ function CoreCapabilitiesSection({
         </p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-4">
         {coreCapabilities.map((item, index) => {
           const Icon = item.icon;
 
@@ -198,7 +198,7 @@ function CoreCapabilitiesSection({
               ref={(el) => {
                 cardRefs.current[index] = el;
               }}
-              className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-6 shadow-[0_26px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.36)]"
+              className="group relative overflow-hidden rounded-[22px] p-4 sm:rounded-[26px] sm:p-5 lg:rounded-[28px] lg:p-6 border border-white/10 bg-[rgba(16,24,40,0.72)] shadow-[0_26px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.36)]"
             >
               <div
                 data-glow
@@ -245,7 +245,7 @@ function AutomationSection({
   rightRef: React.RefObject<HTMLDivElement | null>;
 }) {
   return (
-    <div className="mt-24 grid gap-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-stretch">
+    <div className="mt-16 grid gap-4 sm:gap-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-stretch">
       <div
         ref={leftRef}
         className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[rgba(16,24,40,0.74)] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-8"
@@ -394,7 +394,7 @@ function SecuritySection({ refs }: { refs: React.MutableRefObject<(HTMLDivElemen
         </p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
         {securityPillars.map((item, index) => {
           const Icon = item.icon;
 
@@ -404,7 +404,7 @@ function SecuritySection({ refs }: { refs: React.MutableRefObject<(HTMLDivElemen
               ref={(el) => {
                 refs.current[index] = el;
               }}
-              className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.36)]"
+              className="relative overflow-hidden rounded-[22px] p-4 sm:rounded-[26px] sm:p-5 lg:rounded-[28px] lg:p-6 border border-white/10 bg-[rgba(16,24,40,0.72)] shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.36)]"
             >
               <div
                 data-glow
@@ -569,7 +569,7 @@ export default function FeatureComponents() {
   }, []);
 
   return (
-    <SectionShell className="py-24 sm:py-28">
+    <SectionShell className="py-16 sm:py-20 lg:py-24">
       <div ref={sectionRef}>
         <div ref={heroRef}>
           <FeatureHero />

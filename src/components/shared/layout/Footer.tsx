@@ -90,8 +90,8 @@ export default function Footer() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.95),rgba(0,0,0,0.45),transparent)]" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-14 sm:px-6 lg:px-8 lg:pt-20">
-        <div ref={topRowRef} className="grid gap-10 lg:grid-cols-[1.25fr_auto_auto]">
+      <div className="relative mx-auto max-w-7xl px-4 pb-6 pt-12 sm:px-6 sm:pb-8 lg:px-8 lg:pt-20">
+        <div ref={topRowRef} className="grid gap-8 lg:grid-cols-[1.25fr_auto_auto]">
           {/* brand */}
           <div ref={brandRef} className="max-w-sm">
             <Link href="/" className="inline-flex items-center gap-3">
@@ -176,7 +176,7 @@ export default function Footer() {
 
         {/* giant background word */}
         <div ref={wordmarkRef} className="relative mt-14 select-none overflow-hidden py-6">
-          <h2 className="text-center text-[4.5rem] font-black uppercase leading-none tracking-[0.12em] text-white/[0.07] sm:text-[7rem] md:text-[9rem] lg:text-[12rem]">
+          <h2 className="text-center text-[3rem] font-black uppercase leading-none tracking-[0.12em] text-white/[0.07] sm:text-[5rem] md:text-[7rem] lg:text-[12rem]">
             OPSCORE
           </h2>
         </div>
@@ -186,7 +186,7 @@ export default function Footer() {
         {/* bottom pill bar */}
         <div
           ref={bottomBarRef}
-          className="flex flex-col gap-4 rounded-[28px] border border-white/10 bg-[#0B1120]/80 px-5 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl md:flex-row md:items-center md:justify-between md:px-6"
+          className="flex flex-col gap-4 rounded-[24px] border border-white/10 bg-[#0B1120]/80 px-4 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl lg:flex-row lg:items-center lg:justify-between lg:px-6"
         >
           <p className="text-sm text-[#C7CAD4]">
             © 2026 All rights reserved. Designed for{" "}

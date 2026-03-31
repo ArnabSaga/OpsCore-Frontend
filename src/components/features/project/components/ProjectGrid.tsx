@@ -11,7 +11,7 @@ const ProjectGrid = ({ projects }: ProjectGridProps) => {
     <section
       className={cn(
         "grid grid-cols-1 gap-5",
-        projects.length === 1 ? "mx-auto max-w-xl" : "xl:grid-cols-2 2xl:grid-cols-3"
+        projects.length === 1 ? "mx-auto max-w-xl" : "md:grid-cols-2 2xl:grid-cols-3"
       )}
     >
       {projects.map((project) => (

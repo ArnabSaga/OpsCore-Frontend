@@ -71,7 +71,7 @@ const AppHeader: React.FC<HeaderProps> = ({ user }) => {
   const initials = getInitials(user?.name);
 
   return (
-    <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0B]/80 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0B]/80 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 min-w-0">
           <div className="lg:hidden flex items-center">
@@ -84,13 +84,13 @@ const AppHeader: React.FC<HeaderProps> = ({ user }) => {
             />
           </div>
           <div className="min-w-0 space-y-1">
-            <h1 className="truncate text-lg font-semibold text-white sm:text-xl">{getPageTitle(pathname)}</h1>
+            <h1 className="truncate text-base font-semibold text-white sm:text-lg lg:text-xl">{getPageTitle(pathname)}</h1>
             <Breadcrumbs />
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex">
+          <div className="hidden lg:flex">
             {user?.systemRole === "SUPER_ADMIN" ? (
               <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/3 px-3 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
                 <div className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-[#0F172A]">
@@ -137,7 +137,7 @@ const AppHeader: React.FC<HeaderProps> = ({ user }) => {
                   <AvatarFallback className="bg-[#1D2939] text-white">{initials}</AvatarFallback>
                 </Avatar>
 
-                <div className="hidden flex-col items-start text-sm sm:flex">
+                <div className="hidden flex-col items-start text-sm md:flex">
                   <span className="max-w-[140px] truncate font-medium text-white">
                     {user?.name}
                   </span>

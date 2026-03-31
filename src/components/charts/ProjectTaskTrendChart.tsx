@@ -111,6 +111,7 @@ const ProjectTaskTrendChart = ({ projects, tasks }: ProjectTaskTrendChartProps) 
                   axisLine={false}
                   tickLine={false}
                   dy={8}
+                  minTickGap={30}
                 />
                 <YAxis
                   tick={{ fill: "#94A3B8", fontSize: 11 }}

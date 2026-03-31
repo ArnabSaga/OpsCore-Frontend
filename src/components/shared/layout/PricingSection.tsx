@@ -238,7 +238,7 @@ export default function PricingSection() {
     <section
       ref={sectionRef}
       id="pricing"
-      className="relative overflow-hidden bg-[#0C111D] py-24 text-white sm:py-28"
+      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl" />
@@ -257,7 +257,7 @@ export default function PricingSection() {
             Pricing
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2.5rem] font-semibold leading-[0.96] tracking-[-0.045em] text-white sm:text-[3.7rem] lg:text-[4.5rem]">
+          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem] lg:text-[4.5rem]">
             Flexible plans for
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               modern business operations
@@ -311,7 +311,7 @@ export default function PricingSection() {
           </span>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {pricingPlans.map((plan, index) => {
             const Icon = plan.icon;
             const currentPrice = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
@@ -323,7 +323,7 @@ export default function PricingSection() {
                   cardsRef.current[index] = el;
                 }}
                 className={cn(
-                  "group relative overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl",
+                  "group relative overflow-hidden rounded-[22px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:rounded-[26px] sm:p-5 lg:rounded-[30px] lg:p-6",
                   "transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.38)]",
                   plan.highlighted && "border-[#8B6CFF]/25 bg-[rgba(25,22,52,0.8)]"
                 )}
@@ -420,7 +420,7 @@ export default function PricingSection() {
           })}
         </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[
             {
               title: "Structured workspace growth",

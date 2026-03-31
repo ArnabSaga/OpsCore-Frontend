@@ -38,11 +38,13 @@ const Breadcrumbs = ({ className }: { className?: string }) => {
 
   if (!pathname || pathname === "/dashboard") {
     return (
-      <div className={cn("flex items-center gap-2 text-sm", className)}>
-        <span className="inline-flex items-center gap-2 text-[#94A3B8]">
-          <Home className="h-4 w-4" />
-          <span>Dashboard</span>
-        </span>
+      <div className={cn("min-w-0 overflow-x-auto", className)}>
+        <div className="flex min-w-max items-center gap-2 text-xs sm:text-sm">
+          <span className="inline-flex items-center gap-2 text-[#94A3B8]">
+            <Home className="h-4 w-4 shrink-0" />
+            <span className="truncate">Dashboard</span>
+          </span>
+        </div>
       </div>
     );
   }
@@ -50,34 +52,35 @@ const Breadcrumbs = ({ className }: { className?: string }) => {
   const items = buildBreadcrumbs(pathname);
 
   return (
-    <nav
-      aria-label="Breadcrumb"
-      className={cn("flex flex-wrap items-center gap-1 text-sm", className)}
-    >
-      <Link
-        href="/dashboard"
-        className="inline-flex items-center gap-2 rounded-lg px-2 py-1 text-[#94A3B8] transition-colors hover:bg-white/4 hover:text-white"
-      >
-        <Home className="h-4 w-4" />
-        <span>Dashboard</span>
-      </Link>
+    <nav aria-label="Breadcrumb" className={cn("min-w-0 overflow-x-auto", className)}>
+      <div className="flex min-w-max items-center gap-1 text-xs sm:text-sm">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 rounded-lg px-1.5 py-1 text-[#94A3B8] transition-colors hover:bg-white/4 hover:text-white sm:px-2"
+        >
+          <Home className="h-4 w-4 shrink-0" />
+          <span>Dashboard</span>
+        </Link>
 
-      {items.map((item) => (
-        <div key={item.href} className="flex items-center gap-1">
-          <ChevronRight className="h-4 w-4 text-[#667085]" />
+        {items.map((item) => (
+          <div key={item.href} className="flex min-w-0 items-center gap-1">
+            <ChevronRight className="h-4 w-4 shrink-0 text-[#667085]" />
 
-          {item.isLast ? (
-            <span className="rounded-lg px-2 py-1 font-medium text-white">{item.label}</span>
-          ) : (
-            <Link
-              href={item.href}
-              className="rounded-lg px-2 py-1 text-[#94A3B8] transition-colors hover:bg-white/4 hover:text-white"
-            >
-              {item.label}
-            </Link>
-          )}
-        </div>
-      ))}
+            {item.isLast ? (
+              <span className="max-w-[140px] truncate rounded-lg px-1.5 py-1 font-medium text-white sm:max-w-[220px] sm:px-2">
+                {item.label}
+              </span>
+            ) : (
+              <Link
+                href={item.href}
+                className="max-w-[120px] truncate rounded-lg px-1.5 py-1 text-[#94A3B8] transition-colors hover:bg-white/4 hover:text-white sm:max-w-[180px] sm:px-2"
+              >
+                {item.label}
+              </Link>
+            )}
+          </div>
+        ))}
+      </div>
     </nav>
   );
 };

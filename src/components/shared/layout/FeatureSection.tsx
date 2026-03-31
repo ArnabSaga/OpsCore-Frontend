@@ -174,7 +174,7 @@ export default function FeatureSection() {
     <section
       ref={sectionRef}
       id="features"
-      className="relative overflow-hidden bg-[#0C111D] py-24 text-white sm:py-28"
+      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
     >
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/15 blur-3xl" />
@@ -193,7 +193,7 @@ export default function FeatureSection() {
             OpsCore Features
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2.5rem] font-semibold leading-[0.96] tracking-[-0.045em] text-white sm:text-[3.7rem] lg:text-[4.6rem]">
+          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem] lg:text-[4.8rem]">
             Powerful infrastructure for
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               modern business operations
@@ -231,7 +231,7 @@ export default function FeatureSection() {
 
         <div
           ref={gridRef}
-          className="grid gap-5 lg:grid-cols-12 lg:grid-rows-[minmax(320px,1fr)_minmax(320px,1fr)]"
+          className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-12 lg:grid-rows-[minmax(320px,1fr)_minmax(320px,1fr)]"
         >
           {featureCards.map((card, index) => {
             const Icon = card.icon;
@@ -280,7 +280,7 @@ export default function FeatureSection() {
                 <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
 
-                <div className="relative flex h-full flex-col justify-between p-6 sm:p-7">
+                <div className="relative flex h-full flex-col justify-between p-4 sm:p-6 lg:p-7">
                   <div>
                     <div className="mb-5 flex items-center gap-3">
                       <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-[#0F172A]">
@@ -296,7 +296,7 @@ export default function FeatureSection() {
                       </div>
                     </div>
 
-                    <h3 className="max-w-xl text-[1.7rem] font-semibold leading-tight tracking-[-0.03em] text-white sm:text-[2rem]">
+                    <h3 className="max-w-xl text-[1.35rem] font-semibold leading-tight tracking-[-0.03em] text-white sm:text-[1.65rem] lg:text-[2rem]">
                       {card.title}
                     </h3>
 
@@ -496,7 +496,7 @@ export default function FeatureSection() {
           })}
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[
             {
               title: "Multi-tenant workspaces",
