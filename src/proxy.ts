@@ -26,33 +26,51 @@ export async function proxy(req: NextRequest) {
 
   try {
     const cookie = req.headers.get("cookie") ?? "";
+    console.log(`[Middleware] Incoming request to: ${pathname}`);
+    console.log(`[Middleware] Cookie header length: ${cookie.length}`);
 
     // Rule 3: User trying to access public route (Home page, etc.)
     const routeOwner = getRouteOwner(pathname);
     const isAuth = isAuthRoute(pathname);
 
     // Only fetch user info if a session cookie exists to avoid unnecessary backend calls
-    const hasSessionCookie = cookie.includes("better-auth.session_token");
+    // Note: Backend is explicitly configured to use 'session_token'
+    const hasSessionCookie = cookie.includes("opscore_session") || cookie.includes("session_token");
 
     let isLoggedIn = false;
     let user = null;
 
     if (hasSessionCookie) {
       try {
+        const apiUrl = buildApiUrl(API_ENDPOINTS.auth.me);
+        console.log(`[Middleware] Checking session at: ${apiUrl}`);
+        console.log(`[Middleware] Cookie present: ${cookie.substring(0, 50)}...`);
+
+        const headers = new Headers();
+        headers.set("cookie", cookie);
+        headers.set("content-type", "application/json");
+        
+        // Forward essential headers for Better Auth to validate session correctly
+        // Preserving Origin, Host, and User-Agent to ensure backend CSRF and trusted origin checks pass
+        if (req.headers.has("origin")) headers.set("origin", req.headers.get("origin")!);
+        if (req.headers.has("host")) headers.set("host", req.headers.get("host")!);
+        if (req.headers.has("user-agent")) headers.set("user-agent", req.headers.get("user-agent")!);
+        headers.set("x-forwarded-host", req.nextUrl.host);
+
         const res = await fetch(buildApiUrl(API_ENDPOINTS.auth.me), {
           method: "GET",
-          headers: {
-            cookie,
-            "content-type": "application/json",
-          },
+          headers,
           cache: "no-store",
         });
 
         isLoggedIn = res.ok;
+        console.log(`[Middleware] Auth check status: ${res.status} ${res.statusText}`);
+        
         const json = isLoggedIn ? await res.json().catch(() => null) : null;
         user = json?.data || json;
+        if (isLoggedIn) console.log(`[Middleware] Logged in as: ${user?.email}`);
       } catch (authError) {
-        console.error("Auth check failed in proxy:", authError);
+        console.error("[Middleware] Auth check failed:", authError);
       }
     }
 

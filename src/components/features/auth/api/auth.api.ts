@@ -26,11 +26,6 @@ export type User = {
   }>;
 };
 
-export type LoginPayload = {
-  email: string;
-  password: string;
-};
-
 export type RegisterPayload = {
   name: string;
   email: string;
@@ -75,13 +70,7 @@ export type AuthResponse = {
   user?: User;
 };
 
-export const loginUser = async (payload: LoginPayload): Promise<AuthResponse> => {
-  return apiFetch<AuthResponse>({
-    endpoint: API_ENDPOINTS.auth.login,
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-};
+
 
 export const registerUser = async (payload: RegisterPayload): Promise<AuthResponse> => {
   return apiFetch<AuthResponse>({

@@ -12,19 +12,20 @@ import AppField from "@/components/form/AppField";
 import AppSubmitButton from "@/components/form/AppSubmitButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { API_ENDPOINTS } from "@/config/api-endpoints";
-import { getApiUrl } from "@/lib/get-api-url";
-import { useLogin } from "../hooks/useLogin";
+import { authClient, signInWithGoogle } from "@/lib/auth-client";
+import { useQueryClient } from "@tanstack/react-query";
+import { authQueryKeys } from "../hooks/auth.query-keys";
 
 const LoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const message = searchParams.get("message");
-
-  const { mutateAsync: loginUser, isPending } = useLogin();
 
   useEffect(() => {
     if (!cardRef.current) return;
@@ -49,27 +50,41 @@ const LoginForm = () => {
       rememberMe: false,
     },
     onSubmit: async ({ value }) => {
+      setIsPending(true);
+      setLoginError(null);
+
       try {
-        const response = await loginUser({
+        const { data, error } = await authClient.signIn.email({
           email: value.email,
           password: value.password,
+          rememberMe: value.rememberMe,
         });
 
-        const user = response.data?.user;
+        if (error) {
+          setLoginError(error.message || "Invalid email or password");
+          setIsPending(false);
+          return;
+        }
+
+        const user = data?.user;
 
         if (user && !user.emailVerified) {
           router.replace(`/verify-email?email=${encodeURIComponent(value.email)}`);
-        } else {
-          router.replace("/dashboard");
-        }
-      } catch (error: unknown) {
-        if (error instanceof Error && error.message === "Email not verified") {
-          router.replace(`/verify-email?email=${encodeURIComponent(value.email)}`);
+          setIsPending(false);
           return;
         }
-        throw error;
-      }
 
+        await queryClient.invalidateQueries({
+          queryKey: authQueryKeys.all,
+        });
+
+        setIsPending(false);
+        router.replace("/dashboard");
+      } catch {
+        setLoginError("An unexpected error occurred. Please try again.");
+        setIsPending(false);
+      }
+      
       router.refresh();
     },
   });
@@ -108,8 +123,14 @@ const LoginForm = () => {
           type="button"
           variant="outline"
           className="h-11 w-full border-white/10 bg-white/5 text-white transition-all duration-300 hover:bg-white/10"
-          onClick={() => {
-            window.location.href = getApiUrl(API_ENDPOINTS.auth.googleLogin);
+          onClick={async () => {
+            setIsPending(true);
+            setLoginError(null);
+            const { error } = await signInWithGoogle();
+            if (error) {
+              setLoginError(error.message || "Failed to continue with Google");
+              setIsPending(false);
+            }
           }}
         >
           <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
@@ -141,9 +162,15 @@ const LoginForm = () => {
           <div className="h-px flex-1 bg-white/10" />
         </div>
 
-        {message && (
+        {message && !loginError && (
           <div className="rounded-xl border border-[#12B76A]/20 bg-[#12B76A]/10 p-3 text-center text-sm text-[#12B76A]">
             {message}
+          </div>
+        )}
+
+        {loginError && (
+          <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-center text-sm text-red-500">
+            {loginError}
           </div>
         )}
 
