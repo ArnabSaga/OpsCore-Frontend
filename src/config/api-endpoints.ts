@@ -126,5 +126,6 @@ export const API_ENDPOINTS = {
     archive: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}/archive`,
     delete: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}`,
     markAllRead: `${API_PREFIX}/notifications/read-all`,
+    triggerDemo: `${API_PREFIX}/notifications/demo`,
   },
 } as const;

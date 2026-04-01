@@ -151,3 +151,12 @@ export const updateNotificationPreferences = async (
     body: payload,
   });
 };
+export const triggerDemoNotification = async (
+  workspaceId: string
+): Promise<NotificationMutationResponse> => {
+  return apiFetch<NotificationMutationResponse>({
+    endpoint: API_ENDPOINTS.notification.triggerDemo,
+    method: "POST",
+    workspaceId,
+  });
+};

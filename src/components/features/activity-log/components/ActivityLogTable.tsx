@@ -27,8 +27,7 @@ const ActivityLogTable = ({ logs }: ActivityLogTableProps) => {
             <tr>
               <th className="px-5 py-4">Actor</th>
               <th className="px-5 py-4">Action</th>
-              <th className="px-5 py-4">Entity</th>
-              <th className="px-5 py-4">Entity ID</th>
+              <th className="px-5 py-4">Target</th>
               <th className="px-5 py-4">Created</th>
               <th className="px-5 py-4 text-right">Details</th>
             </tr>
@@ -47,10 +46,13 @@ const ActivityLogTable = ({ logs }: ActivityLogTableProps) => {
                 </td>
 
                 <td className="px-5 py-4">
-                  <ActivityLogEntityBadge entityType={log.entityType} />
+                  <div className="flex items-center gap-2">
+                    <ActivityLogEntityBadge entityType={log.entityType} />
+                    <span className="text-white font-medium">
+                      {log.entityTitle ?? log.entityId ?? "—"}
+                    </span>
+                  </div>
                 </td>
-
-                <td className="px-5 py-4 text-white">{log.entityId || "—"}</td>
 
                 <td className="px-5 py-4">{formatDateTime(log.createdAt)}</td>
 

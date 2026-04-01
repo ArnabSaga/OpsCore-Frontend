@@ -9,6 +9,7 @@ import {
   markNotificationAsRead,
   markNotificationAsUnread,
   updateNotificationPreferences,
+  triggerDemoNotification,
 } from "@/components/features/notification/api/notification.api";
 import { notificationQueryKeys } from "@/components/features/notification/hooks/notification.query-keys";
 import type {
@@ -137,6 +138,23 @@ export const useUpdateNotificationPreferences = () => {
       await queryClient.invalidateQueries({
         queryKey: notificationQueryKeys.preferences(activeWorkspaceId),
       });
+    },
+  });
+};
+
+export const useTriggerDemoNotification = () => {
+  const queryClient = useQueryClient();
+  const { activeWorkspaceId } = useWorkspaceContext();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!activeWorkspaceId) throw new Error("No active workspace selected.");
+      const res = await triggerDemoNotification(activeWorkspaceId);
+      return res.data;
+    },
+    onSuccess: async () => {
+      if (!activeWorkspaceId) return;
+      await invalidateNotificationQueries(queryClient, activeWorkspaceId);
     },
   });
 };
