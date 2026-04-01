@@ -2,14 +2,18 @@ import { nextCookies } from "better-auth/next-js";
 import { createAuthClient } from "better-auth/react";
 
 const getBaseUrl = () => {
-  // In the browser, automatically match the current origin to form an absolute URL
-  if (typeof window !== "undefined") {
-    return `${window.location.origin}/api/auth`;
+  // If the browser host is localhost, direct auth requests to the local backend
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return "http://localhost:5000/api/auth";
   }
 
-  // Fallback for SSR: Normalize the app URL to remove any trailing slashes
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  return `${appUrl.replace(/\/+$/, "")}/api/auth`;
+  // Use the configured API base URL, with a generic fallback to /api/auth
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!apiBaseUrl) {
+    return "/api/auth";
+  }
+
+  return `${apiBaseUrl.replace(/\/+$/, "")}/api/auth`;
 };
 
 export const authClient = createAuthClient({
