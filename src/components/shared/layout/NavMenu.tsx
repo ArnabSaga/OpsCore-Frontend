@@ -10,9 +10,10 @@ interface NavMenuProps {
   pathname: string;
   onNavigate?: () => void;
   onGroupRender?: (index: number, el: HTMLDivElement | null) => void;
+  badges?: Record<string, number | string>; // Map of href to badge value
 }
 
-const NavMenu = ({ groups, pathname, onNavigate, onGroupRender }: NavMenuProps) => {
+const NavMenu = ({ groups, pathname, onNavigate, onGroupRender, badges }: NavMenuProps) => {
   return (
     <div className="space-y-6">
       {groups.map((group, index) => (
@@ -55,9 +56,22 @@ const NavMenu = ({ groups, pathname, onNavigate, onGroupRender }: NavMenuProps) 
                     <span className="truncate">{item.title}</span>
                   </div>
 
-                  {isActive && (
-                    <ChevronRight className="h-4 w-4 shrink-0 text-[#CBB5FF]" />
-                  )}
+                  <div className="flex items-center gap-2">
+                    {badges?.[item.href] ? (
+                      <span className={cn(
+                        "flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold transition-all duration-300",
+                        isActive 
+                          ? "bg-white text-[#7F56D9]" 
+                          : "bg-[#7F56D9] text-white shadow-[0_4px_12px_rgba(127,86,217,0.3)]"
+                      )}>
+                        {badges[item.href]}
+                      </span>
+                    ) : null}
+
+                    {isActive && (
+                      <ChevronRight className="h-4 w-4 shrink-0 text-[#CBB5FF]" />
+                    )}
+                  </div>
                 </Link>
               );
             })}

@@ -51,6 +51,8 @@ export type NotificationItem = {
 
 export type NotificationUnreadSummary = {
   totalUnread: number;
+  totalArchived: number;
+  totalActive: number;
   byType: Array<{
     type: NotificationType;
     count: number;

@@ -17,6 +17,7 @@ import {
   useMarkNotificationUnread,
 } from "@/components/features/notification/hooks/useNotificationMutations";
 import { useNotifications } from "@/components/features/notification/hooks/useNotifications";
+import { useUnreadNotificationSummary } from "@/components/features/notification/hooks/useUnreadNotificationSummary";
 import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPageErrorState";
 import { Button } from "@/components/ui/button";
 
@@ -39,6 +40,7 @@ const NotificationsPageContent = () => {
   } = useNotificationListFilters();
 
   const { data, isLoading, isError, refetch, isFetching } = useNotifications({ params });
+  const { data: summaryData } = useUnreadNotificationSummary();
 
   const { mutate: markRead } = useMarkNotificationRead();
   const { mutate: markUnread } = useMarkNotificationUnread();
@@ -49,8 +51,10 @@ const NotificationsPageContent = () => {
   const notifications = useMemo(() => data?.data ?? [], [data?.data]);
   const meta = data?.meta;
 
-  const unreadCount = notifications.filter((n) => n.status === "UNREAD").length;
-  const archivedCount = notifications.filter((n) => n.status === "ARCHIVED").length;
+  const summary = summaryData?.data;
+  const unreadCount = summary?.totalUnread ?? 0;
+  const archivedCount = summary?.totalArchived ?? 0;
+  const totalActiveCount = summary?.totalActive ?? 0;
 
   useEffect(() => {
     if (!containerRef.current || isLoading) return;
@@ -100,7 +104,7 @@ const NotificationsPageContent = () => {
   return (
     <div ref={containerRef} className="space-y-8">
       <NotificationsHero
-        total={meta?.total ?? notifications.length}
+        total={totalActiveCount}
         unread={unreadCount}
         archived={archivedCount}
       />

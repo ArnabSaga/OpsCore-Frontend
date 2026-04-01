@@ -1,6 +1,4 @@
-import { env } from "@/env";
-
-export const API_PREFIX = env.NEXT_PUBLIC_API_PREFIX;
+const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX || "/api/v1";
 
 export const API_ENDPOINTS = {
   auth: {
@@ -126,5 +124,6 @@ export const API_ENDPOINTS = {
     archive: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}/archive`,
     delete: (notificationId: string) => `${API_PREFIX}/notifications/${notificationId}`,
     markAllRead: `${API_PREFIX}/notifications/read-all`,
+    triggerDemo: `${API_PREFIX}/notifications/demo`,
   },
 } as const;

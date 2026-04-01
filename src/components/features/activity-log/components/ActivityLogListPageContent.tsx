@@ -11,7 +11,6 @@ import ActivityLogTable from "@/components/features/activity-log/components/Acti
 import ActivityLogToolbar from "@/components/features/activity-log/components/ActivityLogToolbar";
 import { useActivityLogFilters } from "@/components/features/activity-log/hooks/useActivityLogFilters";
 import { useActivityLogs } from "@/components/features/activity-log/hooks/useActivityLogs";
-import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPageErrorState";
 import { Button } from "@/components/ui/button";
 
 const ActivityLogListPageContent = () => {
@@ -36,7 +35,7 @@ const ActivityLogListPageContent = () => {
     resetFilters,
   } = useActivityLogFilters();
 
-  const { data, isLoading, isError, refetch, isFetching } = useActivityLogs({ params });
+  const { data, isLoading, isError, isFetching } = useActivityLogs({ params });
 
   const logs = useMemo(() => data?.data ?? [], [data]);
   const meta = data?.meta;
@@ -84,22 +83,6 @@ const ActivityLogListPageContent = () => {
     return () => ctx.revert();
   }, [isLoading, page, logs.length]);
 
-  if (isLoading) {
-    return <ActivityLogListSkeleton />;
-  }
-
-  if (isError) {
-    return (
-      <ProtectedPageErrorState
-        title="Unable to load activity logs"
-        description="We couldn't fetch the workspace activity logs right now."
-        onRetry={() => {
-          void refetch();
-        }}
-      />
-    );
-  }
-
   return (
     <div ref={containerRef} className="space-y-8">
       <ActivityLogPageHero
@@ -126,9 +109,17 @@ const ActivityLogListPageContent = () => {
         />
       </div>
 
-      {logs.length === 0 ? (
-        <ActivityLogEmptyState />
-      ) : (
+      {isLoading ? (
+        <ActivityLogListSkeleton />
+      ) : isError ? (
+        <div className="flex flex-col items-center justify-center p-20 text-center rounded-[32px] border border-red-500/10 bg-[#140C1D]/60 backdrop-blur-xl">
+          <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
+            <div className="w-8 h-8 text-red-400">⚠️</div>
+          </div>
+          <h3 className="text-xl font-semibold text-white mb-2">Something went wrong</h3>
+          <p className="text-[#94A3B8] max-w-md">Failed to load activity logs. Please reload the page or contact support.</p>
+        </div>
+      ) : logs.length > 0 ? (
         <>
           <div className="hidden xl:block">
             <ActivityLogTable logs={logs} />
@@ -180,6 +171,8 @@ const ActivityLogListPageContent = () => {
             </div>
           </div>
         </>
+      ) : (
+        <ActivityLogEmptyState />
       )}
     </div>
   );

@@ -11,8 +11,8 @@ import { useEffect, useRef } from "react";
 import AppField from "@/components/form/AppField";
 import AppSubmitButton from "@/components/form/AppSubmitButton";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { useForgotPassword } from '../hooks/useForgotPassword';
-
+import { toast } from "sonner";
+import { useForgotPassword } from "../hooks/useForgotPassword";
 
 const ForgotPasswordForm = () => {
   const router = useRouter();
@@ -44,11 +44,14 @@ const ForgotPasswordForm = () => {
       email: emailFromQuery,
     },
     onSubmit: async ({ value }) => {
+      const normalizedEmail = value.email.trim().toLowerCase();
+
       await requestReset({
-        email: value.email,
+        email: normalizedEmail,
       });
 
-      router.replace(`/reset-password?email=${encodeURIComponent(value.email)}`);
+      toast.success("Password reset code sent to your email.");
+      router.replace(`/reset-password?email=${encodeURIComponent(normalizedEmail)}`);
       router.refresh();
     },
   });

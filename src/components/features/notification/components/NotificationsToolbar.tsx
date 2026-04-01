@@ -8,7 +8,9 @@ import type {
   NotificationStatus,
   NotificationType,
 } from "@/components/features/notification/types/notification.types";
+import { useTriggerDemoNotification } from "@/components/features/notification/hooks/useNotificationMutations";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type Props = {
   status?: NotificationStatus;
@@ -33,6 +35,14 @@ const NotificationsToolbar = ({
   onSearchTermChange,
   onReset,
 }: Props) => {
+  const { mutate: triggerDemo, isPending: isTriggering } = useTriggerDemoNotification();
+
+  const handleSendTest = () => {
+    triggerDemo(undefined, {
+      onSuccess: () => toast.success("Test notification sent!"),
+      onError: () => toast.error("Failed to send test notification."),
+    });
+  };
   return (
     <section
       data-notifications-toolbar
@@ -49,7 +59,17 @@ const NotificationsToolbar = ({
         onSearchTermChange={onSearchTermChange}
       />
 
-      <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex items-center justify-end gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isTriggering}
+          onClick={handleSendTest}
+          className="rounded-xl border-[#7F56D9]/30 bg-[#7F56D9]/10 text-[#CBB5FF] hover:bg-[#7F56D9]/20"
+        >
+          {isTriggering ? "Sending..." : "Send Test"}
+        </Button>
+
         <Button
           type="button"
           variant="outline"

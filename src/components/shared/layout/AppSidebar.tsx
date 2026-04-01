@@ -7,7 +7,8 @@ import { useEffect, useRef } from "react";
 
 import WorkspaceSwitcher from "@/components/features/workspace/components/WorkspaceSwitcher";
 import { UserRole } from "@/lib/authUtils";
-import { DASHBOARD_NAV_GROUPS, PLATFORM_NAV_GROUPS, canAccessNavItem } from "@/lib/constants";
+import { useUnreadNotificationSummary } from "@/components/features/notification/hooks/useUnreadNotificationSummary";
+import { DASHBOARD_NAV_GROUPS, PLATFORM_NAV_GROUPS, canAccessNavItem, APP_ROUTES } from "@/lib/constants";
 import NavMenu from "./NavMenu";
 
 type AppSidebarProps = {
@@ -18,6 +19,9 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   const groupRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const { data: unreadSummary } = useUnreadNotificationSummary();
+  const unreadCount = unreadSummary?.data?.totalUnread ?? 0;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -92,6 +96,7 @@ const AppSidebar = ({ userRole }: AppSidebarProps) => {
         <NavMenu
           groups={navGroups}
           pathname={pathname}
+          badges={unreadCount > 0 ? { [APP_ROUTES.notifications]: unreadCount } : undefined}
           onGroupRender={(index, el) => {
             groupRefs.current[index] = el;
           }}

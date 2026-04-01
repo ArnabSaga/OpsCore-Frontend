@@ -27,7 +27,12 @@ const ActivityLogCard = ({ log }: ActivityLogCardProps) => {
     >
       <div className="flex flex-wrap items-center gap-2">
         <ActivityLogActionBadge action={log.action} />
-        <ActivityLogEntityBadge entityType={log.entityType} />
+        <div className="flex items-center gap-2">
+          <ActivityLogEntityBadge entityType={log.entityType} />
+          <span className="text-white font-medium">
+            {log.entityTitle ?? log.entityId ?? "—"}
+          </span>
+        </div>
       </div>
 
       <div className="mt-5 space-y-3 text-sm text-[#94A3B8]">
