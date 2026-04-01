@@ -260,7 +260,7 @@ export default function PricingComponents() {
             Pricing
           </Badge>
 
-          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[2.8rem] lg:text-[5rem]">
+          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[2.8rem] sm:leading-[1.02] lg:text-[5rem]">
             Pricing built for
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               serious operational growth
@@ -545,7 +545,7 @@ export default function PricingComponents() {
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
 
             <div className="relative flex flex-col items-center text-center">
-              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem]">
+              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02]">
                 Ready to choose a cleaner operating system for your team?
               </h3>
 

@@ -13,6 +13,7 @@ type AppFieldProps = {
   autoComplete?: string;
   icon?: React.ReactNode;
   endAdornment?: React.ReactNode;
+  inputClassName?: string;
 };
 
 const getFieldError = (field: AnyFieldApi) => {
@@ -42,6 +43,7 @@ const AppField = ({
   autoComplete,
   icon,
   endAdornment,
+  inputClassName,
 }: AppFieldProps) => {
   const errorMessage = getFieldError(field);
   const hasError = field.state.meta.isTouched && !!errorMessage;
@@ -73,7 +75,8 @@ const AppField = ({
             "border-white/10 focus-visible:ring-2 focus-visible:ring-[#7F56D9] focus-visible:ring-offset-0",
             icon ? "pl-10" : "",
             endAdornment ? "pr-10" : "",
-            hasError ? "border-red-500/60 focus-visible:ring-red-500" : ""
+            hasError ? "border-red-500/60 focus-visible:ring-red-500" : "",
+            inputClassName
           )}
         />
 

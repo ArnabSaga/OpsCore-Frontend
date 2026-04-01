@@ -202,10 +202,10 @@ export default function HowItWorksComponents() {
             How It Works
           </Badge>
 
-          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[2.8rem] lg:text-[5rem]">
-            A cleaner way to move
+          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[2.8rem] sm:leading-[1.02] lg:text-[5rem]">
+            How OpsCore powers
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
-              from structure to execution
+              modern business execution
             </span>
           </h1>
 
@@ -383,8 +383,8 @@ export default function HowItWorksComponents() {
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
 
             <div className="relative flex flex-col items-center text-center">
-              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem]">
-                Ready to see how OpsCore works inside a real team workflow?
+              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02]">
+                Ready to build a cleaner operating layer for your team?
               </h3>
 
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[#94A3B8] sm:text-base">

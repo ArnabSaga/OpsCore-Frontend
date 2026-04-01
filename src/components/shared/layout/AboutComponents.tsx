@@ -93,6 +93,7 @@ function SectionGlow() {
       <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl" />
       <div className="absolute -left-24 top-48 h-80 w-80 rounded-full bg-[#6941C6]/10 blur-3xl" />
       <div className="absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-[#7F56D9]/10 blur-3xl" />
+      <div className="absolute inset-0 z-11 bg-[linear-gradient(to_bottom,rgba(7,10,18,0.14),rgba(12,17,29,0.2),rgba(12,17,29,0.34))]" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.92),rgba(0,0,0,0.58),transparent)]" />
     </div>
   );
@@ -182,7 +183,7 @@ export default function AboutComponents() {
             About OpsCore
           </Badge>
 
-          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[2.9rem] lg:text-[5rem]">
+          <h1 className="mt-6 max-w-5xl text-[2.4rem] font-semibold leading-[1.12] tracking-[-0.04em] text-white sm:text-[2.9rem] sm:leading-[1.02] lg:text-[5rem]">
             A premium operating system
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               for modern business execution
@@ -223,7 +224,7 @@ export default function AboutComponents() {
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#C4B5FD]">
                 Why we built OpsCore
               </p>
-              <h2 className="mt-4 text-[2rem] font-semibold leading-tight tracking-[-0.035em] text-white">
+              <h2 className="mt-4 text-[1.8rem] font-semibold leading-[1.2] tracking-[-0.035em] text-white sm:text-[2.2rem] sm:leading-tight">
                 Business operations deserve more structure, not more fragmentation.
               </h2>
               <p className="mt-5 text-sm leading-8 text-[#94A3B8] sm:text-base">
@@ -302,7 +303,7 @@ export default function AboutComponents() {
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#C4B5FD]">
               Platform pillars
             </p>
-            <h2 className="mt-4 text-[2.2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem]">
+            <h2 className="mt-4 text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[2.6rem] sm:leading-[1.02] lg:text-[3rem]">
               Four foundations behind the OpsCore experience
             </h2>
             <p className="mt-5 text-base leading-8 text-[#94A3B8]">
@@ -388,7 +389,7 @@ export default function AboutComponents() {
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
 
             <div className="relative flex flex-col items-center text-center">
-              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem]">
+              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem]">
                 Ready to build a cleaner operating layer for your team?
               </h3>
 

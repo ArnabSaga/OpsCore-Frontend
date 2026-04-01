@@ -170,7 +170,7 @@ export default function WorkProcessSection() {
             Work Process
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem] lg:text-[4.6rem]">
+          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02] lg:text-[4.6rem]">
             From setup to execution
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               in one premium operational flow

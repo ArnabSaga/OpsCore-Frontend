@@ -127,10 +127,10 @@ function FeatureHero() {
         OpsCore Features
       </Badge>
 
-      <h1 className="mt-6 max-w-6xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem] lg:text-[5.2rem]">
-        A premium operating system
+      <h1 className="mt-6 max-w-6xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02] lg:text-[5.2rem]">
+        Everything you need to
         <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
-          for modern business execution
+          run modern business operations
         </span>
       </h1>
 
@@ -440,8 +440,8 @@ function CTASection({ ctaRef }: { ctaRef: React.RefObject<HTMLDivElement | null>
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_35%,rgba(255,255,255,0.02)_100%)]" />
 
         <div className="relative flex flex-col items-center text-center">
-          <h2 className="max-w-3xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem]">
-            Ready to run operations with more structure and less friction?
+          <h2 className="max-w-3xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02]">
+            Ready to choose a cleaner operating system for your team?
           </h2>
 
           <p className="mt-4 max-w-2xl text-sm leading-8 text-[#94A3B8] sm:text-base">

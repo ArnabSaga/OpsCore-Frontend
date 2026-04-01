@@ -137,7 +137,7 @@ export default function FAQSection() {
             FAQ
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2.5rem] font-semibold leading-[0.96] tracking-[-0.045em] text-white sm:text-[3.6rem] lg:text-[4.3rem]">
+          <h2 className="mt-6 max-w-5xl text-[2.5rem] font-semibold leading-[1.12] tracking-[-0.045em] text-white sm:text-[3.6rem] sm:leading-[0.96] lg:text-[4.3rem]">
             Frequently asked questions
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               about running operations with OpsCore
@@ -196,7 +196,7 @@ export default function FAQSection() {
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_35%,rgba(255,255,255,0.02)_100%)]" />
 
             <div className="relative flex flex-col items-center text-center">
-              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-white sm:text-[3rem]">
+              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02]">
                 Ready to bring structure and clarity into your operations?
               </h3>
 

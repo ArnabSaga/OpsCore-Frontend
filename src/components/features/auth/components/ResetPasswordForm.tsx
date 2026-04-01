@@ -189,6 +189,7 @@ const ResetPasswordForm = () => {
                 placeholder="Enter verification code"
                 autoComplete="one-time-code"
                 icon={<KeyRound className="h-4 w-4 text-[#94A3B8]" />}
+                inputClassName="pr-20"
                 endAdornment={
                   <Button
                     type="button"

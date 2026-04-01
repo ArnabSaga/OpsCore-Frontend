@@ -142,8 +142,9 @@ export default function HeroSection() {
         width: "min(1360px, calc(100vw - 24px))",
         maxWidth: "1360px",
         height: "clamp(260px, 62vw, 760px)",
+        minHeight: typeof window !== "undefined" && window.innerWidth < 1024 ? "380px" : "auto",
         borderRadius: "24px",
-        clipPath: "inset(0% 0% 0% 0% round 24px)",
+        clipPath: typeof window !== "undefined" && window.innerWidth < 1024 ? "none" : "inset(0% 0% 0% 0% round 24px)",
         transformOrigin: "center center",
         zIndex: 20,
       });
@@ -342,7 +343,7 @@ export default function HeroSection() {
               ref={titleRef}
               className={cn(
                 "max-w-6xl font-semibold tracking-[-0.05em] text-white",
-                "text-[2.1rem] leading-[1.02] sm:text-[3.2rem] lg:text-[5.8rem]"
+                "text-[2.2rem] leading-[1.3] sm:text-[3.2rem] sm:leading-[1.02] lg:text-[5.8rem]"
               )}
             >
               Run Your Entire Operation
@@ -421,18 +422,19 @@ export default function HeroSection() {
                 muted
                 loop
                 playsInline
-                preload="auto"
                 autoPlay
+                webkit-playsinline="true"
+                preload="auto"
                 poster={HERO_IMAGE_SRC}
               >
                 <source src={HERO_VIDEO_SRC} type="video/mp4" />
               </video>
 
-              <div className="absolute inset-0 z-10 bg-[linear-gradient(to_bottom,rgba(7,10,18,0.14),rgba(12,17,29,0.2),rgba(12,17,29,0.34))]" />
+              <div className="absolute inset-0 z-11 bg-[linear-gradient(to_bottom,rgba(7,10,18,0.14),rgba(12,17,29,0.2),rgba(12,17,29,0.34))]" />
 
-              <div className="absolute left-6 top-6 z-20 rounded-2xl border border-white/10 bg-[rgba(12,17,29,0.6)] px-4 py-3 backdrop-blur-xl">
-                <div className="flex items-center gap-3">
-                  <div className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-[#0F172A]">
+              <div className="absolute left-4 top-4 z-20 rounded-2xl border border-white/10 bg-[rgba(12,17,29,0.6)] px-3 py-2 sm:px-4 sm:py-3 backdrop-blur-xl">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="relative flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl border border-white/10 bg-[#0F172A]">
                     <div className="absolute inset-0 rounded-xl bg-[#7F56D9]/20 blur-md" />
                     <Image
                       src="/icons/logo.svg"
@@ -451,11 +453,11 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              <div className="absolute bottom-6 left-6 z-20 max-w-md rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.56)] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#C4B5FD]">
+              <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 z-20 max-w-[calc(100%-1.5rem)] sm:max-w-md rounded-[18px] sm:rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.56)] p-3.5 sm:p-5 shadow-[0_16px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
+                <p className="text-[9px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-[#C4B5FD]">
                   Premium automation
                 </p>
-                <p className="mt-3 text-[1.7rem] font-semibold leading-tight text-white">
+                <p className="mt-2 sm:mt-3 text-[15px] sm:text-[1.7rem] font-semibold leading-tight text-white">
                   Run projects, billing, insights, and execution from one AI-ready workspace.
                 </p>
               </div>
