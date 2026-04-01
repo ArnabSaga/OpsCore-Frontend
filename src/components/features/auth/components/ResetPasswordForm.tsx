@@ -12,8 +12,9 @@ import AppField from "@/components/form/AppField";
 import AppSubmitButton from "@/components/form/AppSubmitButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { useResetPassword } from "../hooks/useResetPassword";
+import { toast } from "sonner";
 import { useForgotPassword } from "../hooks/useForgotPassword";
+import { useResetPassword } from "../hooks/useResetPassword";
 
 const ResetPasswordForm = () => {
   const router = useRouter();
@@ -53,6 +54,15 @@ const ResetPasswordForm = () => {
     },
     onSubmit: async ({ value }) => {
       setError(null);
+
+      const normalizedEmail = value.email.trim().toLowerCase();
+      const normalizedOtp = value.otp.trim();
+
+      if (!normalizedEmail) {
+        setError("Email is required");
+        return;
+      }
+
       if (value.newPassword !== value.confirmPassword) {
         setError("Passwords do not match");
         return;
@@ -60,23 +70,48 @@ const ResetPasswordForm = () => {
 
       try {
         await resetPassword({
-          email: value.email,
-          otp: value.otp,
+          email: normalizedEmail,
+          otp: normalizedOtp,
           newPassword: value.newPassword,
           confirmPassword: value.confirmPassword,
         });
 
-        router.replace("/login?message=Password reset successfully. Please login with your new password.");
+        toast.success("Password reset successful. Please log in.");
+        router.replace(
+          "/login?message=Password reset successfully. Please login with your new password."
+        );
         router.refresh();
       } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("Failed to reset password. Please try again.");
-        }
+        const message =
+          err instanceof Error ? err.message : "Failed to reset password. Please try again.";
+        setError(message);
+        toast.error(message);
       }
     },
   });
+
+  const handleResendCode = async () => {
+    const currentEmail = form.getFieldValue("email")?.trim() || emailFromQuery.trim();
+    const normalizedEmail = currentEmail.toLowerCase();
+
+    if (!normalizedEmail) {
+      const message = "Please enter your email first.";
+      setError(message);
+      toast.error(message);
+      return;
+    }
+
+    try {
+      setError(null);
+      await requestReset({ email: normalizedEmail });
+      form.setFieldValue("email", normalizedEmail);
+      toast.success("A new password reset code has been sent.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to resend verification code.";
+      setError(message);
+      toast.error(message);
+    }
+  };
 
   return (
     <Card
@@ -154,6 +189,18 @@ const ResetPasswordForm = () => {
                 placeholder="Enter verification code"
                 autoComplete="one-time-code"
                 icon={<KeyRound className="h-4 w-4 text-[#94A3B8]" />}
+                endAdornment={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleResendCode}
+                    disabled={isResending}
+                    className="h-8 px-2 text-xs text-[#CBB5FF] hover:bg-transparent hover:text-white"
+                  >
+                    {isResending ? "Sending..." : "Resend"}
+                  </Button>
+                }
               />
             )}
           </form.Field>
@@ -192,12 +239,8 @@ const ResetPasswordForm = () => {
           <form.Field
             name="confirmPassword"
             validators={{
-              onChangeListenTo: ["newPassword"],
-              onChange: ({ value, fieldApi }) => {
+              onChange: ({ value }) => {
                 if (!value) return "Please confirm your password";
-                if (value !== fieldApi.form.getFieldValue("newPassword")) {
-                  return "Passwords do not match";
-                }
                 return undefined;
               },
             }}
@@ -207,7 +250,7 @@ const ResetPasswordForm = () => {
                 field={field}
                 label="Confirm new password"
                 type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm new password"
+                placeholder="Re-enter new password"
                 autoComplete="new-password"
                 icon={<LockKeyhole className="h-4 w-4 text-[#94A3B8]" />}
                 endAdornment={
@@ -216,7 +259,11 @@ const ResetPasswordForm = () => {
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                     className="text-[#94A3B8] transition-colors hover:text-white"
                   >
-                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 }
               />
@@ -233,43 +280,16 @@ const ResetPasswordForm = () => {
             <AppSubmitButton isSubmitting={isPending}>Reset password</AppSubmitButton>
           </div>
         </form>
-
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/2 p-4">
-          <div>
-            <p className="text-sm font-medium text-white">Didn&apos;t get the code?</p>
-            <p className="text-xs text-[#94A3B8]">Resend a new verification code to your email.</p>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isResending}
-            className="border-white/10 bg-white/5 text-white hover:bg-white/10 disabled:opacity-50"
-            onClick={async () => {
-              setError(null);
-              try {
-                await requestReset({ email: emailFromQuery });
-                // Optional: show a small toast or temporary success message
-              } catch (err: unknown) {
-                if (err instanceof Error) {
-                   setError(err.message);
-                }
-              }
-            }}
-          >
-            {isResending ? "Resending..." : "Resend"}
-          </Button>
-        </div>
       </CardContent>
 
       <CardFooter className="justify-center border-t border-white/10 py-5">
         <p className="text-center text-sm text-[#94A3B8]">
-          Back to
+          Remembered your password?
           <Link
             href="/login"
             className="ml-2 font-semibold text-white underline-offset-4 transition-colors hover:text-[#CBB5FF] hover:underline"
           >
-            Login
+            Go to login
           </Link>
         </p>
       </CardFooter>

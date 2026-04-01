@@ -1,10 +1,10 @@
-import { env } from "@/env";
-
 export const buildApiUrl = (endpoint: string) => {
-  const isBrowser = typeof window !== "undefined";
-
-  const base = isBrowser ? "" : (env.NEXT_PUBLIC_API_BASE_URL || "").replace(/\/+$/, "");
   const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
 
+  if (typeof window !== "undefined") {
+    return path;
+  }
+
+  const base = (process.env.NEXT_PUBLIC_API_BASE_URL || "").replace(/\/+$/, "");
   return `${base}${path}`;
 };
