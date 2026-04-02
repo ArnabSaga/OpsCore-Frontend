@@ -9,6 +9,7 @@ import AccountHero from "@/components/features/account/components/AccountHero";
 import AccountOverviewCard from "@/components/features/account/components/AccountOverviewCard";
 import AccountPageSkeleton from "@/components/features/account/components/AccountPageSkeleton";
 import AccountProfileCard from "@/components/features/account/components/AccountProfileCard";
+import AccountSecurityCard from "@/components/features/account/components/AccountSecurityCard";
 import AccountWorkspaceMembershipsCard from "@/components/features/account/components/AccountWorkspaceMembershipsCard";
 import { useAccountProfile } from "@/components/features/account/hooks/useAccountProfile";
 import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPageErrorState";
@@ -82,6 +83,10 @@ const AccountPageContent = () => {
 
         <div data-account-card>
           <AccountProfileCard profile={profile} />
+        </div>
+
+        <div data-account-card>
+          <AccountSecurityCard hasPassword={profile.hasPassword} />
         </div>
 
         <div data-account-card>
