@@ -1,10 +1,13 @@
 import { FolderPlus, Sparkles } from "lucide-react";
 import Link from "next/link";
 
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const ProjectEmptyState = () => {
+  const { canCreateProject } = useWorkspacePermissions();
+
   return (
     <Card className="rounded-[24px] border border-dashed border-white/10 bg-[#101828]/80 py-12 text-white shadow-[0_16px_60px_rgba(0,0,0,0.25)]">
       <CardContent className="flex flex-col items-center justify-center text-center">
@@ -18,16 +21,18 @@ const ProjectEmptyState = () => {
           inside OpsCore.
         </p>
 
-        <Button
-          asChild
-          size="lg"
-          className="mt-6 rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
-        >
-          <Link href="/projects/create">
-            <FolderPlus className="mr-1 h-4 w-4" />
-            Create Project
-          </Link>
-        </Button>
+        {canCreateProject && (
+          <Button
+            asChild
+            size="lg"
+            className="mt-6 rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
+          >
+            <Link href="/projects/create">
+              <FolderPlus className="mr-1 h-4 w-4" />
+              Create Project
+            </Link>
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

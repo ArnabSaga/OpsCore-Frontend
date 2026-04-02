@@ -3,8 +3,8 @@ import Link from "next/link";
 import { toast } from "sonner";
 
 import { useUpdateProject } from "@/components/features/project/hooks/useUpdateProject";
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 import { Button } from "@/components/ui/button";
-import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import type { ProjectStatus } from "@/types/project.types";
 
 type ProjectQuickActionsProps = {
@@ -14,11 +14,10 @@ type ProjectQuickActionsProps = {
 };
 
 const ProjectQuickActions = ({ projectId, status, archivedAt }: ProjectQuickActionsProps) => {
-  const { activeWorkspace } = useWorkspaceContext();
   const { mutateAsync: updateProject, isPending } = useUpdateProject();
 
   const isArchived = !!archivedAt || status === "ARCHIVED";
-  const canManage = activeWorkspace?.role === "OWNER" || activeWorkspace?.role === "ADMIN";
+  const { canCreateProject } = useWorkspacePermissions();
 
   const handleToggleArchive = async () => {
     try {
@@ -37,7 +36,7 @@ const ProjectQuickActions = ({ projectId, status, archivedAt }: ProjectQuickActi
 
   return (
     <div className="flex flex-wrap gap-3">
-      {!isArchived && (
+      {!isArchived && canCreateProject && (
         <Button asChild className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]">
           <Link href={`/projects/${projectId}/edit`}>
             <PencilLine className="mr-2 h-4 w-4" />
@@ -46,7 +45,7 @@ const ProjectQuickActions = ({ projectId, status, archivedAt }: ProjectQuickActi
         </Button>
       )}
 
-      {canManage && (
+      {canCreateProject && (
         <Button
           variant="outline"
           onClick={handleToggleArchive}

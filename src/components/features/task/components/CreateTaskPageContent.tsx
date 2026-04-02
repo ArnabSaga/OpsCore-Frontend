@@ -13,6 +13,7 @@ import { useWorkspaceMembers } from "@/components/features/workspace/hooks/useWo
 import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPageErrorState";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import type { CreateTaskPayload } from "@/types/task.types";
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 
 const CreateTaskPageContent = () => {
   const router = useRouter();
@@ -21,6 +22,14 @@ const CreateTaskPageContent = () => {
 
   const { mutateAsync: createTask, isPending } = useCreateTask();
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const { canCreateTask, isPermissionsResolved } = useWorkspacePermissions();
+
+  useEffect(() => {
+    if (isPermissionsResolved && !canCreateTask) {
+      router.replace("/tasks");
+    }
+  }, [isPermissionsResolved, canCreateTask, router]);
 
   const {
     data: projectsResponse,
@@ -99,7 +108,7 @@ const CreateTaskPageContent = () => {
     }
   };
 
-  if (isProjectsLoading || isMembersLoading) {
+  if (!isPermissionsResolved || !canCreateTask || isProjectsLoading || isMembersLoading) {
     return <ProjectListSkeleton />;
   }
 

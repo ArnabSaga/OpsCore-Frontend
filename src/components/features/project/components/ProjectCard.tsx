@@ -4,6 +4,7 @@ import { CalendarRange, FolderKanban, Layers3, Users } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 import ProjectStatusBadge from "@/components/features/project/components/ProjectStatusBadge";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +31,7 @@ const formatDate = (value?: string | null) => {
 };
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
+  const { canCreateProject } = useWorkspacePermissions();
   const rangeLabel = useMemo(() => {
     if (!project.startDate && !project.endDate) return "Timeline not set";
     return `${formatDate(project.startDate)} → ${formatDate(project.endDate)}`;
@@ -108,13 +110,15 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           <Link href={`/projects/${project.id}`}>View Details</Link>
         </Button>
 
-        <Button
-          asChild
-          variant="outline"
-          className="flex-1 rounded-xl border-white/10 bg-white/5 text-white hover:bg-white/10"
-        >
-          <Link href={`/projects/${project.id}/edit`}>Edit</Link>
-        </Button>
+        {canCreateProject && (
+          <Button
+            asChild
+            variant="outline"
+            className="flex-1 rounded-xl border-white/10 bg-white/5 text-white hover:bg-white/10"
+          >
+            <Link href={`/projects/${project.id}/edit`}>Edit</Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

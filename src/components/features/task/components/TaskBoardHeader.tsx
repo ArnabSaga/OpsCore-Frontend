@@ -3,6 +3,7 @@
 import { Plus, Sparkles, SquareKanban } from "lucide-react";
 import Link from "next/link";
 
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 import { Button } from "@/components/ui/button";
 
 type TaskBoardHeaderProps = {
@@ -10,6 +11,8 @@ type TaskBoardHeaderProps = {
 };
 
 const TaskBoardHeader = ({ totalTasks }: TaskBoardHeaderProps) => {
+  const { canCreateTask } = useWorkspacePermissions();
+
   return (
     <section
       data-task-board-hero
@@ -50,16 +53,18 @@ const TaskBoardHeader = ({ totalTasks }: TaskBoardHeaderProps) => {
             <Link href="/tasks">Back to Tasks</Link>
           </Button>
 
-          <Button
-            asChild
-            size="lg"
-            className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
-          >
-            <Link href="/tasks/create">
-              <Plus className="mr-2 h-4 w-4" />
-              Create Task
-            </Link>
-          </Button>
+          {canCreateTask && (
+            <Button
+              asChild
+              size="lg"
+              className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
+            >
+              <Link href="/tasks/create">
+                <Plus className="mr-2 h-4 w-4" />
+                Create Task
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </section>

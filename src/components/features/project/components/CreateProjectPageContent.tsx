@@ -10,6 +10,7 @@ import ProjectForm, {
 import ProjectFormHeader from "@/components/features/project/components/ProjectFormHeader";
 import { useCreateProject } from "@/components/features/project/hooks/useCreateProject";
 import type { CreateProjectPayload } from "@/types/project.types";
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 
 const CreateProjectPageContent = () => {
   const router = useRouter();
@@ -17,6 +18,14 @@ const CreateProjectPageContent = () => {
 
   const { mutateAsync: createProject, isPending } = useCreateProject();
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const { canCreateProject, isPermissionsResolved } = useWorkspacePermissions();
+
+  useEffect(() => {
+    if (isPermissionsResolved && !canCreateProject) {
+      router.replace("/projects");
+    }
+  }, [isPermissionsResolved, canCreateProject, router]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -66,6 +75,10 @@ const CreateProjectPageContent = () => {
       }
     }
   };
+
+  if (!isPermissionsResolved || !canCreateProject) {
+    return null; // Or a loading skeleton
+  }
 
   return (
     <div ref={containerRef} className="space-y-8">

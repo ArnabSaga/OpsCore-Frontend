@@ -9,6 +9,7 @@ import TaskPriorityBadge from "@/components/features/task/components/TaskPriorit
 import TaskStatusBadge from "@/components/features/task/components/TaskStatusBadge";
 import { useDeleteTask } from "@/components/features/task/hooks/useDeleteTask";
 import { useTaskDetails } from "@/components/features/task/hooks/useTaskDetails";
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -46,6 +47,8 @@ const TaskDetailsDrawer = ({
     taskId: taskId ?? "",
     enabled: open && !!taskId,
   });
+
+  const { canCreateTask } = useWorkspacePermissions();
 
   const { mutateAsync: deleteTask, isPending } = useDeleteTask();
 
@@ -127,25 +130,29 @@ const TaskDetailsDrawer = ({
 
             <div className="border-t border-white/10 p-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onEdit}
-                  className="rounded-xl border-white/10 bg-white/5 text-white hover:bg-white/10"
-                >
-                  Edit Task
-                </Button>
+                {canCreateTask && (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={onEdit}
+                      className="rounded-xl border-white/10 bg-white/5 text-white hover:bg-white/10"
+                    >
+                      Edit Task
+                    </Button>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isPending}
-                  onClick={handleDelete}
-                  className="rounded-xl border-red-500/20 bg-red-500/10 text-red-300 hover:bg-red-500/20"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Task
-                </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={isPending}
+                      onClick={handleDelete}
+                      className="rounded-xl border-red-500/20 bg-red-500/10 text-red-300 hover:bg-red-500/20"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete Task
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </>

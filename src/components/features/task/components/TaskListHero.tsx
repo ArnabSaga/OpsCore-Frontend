@@ -3,6 +3,7 @@
 import { Plus, Sparkles, SquareKanban } from "lucide-react";
 import Link from "next/link";
 
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 import { Button } from "@/components/ui/button";
 
 type TaskListHeroProps = {
@@ -12,6 +13,8 @@ type TaskListHeroProps = {
 };
 
 const TaskListHero = ({ totalTasks, openTasks, doneTasks }: TaskListHeroProps) => {
+  const { canCreateTask } = useWorkspacePermissions();
+
   return (
     <section
       data-task-hero
@@ -51,16 +54,18 @@ const TaskListHero = ({ totalTasks, openTasks, doneTasks }: TaskListHeroProps) =
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button
-            asChild
-            size="lg"
-            className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
-          >
-            <Link href="/tasks/create">
-              <Plus className="mr-2 h-4 w-4" />
-              Create Task
-            </Link>
-          </Button>
+          {canCreateTask && (
+            <Button
+              asChild
+              size="lg"
+              className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
+            >
+              <Link href="/tasks/create">
+                <Plus className="mr-2 h-4 w-4" />
+                Create Task
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </section>

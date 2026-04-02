@@ -3,6 +3,7 @@
 import { FolderKanban, FolderPlus, Sparkles } from "lucide-react";
 import Link from "next/link";
 
+import { useWorkspacePermissions } from "@/hooks/useWorkspacePermissions";
 import { Button } from "@/components/ui/button";
 
 type ProjectListHeroProps = {
@@ -16,6 +17,8 @@ const ProjectListHero = ({
   activeProjects,
   archivedProjects,
 }: ProjectListHeroProps) => {
+  const { canCreateProject } = useWorkspacePermissions();
+
   return (
     <section
       data-project-hero
@@ -55,16 +58,18 @@ const ProjectListHero = ({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button
-            asChild
-            size="lg"
-            className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
-          >
-            <Link href="/projects/create">
-              <FolderPlus className="mr-1 h-4 w-4" />
-              Create Project
-            </Link>
-          </Button>
+          {canCreateProject && (
+            <Button
+              asChild
+              size="lg"
+              className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
+            >
+              <Link href="/projects/create">
+                <FolderPlus className="mr-1 h-4 w-4" />
+                Create Project
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </section>
