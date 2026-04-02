@@ -36,7 +36,6 @@ const NotificationsPageContent = () => {
     setType,
     setSearchTerm,
     setPage,
-    resetFilters,
   } = useNotificationListFilters();
 
   const { data, isLoading, isError, refetch, isFetching } = useNotifications({ params });
@@ -131,7 +130,6 @@ const NotificationsPageContent = () => {
             setSearchTerm(value);
             setPage(1);
           }}
-          onReset={resetFilters}
         />
       </div>
 

@@ -55,7 +55,7 @@ const contactChannels = [
 const contactFacts = [
   {
     label: "Email",
-    value: "hello@opscore.io",
+    value: "OpsCore@gmail.com",
     icon: Mail,
   },
   {
