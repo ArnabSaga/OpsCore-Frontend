@@ -1,5 +1,6 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -14,7 +15,7 @@ import {
   Workflow,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -77,7 +78,7 @@ const pricingPlans: PricingPlan[] = [
     ],
   },
   {
-    id: "Scale",
+    id: "scale",
     name: "Scale",
     description:
       "Built for advanced teams that need stricter control, premium support, and enterprise-ready operational confidence.",
@@ -118,36 +119,11 @@ const pricingHighlights = [
 ];
 
 const comparisonPoints = [
-  {
-    title: "Projects & tasks",
-    starter: true,
-    growth: true,
-    scale: true,
-  },
-  {
-    title: "Billing visibility",
-    starter: true,
-    growth: true,
-    scale: true,
-  },
-  {
-    title: "Advanced analytics",
-    starter: false,
-    growth: true,
-    scale: true,
-  },
-  {
-    title: "Priority support",
-    starter: false,
-    growth: false,
-    scale: true,
-  },
-  {
-    title: "Multi-workspace operations",
-    starter: false,
-    growth: false,
-    scale: true,
-  },
+  { title: "Projects & tasks", starter: true, growth: true, scale: true },
+  { title: "Billing visibility", starter: true, growth: true, scale: true },
+  { title: "Advanced analytics", starter: false, growth: true, scale: true },
+  { title: "Priority support", starter: false, growth: false, scale: true },
+  { title: "Multi-workspace operations", starter: false, growth: false, scale: true },
 ];
 
 const benefits = [
@@ -163,11 +139,26 @@ function formatPrice(value: number) {
 
 function SectionGlow() {
   return (
-    <div className="pointer-events-none absolute inset-0">
-      <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl" />
-      <div className="absolute -left-24 top-48 h-80 w-80 rounded-full bg-[#6941C6]/10 blur-3xl" />
-      <div className="absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-[#7F56D9]/10 blur-3xl" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.92),rgba(0,0,0,0.58),transparent)]" />
+    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div className="absolute left-1/2 top-0 h-56 w-56 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl sm:h-72 sm:w-72 lg:h-80 lg:w-80" />
+      <div className="absolute -left-24 top-40 h-64 w-64 rounded-full bg-[#6941C6]/10 blur-3xl sm:h-80 sm:w-80" />
+      <div className="absolute -right-20 bottom-10 h-64 w-64 rounded-full bg-[#7F56D9]/10 blur-3xl sm:h-80 sm:w-80" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[80px_80px] sm:bg-size-[100px_100px] lg:bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.92),rgba(0,0,0,0.58),transparent)]" />
+    </div>
+  );
+}
+
+function GlassCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-[22px] border border-white/10 bg-[rgba(16,24,40,0.72)] shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl",
+        "sm:rounded-[26px] lg:rounded-[30px]",
+        className
+      )}
+    >
+      <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
+      {children}
     </div>
   );
 }
@@ -184,100 +175,124 @@ export default function PricingComponents() {
 
   const stats = useMemo(() => ["Projects", "Billing", "Insights", "Execution", "Workspaces"], []);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
 
-    const ctx = gsap.context(() => {
-      const startFloating = (node: Element, index: number) => {
-        gsap.to(node, {
-          y: index % 2 === 0 ? -5 : 5,
-          duration: 3 + index * 0.2,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          overwrite: "auto",
-        });
-      };
+      const mm = gsap.matchMedia();
 
-      const reveal = (trigger: HTMLElement | null) => {
-        if (!trigger) return;
-        const elements = Array.from(trigger.children);
+      mm.add(
+        {
+          desktop: "(min-width: 1024px)",
+          tablet: "(min-width: 768px) and (max-width: 1023px)",
+          mobile: "(max-width: 767px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { desktop, reduceMotion } = context.conditions ?? {};
 
-        gsap.fromTo(
-          elements,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1.05,
-            stagger: 0.1,
-            ease: "expo.out",
-            force3D: true,
-            overwrite: "auto",
-            scrollTrigger: {
-              trigger,
-              start: "top 84%",
-              once: true,
-            },
-            onComplete: () => {
-              elements.forEach((el, index) => {
-                if (el.hasAttribute("data-float")) {
-                  startFloating(el, index);
-                }
-              });
-            },
+          const revealSection = (node: HTMLElement | null, y = 24) => {
+            if (!node) return;
+
+            const elements = Array.from(node.children);
+
+            gsap.from(elements, {
+              opacity: 0,
+              y,
+              duration: 0.85,
+              stagger: 0.08,
+              ease: "power3.out",
+              clearProps: "all",
+              scrollTrigger: {
+                trigger: node,
+                start: "top 84%",
+                once: true,
+              },
+            });
+          };
+
+          if (reduceMotion) {
+            gsap.set(
+              [
+                ...(heroRef.current ? Array.from(heroRef.current.children) : []),
+                ...(plansRef.current ? Array.from(plansRef.current.children) : []),
+                ...(highlightsRef.current ? Array.from(highlightsRef.current.children) : []),
+                ...(comparisonRef.current ? Array.from(comparisonRef.current.children) : []),
+                ...(ctaRef.current ? Array.from(ctaRef.current.children) : []),
+              ],
+              { opacity: 1, y: 0, clearProps: "all" }
+            );
+            return;
           }
-        );
+
+          revealSection(heroRef.current, 26);
+          revealSection(plansRef.current, 28);
+          revealSection(highlightsRef.current, 28);
+          revealSection(comparisonRef.current, 26);
+          revealSection(ctaRef.current, 24);
+
+          if (desktop) {
+            const floatingNodes = gsap.utils.toArray<HTMLElement>("[data-float]", section);
+
+            floatingNodes.forEach((node, index) => {
+              gsap.to(node, {
+                y: index % 2 === 0 ? -6 : 6,
+                x: index % 2 === 0 ? 4 : -4,
+                duration: 4 + index * 0.25,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+              });
+            });
+          }
+        }
+      );
+
+      return () => {
+        mm.revert();
       };
-
-      reveal(heroRef.current);
-      reveal(plansRef.current);
-      reveal(highlightsRef.current);
-      reveal(comparisonRef.current);
-      reveal(ctaRef.current);
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
       ref={sectionRef}
       id="pricing-page"
-      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
+      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24 xl:py-28"
     >
       <SectionGlow />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* 1. Hero */}
+        {/* Hero */}
         <div
           ref={heroRef}
-          className="mx-auto mb-16 flex max-w-5xl flex-col items-center text-center sm:mb-20"
+          className="mx-auto mb-14 flex max-w-5xl flex-col items-center text-center sm:mb-16 lg:mb-20"
         >
-          <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/4 px-4 py-2 text-sm font-medium text-[#E4DFFF] backdrop-blur-xl hover:bg-white/6">
+          <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/5 px-4 py-2 text-[11px] font-medium text-[#E4DFFF] backdrop-blur-xl sm:text-sm">
             <CreditCard className="mr-2 h-4 w-4 text-[#7F56D9]" />
             Pricing
           </Badge>
 
-          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[2.8rem] sm:leading-[1.02] lg:text-[5rem]">
+          <h1 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-[2.8rem] lg:text-[4.25rem] xl:text-[5rem]">
             Pricing built for
             <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
               serious operational growth
             </span>
           </h1>
 
-          <p className="mt-6 max-w-3xl text-base leading-8 text-[#94A3B8] sm:text-lg">
+          <p className="mt-5 max-w-3xl text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8 lg:text-lg">
             OpsCore pricing is designed around how modern teams actually run: workspaces, execution,
             billing visibility, and operational clarity in one system.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            {stats.map((item: string) => (
+          <div className="mt-8 grid w-full max-w-3xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {stats.map((item) => (
               <div
                 key={item}
                 data-float
-                className="rounded-full border border-white/10 bg-white/3 px-4 py-2 text-sm backdrop-blur-xl"
+                className="rounded-full border border-white/10 bg-white/5 px-4 py-3 text-center text-xs backdrop-blur-xl sm:text-sm"
               >
                 <span className="font-medium text-white">{item}</span>
               </div>
@@ -285,13 +300,13 @@ export default function PricingComponents() {
           </div>
         </div>
 
-        {/* 2. Toggle + plans */}
+        {/* Toggle + plans */}
         <div ref={plansRef} className="mb-16 sm:mb-20">
-          <div className="mb-10 flex flex-col items-center gap-4">
-            <div className="flex items-center gap-4 text-sm">
+          <div className="mb-8 flex flex-col items-center gap-4 sm:mb-10">
+            <div className="flex flex-col items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-xl sm:flex-row sm:gap-4">
               <span
                 className={cn(
-                  "font-medium transition-colors duration-300",
+                  "text-sm font-medium transition-colors duration-300",
                   !isYearly ? "text-white" : "text-[#94A3B8]"
                 )}
               >
@@ -306,7 +321,7 @@ export default function PricingComponents() {
 
               <span
                 className={cn(
-                  "font-medium transition-colors duration-300",
+                  "text-sm font-medium transition-colors duration-300",
                   isYearly ? "text-white" : "text-[#94A3B8]"
                 )}
               >
@@ -316,17 +331,19 @@ export default function PricingComponents() {
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {pricingPlans.map((plan: PricingPlan) => {
+          <div className="grid gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {pricingPlans.map((plan) => {
               const Icon = plan.icon;
               const currentPrice = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
+              const billingLabel =
+                currentPrice === 0 ? "/ forever" : isYearly ? "/ month billed yearly" : "/ month";
 
               return (
-                <div
+                <GlassCard
                   key={plan.id}
                   className={cn(
-                    "group relative overflow-hidden rounded-[22px] p-4 sm:rounded-[26px] sm:p-5 lg:rounded-[30px] lg:p-6 border border-white/10 bg-[rgba(16,24,40,0.72)] shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl",
-                    "transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.38)]",
+                    "group p-5 sm:p-6",
+                    "transition-[border-color,box-shadow,background-color,transform] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.38)]",
                     plan.highlighted && "border-[#8B6CFF]/25 bg-[rgba(25,22,52,0.8)]"
                   )}
                 >
@@ -336,7 +353,6 @@ export default function PricingComponents() {
                       plan.highlighted ? "bg-[#8E72FF]/28" : "bg-[#7F56D9]/14"
                     )}
                   />
-                  <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
                   <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
                   <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_30%,rgba(255,255,255,0.02)_100%)]" />
 
@@ -354,26 +370,24 @@ export default function PricingComponents() {
                       ) : null}
                     </div>
 
-                    <h3 className="text-[2rem] font-semibold tracking-[-0.03em] text-white">
+                    <h3 className="text-[1.8rem] font-semibold tracking-[-0.03em] text-white sm:text-[2rem]">
                       {plan.name}
                     </h3>
 
-                    <p className="mt-4 min-h-[72px] text-sm leading-7 text-[#94A3B8]">
+                    <p className="mt-4 min-h-[96px] text-sm leading-7 text-[#94A3B8] sm:min-h-[84px]">
                       {plan.description}
                     </p>
 
                     <div className="mt-6 flex items-end gap-2">
-                      <span className="text-[2.4rem] font-semibold leading-none tracking-[-0.04em] text-white sm:text-[3rem]">
+                      <span className="text-[2.2rem] font-semibold leading-none tracking-[-0.04em] text-white sm:text-[2.8rem]">
                         {formatPrice(currentPrice)}
                       </span>
-                      <span className="pb-1 text-sm text-[#94A3B8]">
-                        {currentPrice === 0 ? "/ forever" : "/ month"}
-                      </span>
+                      <span className="pb-1 text-xs text-[#94A3B8] sm:text-sm">{billingLabel}</span>
                     </div>
 
                     {isYearly && currentPrice !== 0 ? (
                       <p className="mt-2 text-sm text-[#C4B5FD]">
-                        Annual billing, lower effective monthly rate.
+                        Annual billing with a lower effective monthly rate.
                       </p>
                     ) : (
                       <p className="mt-2 text-sm text-[#667085]">
@@ -384,10 +398,10 @@ export default function PricingComponents() {
                     <Button
                       asChild
                       className={cn(
-                        "mt-8 h-14 w-full rounded-full text-base font-semibold",
+                        "mt-8 h-13 w-full rounded-full text-sm font-semibold sm:h-14 sm:text-base",
                         plan.highlighted
                           ? "border border-[#A78BFA]/35 bg-[linear-gradient(135deg,#7F56D9_0%,#6D5AE6_45%,#8E72FF_100%)] text-white shadow-[0_16px_40px_rgba(127,86,217,0.28)] hover:opacity-95"
-                          : "border border-white/10 bg-[rgba(12,17,29,0.38)] text-white hover:bg-white/6"
+                          : "border border-white/10 bg-[rgba(12,17,29,0.38)] text-white hover:bg-white/10"
                       )}
                     >
                       <Link
@@ -401,14 +415,14 @@ export default function PricingComponents() {
 
                     <div className="mt-8 flex items-center gap-4">
                       <div className="h-px flex-1 bg-linear-to-r from-transparent to-white/10" />
-                      <span className="text-sm font-medium text-white/75">Features +</span>
+                      <span className="text-sm font-medium text-white/75">Features</span>
                       <div className="h-px flex-1 bg-linear-to-l from-transparent to-white/10" />
                     </div>
 
                     <ul className="mt-6 space-y-4">
-                      {plan.features.map((feature: string) => (
+                      {plan.features.map((feature) => (
                         <li key={feature} className="flex items-start gap-3">
-                          <div className="mt-0.5 rounded-full bg-white/8 p-1 text-white/85">
+                          <div className="mt-0.5 rounded-full bg-white/10 p-1 text-white/85">
                             <Check className="h-3.5 w-3.5" />
                           </div>
                           <span className="text-sm leading-7 text-[#D0D5DD]">{feature}</span>
@@ -416,27 +430,27 @@ export default function PricingComponents() {
                       ))}
                     </ul>
                   </div>
-                </div>
+                </GlassCard>
               );
             })}
           </div>
         </div>
 
-        {/* 3. Highlights / why pricing works */}
-        <div ref={highlightsRef} className="mb-12 grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3 sm:mb-16 lg:mb-20">
-          {pricingHighlights.map((item: (typeof pricingHighlights)[number]) => {
+        {/* Highlights */}
+        <div
+          ref={highlightsRef}
+          className="mb-12 grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3 sm:mb-16 lg:mb-20"
+        >
+          {pricingHighlights.map((item) => {
             const Icon = item.icon;
+
             return (
-              <div
-                key={item.title}
-                className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.7)] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl"
-              >
+              <GlassCard key={item.title} className="p-5 sm:p-6">
                 <div className="pointer-events-none absolute inset-x-8 top-0 h-20 rounded-full bg-[#8E72FF]/16 blur-3xl" />
-                <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/45 to-transparent" />
 
                 <div className="relative">
-                  <div className="rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF] w-fit">
+                  <div className="w-fit rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF]">
                     <Icon className="h-5 w-5" />
                   </div>
 
@@ -446,42 +460,44 @@ export default function PricingComponents() {
 
                   <p className="mt-3 text-sm leading-7 text-[#94A3B8]">{item.description}</p>
                 </div>
-              </div>
+              </GlassCard>
             );
           })}
         </div>
 
-        {/* 4. Comparison / CTA */}
+        {/* Comparison */}
         <div
           ref={comparisonRef}
           className="mb-12 grid gap-4 sm:gap-6 xl:grid-cols-[0.95fr_1.05fr] xl:items-start"
         >
-          <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-7 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:p-8">
+          <GlassCard className="p-6 sm:p-8">
             <div className="pointer-events-none absolute inset-x-12 top-0 h-24 rounded-full bg-[#8E72FF]/18 blur-3xl" />
-            <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
 
             <div className="relative">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#C4B5FD]">
                 Quick comparison
               </p>
-              <h2 className="mt-4 text-[2rem] font-semibold leading-tight tracking-[-0.035em] text-white">
+
+              <h2 className="mt-4 text-[1.75rem] font-semibold leading-tight tracking-[-0.035em] text-white sm:text-[2rem] lg:text-[2.2rem]">
                 Pick the plan that matches your team&apos;s operational stage
               </h2>
-              <p className="mt-5 text-sm leading-8 text-[#94A3B8] sm:text-base">
+
+              <p className="mt-5 text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8">
                 Start with essential structure, then expand into deeper execution, billing
                 visibility, and premium operational support as your needs grow.
               </p>
 
               <div className="mt-8 space-y-4">
-                {comparisonPoints.map((row: (typeof comparisonPoints)[number]) => (
+                {comparisonPoints.map((row) => (
                   <div
                     key={row.title}
-                    className="rounded-[22px] border border-white/10 bg-white/3 p-4 backdrop-blur-xl"
+                    className="rounded-[22px] border border-white/10 bg-white/5 p-4 backdrop-blur-xl"
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <p className="text-sm font-medium text-white">{row.title}</p>
-                      <div className="flex items-center gap-3 text-xs sm:text-sm">
+
+                      <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
                         <span
                           className={cn(
                             "rounded-full px-3 py-1",
@@ -518,13 +534,13 @@ export default function PricingComponents() {
                 ))}
               </div>
             </div>
-          </div>
+          </GlassCard>
 
           <div className="grid gap-4">
-            {benefits.map((item: string) => (
+            {benefits.map((item) => (
               <div
                 key={item}
-                className="rounded-[24px] border border-white/10 bg-white/3 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl"
+                className="rounded-[24px] border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl"
               >
                 <div className="flex items-start gap-3">
                   <div className="rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF]">
@@ -537,24 +553,24 @@ export default function PricingComponents() {
           </div>
         </div>
 
+        {/* CTA */}
         <div ref={ctaRef} className="mx-auto max-w-5xl">
-          <div className="relative overflow-hidden rounded-[30px] border border-white/10 bg-[rgba(16,24,40,0.76)] px-6 py-10 shadow-[0_30px_90px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:px-10 sm:py-14">
+          <GlassCard className="px-6 py-10 sm:px-10 sm:py-14">
             <div className="pointer-events-none absolute inset-x-16 top-0 h-24 rounded-full bg-[#8E72FF]/24 blur-3xl" />
             <div className="pointer-events-none absolute inset-x-10 bottom-0 h-20 rounded-full bg-[#7F56D9]/18 blur-3xl" />
-            <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
 
             <div className="relative flex flex-col items-center text-center">
-              <h3 className="max-w-2xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02]">
+              <h3 className="max-w-2xl text-[1.9rem] font-semibold leading-[1.12] tracking-[-0.04em] text-white sm:text-[2.6rem] lg:text-[3rem]">
                 Ready to choose a cleaner operating system for your team?
               </h3>
 
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-[#94A3B8] sm:text-base">
-                Start with OpsCore and choose the plan that fits your current stage— then scale into
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8">
+                Start with OpsCore and choose the plan that fits your current stage—then scale into
                 stronger execution, billing visibility, and operational control.
               </p>
 
-              <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+              <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
                 <Button
                   asChild
                   className={cn(
@@ -580,7 +596,7 @@ export default function PricingComponents() {
                 </Button>
               </div>
             </div>
-          </div>
+          </GlassCard>
         </div>
       </div>
     </section>

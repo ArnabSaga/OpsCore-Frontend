@@ -1,5 +1,6 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -20,7 +21,7 @@ import {
   Workflow,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -105,41 +106,71 @@ const securityPillars = [
   },
 ];
 
+const heroTags = ["Multi-tenant", "Projects", "Execution", "Billing", "Insights", "Security"];
+
 function SectionShell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <section className={cn("relative overflow-hidden bg-[#0C111D] text-white", className)}>
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl" />
-        <div className="absolute -left-20 top-44 h-80 w-80 rounded-full bg-[#6941C6]/10 blur-3xl" />
-        <div className="absolute -right-16 bottom-10 h-80 w-80 rounded-full bg-[#7F56D9]/10 blur-3xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.92),rgba(0,0,0,0.58),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-1/2 top-0 h-56 w-56 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl sm:h-72 sm:w-72 lg:h-80 lg:w-80" />
+        <div className="absolute -left-20 top-40 h-64 w-64 rounded-full bg-[#6941C6]/10 blur-3xl sm:h-80 sm:w-80" />
+        <div className="absolute -right-16 bottom-10 h-64 w-64 rounded-full bg-[#7F56D9]/10 blur-3xl sm:h-80 sm:w-80" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[80px_80px] sm:bg-size-[100px_100px] lg:bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.92),rgba(0,0,0,0.58),transparent)]" />
       </div>
+
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
     </section>
+  );
+}
+
+function GlassCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-[22px] border border-white/10 bg-[rgba(16,24,40,0.72)] shadow-[0_26px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl",
+        "sm:rounded-[26px] lg:rounded-[30px]",
+        className
+      )}
+    >
+      <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
+      {children}
+    </div>
   );
 }
 
 function FeatureHero() {
   return (
     <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
-      <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/4 px-4 py-2 text-sm font-medium text-[#E4DFFF] backdrop-blur-xl hover:bg-white/6">
+      <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/5 px-4 py-2 text-[11px] font-medium text-[#E4DFFF] backdrop-blur-xl sm:text-sm">
         <Sparkles className="mr-2 h-4 w-4 text-[#7F56D9]" />
         OpsCore Features
       </Badge>
 
-      <h1 className="mt-6 max-w-6xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02] lg:text-[5.2rem]">
+      <h1 className="mt-6 max-w-6xl text-[2rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-[3rem] lg:text-[4.4rem] xl:text-[5.2rem]">
         Everything you need to
         <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
           run modern business operations
         </span>
       </h1>
 
-      <p className="mt-6 max-w-3xl text-base leading-8 text-[#94A3B8] sm:text-lg">
+      <p className="mt-5 max-w-3xl text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8 lg:text-lg">
         OpsCore brings workspaces, execution, billing, analytics, and business coordination into one
         structured platform built for speed, clarity, and scale.
       </p>
 
-      <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+      <div className="mt-8 grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {heroTags.map((item) => (
+          <div
+            key={item}
+            data-float
+            className="rounded-full border border-white/10 bg-white/5 px-4 py-3 text-center text-xs backdrop-blur-xl sm:text-sm"
+          >
+            <span className="font-medium text-white">{item}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
         <Button
           asChild
           className={cn(
@@ -168,68 +199,63 @@ function FeatureHero() {
   );
 }
 
-function CoreCapabilitiesSection({
-  cardRefs,
-}: {
-  cardRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
-}) {
+function CoreCapabilitiesSection() {
   return (
-    <div className="mt-20">
+    <div className="mt-16 sm:mt-20">
       <div className="mb-8 max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#C4B5FD]">
           Core capabilities
         </p>
-        <h2 className="mt-4 text-[2rem] font-semibold leading-tight tracking-[-0.03em] text-white sm:text-[2.6rem]">
+
+        <h2 className="mt-4 text-[1.9rem] font-semibold leading-tight tracking-[-0.03em] text-white sm:text-[2.4rem] lg:text-[2.6rem]">
           Built around the way serious teams actually operate
         </h2>
-        <p className="mt-4 text-sm leading-8 text-[#94A3B8] sm:text-base">
+
+        <p className="mt-4 text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8">
           Every layer of OpsCore is designed to reduce fragmentation and create a cleaner operating
           rhythm across teams, workspaces, and business flow.
         </p>
       </div>
 
       <div className="grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {coreCapabilities.map((item, index) => {
+        {coreCapabilities.map((item) => {
           const Icon = item.icon;
 
           return (
-            <div
+            <GlassCard
               key={item.title}
-              ref={(el) => {
-                cardRefs.current[index] = el;
-              }}
-              className="group relative overflow-hidden rounded-[22px] p-4 sm:rounded-[26px] sm:p-5 lg:rounded-[28px] lg:p-6 border border-white/10 bg-[rgba(16,24,40,0.72)] shadow-[0_26px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.36)]"
+              className="group p-5 sm:p-6 transition-[border-color,box-shadow,background-color,transform] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.36)]"
             >
               <div
                 data-glow
-                className="pointer-events-none absolute inset-x-10 bottom-0 h-20 rounded-full bg-[#8E72FF]/18 opacity-80 blur-3xl"
+                className="pointer-events-none absolute inset-x-10 bottom-0 h-20 rounded-full bg-[#8E72FF]/18 opacity-75 blur-3xl"
               />
-              <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
               <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_35%,rgba(255,255,255,0.02)_100%)]" />
 
               <div className="relative">
-                <div className="mb-5 rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF] w-fit">
+                <div className="mb-5 w-fit rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF]">
                   <Icon className="h-5 w-5" />
                 </div>
 
                 <h3 className="text-xl font-semibold tracking-[-0.02em] text-white">
                   {item.title}
                 </h3>
+
                 <p className="mt-3 text-sm leading-7 text-[#94A3B8]">{item.description}</p>
 
                 <div className="mt-6 flex flex-wrap gap-2">
                   {item.chips.map((chip) => (
                     <span
                       key={chip}
-                      className="rounded-full border border-white/10 bg-white/3 px-3 py-1.5 text-xs font-medium text-white/80"
+                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80"
                     >
                       {chip}
                     </span>
                   ))}
                 </div>
               </div>
-            </div>
+            </GlassCard>
           );
         })}
       </div>
@@ -237,36 +263,26 @@ function CoreCapabilitiesSection({
   );
 }
 
-function AutomationSection({
-  leftRef,
-  rightRef,
-}: {
-  leftRef: React.RefObject<HTMLDivElement | null>;
-  rightRef: React.RefObject<HTMLDivElement | null>;
-}) {
+function AutomationSection() {
   return (
     <div className="mt-16 grid gap-4 sm:gap-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-stretch">
-      <div
-        ref={leftRef}
-        className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[rgba(16,24,40,0.74)] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-8"
-      >
+      <GlassCard className="p-6 sm:p-8">
         <div className="pointer-events-none absolute inset-x-16 top-0 h-24 rounded-full bg-[#8E72FF]/24 blur-3xl" />
         <div className="pointer-events-none absolute inset-x-8 bottom-0 h-20 rounded-full bg-[#7F56D9]/16 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_30%,rgba(255,255,255,0.02)_100%)]" />
 
         <div className="relative">
-          <div className="rounded-full border border-white/10 bg-white/4 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#C4B5FD] w-fit">
+          <div className="w-fit rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#C4B5FD]">
             Feature block 02
           </div>
 
-          <h2 className="mt-8 max-w-2xl text-[2rem] font-semibold leading-tight tracking-[-0.035em] text-white sm:text-[2.5rem]">
+          <h2 className="mt-8 max-w-2xl text-[1.9rem] font-semibold leading-tight tracking-[-0.035em] text-white sm:text-[2.3rem] lg:text-[2.5rem]">
             Automation that supports execution,
             <span className="block text-[#D8CCFF]">not just visibility</span>
           </h2>
 
-          <p className="mt-5 max-w-2xl text-sm leading-8 text-[#94A3B8] sm:text-base">
+          <p className="mt-5 max-w-2xl text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8">
             OpsCore helps teams structure real work movement through ownership, workflow discipline,
             and cleaner handoff visibility across the business.
           </p>
@@ -279,7 +295,7 @@ function AutomationSection({
                 <div
                   key={signal.title}
                   data-float
-                  className="rounded-[24px] border border-white/10 bg-white/3 p-5 shadow-[0_18px_50px_rgba(0,0,0,0.2)] backdrop-blur-xl"
+                  className="rounded-[24px] border border-white/10 bg-white/5 p-5 shadow-[0_18px_50px_rgba(0,0,0,0.2)] backdrop-blur-xl"
                 >
                   <div className="flex items-start gap-4">
                     <div className="rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF]">
@@ -296,14 +312,10 @@ function AutomationSection({
             })}
           </div>
         </div>
-      </div>
+      </GlassCard>
 
-      <div
-        ref={rightRef}
-        className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[rgba(16,24,40,0.74)] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:p-8"
-      >
+      <GlassCard className="p-6 sm:p-8">
         <div className="pointer-events-none absolute inset-x-10 top-10 h-24 rounded-full bg-[#8E72FF]/22 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_35%,rgba(255,255,255,0.02)_100%)]" />
 
@@ -322,26 +334,10 @@ function AutomationSection({
 
           <div className="grid gap-4">
             {[
-              {
-                label: "Workspace activity",
-                value: "Live",
-                icon: Layers3,
-              },
-              {
-                label: "Execution status",
-                value: "Tracked",
-                icon: CheckCircle2,
-              },
-              {
-                label: "Revenue visibility",
-                value: "Connected",
-                icon: CreditCard,
-              },
-              {
-                label: "Business context",
-                value: "Readable",
-                icon: Blocks,
-              },
+              { label: "Workspace activity", value: "Live", icon: Layers3 },
+              { label: "Execution status", value: "Tracked", icon: CheckCircle2 },
+              { label: "Revenue visibility", value: "Connected", icon: CreditCard },
+              { label: "Business context", value: "Readable", icon: Blocks },
             ].map((item) => {
               const Icon = item.icon;
 
@@ -349,15 +345,16 @@ function AutomationSection({
                 <div
                   key={item.label}
                   data-float
-                  className="flex items-center justify-between rounded-[24px] border border-white/10 bg-[rgba(12,17,29,0.44)] px-5 py-4 backdrop-blur-xl"
+                  className="flex flex-col gap-3 rounded-[24px] border border-white/10 bg-[rgba(12,17,29,0.44)] px-5 py-4 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="rounded-2xl bg-white/4 p-3 text-[#D5CCFF]">
+                    <div className="rounded-2xl bg-white/5 p-3 text-[#D5CCFF]">
                       <Icon className="h-5 w-5" />
                     </div>
                     <span className="text-sm font-medium text-white/85">{item.label}</span>
                   </div>
-                  <span className="rounded-full border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-semibold text-white/80">
+
+                  <span className="w-fit rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/80">
                     {item.value}
                   </span>
                 </div>
@@ -365,63 +362,62 @@ function AutomationSection({
             })}
           </div>
 
-          <div className="mt-6 rounded-[24px] border border-white/10 bg-white/3 p-5 backdrop-blur-xl">
-            <p className="text-sm leading-8 text-[#D0D5DD]">
+          <div className="mt-6 rounded-[24px] border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+            <p className="text-sm leading-7 text-[#D0D5DD] sm:leading-8">
               OpsCore is not a generic dashboard layer. It is designed to help businesses structure
               movement across workspaces, execution, billing, and decision flow in one premium
               environment.
             </p>
           </div>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 }
 
-function SecuritySection({ refs }: { refs: React.MutableRefObject<(HTMLDivElement | null)[]> }) {
+function SecuritySection() {
   return (
-    <div className="mt-24">
+    <div className="mt-20 sm:mt-24">
       <div className="mb-8 max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#C4B5FD]">
           Trust and control
         </p>
-        <h2 className="mt-4 text-[2rem] font-semibold leading-tight tracking-[-0.03em] text-white sm:text-[2.6rem]">
+
+        <h2 className="mt-4 text-[1.9rem] font-semibold leading-tight tracking-[-0.03em] text-white sm:text-[2.4rem] lg:text-[2.6rem]">
           Designed for teams that need premium operational confidence
         </h2>
-        <p className="mt-4 text-sm leading-8 text-[#94A3B8] sm:text-base">
+
+        <p className="mt-4 text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8">
           OpsCore helps teams scale with stronger workspace boundaries, clearer collaboration flow,
           and more confident operational management.
         </p>
       </div>
 
       <div className="grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {securityPillars.map((item, index) => {
+        {securityPillars.map((item) => {
           const Icon = item.icon;
 
           return (
-            <div
+            <GlassCard
               key={item.title}
-              ref={(el) => {
-                refs.current[index] = el;
-              }}
-              className="relative overflow-hidden rounded-[22px] p-4 sm:rounded-[26px] sm:p-5 lg:rounded-[28px] lg:p-6 border border-white/10 bg-[rgba(16,24,40,0.72)] shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.36)]"
+              className="p-5 sm:p-6 transition-[border-color,box-shadow,background-color,transform] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.36)]"
             >
               <div
                 data-glow
-                className="pointer-events-none absolute inset-x-8 bottom-0 h-20 rounded-full bg-[#8E72FF]/18 opacity-80 blur-3xl"
+                className="pointer-events-none absolute inset-x-8 bottom-0 h-20 rounded-full bg-[#8E72FF]/18 opacity-75 blur-3xl"
               />
-              <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
               <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_35%,rgba(255,255,255,0.02)_100%)]" />
 
               <div className="relative">
-                <div className="mb-5 rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF] w-fit">
+                <div className="mb-5 w-fit rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF]">
                   <Icon className="h-5 w-5" />
                 </div>
+
                 <h3 className="text-xl font-semibold text-white">{item.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-[#94A3B8]">{item.description}</p>
               </div>
-            </div>
+            </GlassCard>
           );
         })}
       </div>
@@ -429,27 +425,26 @@ function SecuritySection({ refs }: { refs: React.MutableRefObject<(HTMLDivElemen
   );
 }
 
-function CTASection({ ctaRef }: { ctaRef: React.RefObject<HTMLDivElement | null> }) {
+function CTASection() {
   return (
-    <div ref={ctaRef} className="mt-24">
-      <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[rgba(16,24,40,0.76)] px-6 py-10 shadow-[0_30px_90px_rgba(0,0,0,0.32)] backdrop-blur-2xl sm:px-10 sm:py-14">
+    <div className="mt-20 sm:mt-24">
+      <GlassCard className="px-6 py-10 sm:px-10 sm:py-14">
         <div className="pointer-events-none absolute inset-x-16 top-0 h-24 rounded-full bg-[#8E72FF]/24 blur-3xl" />
         <div className="pointer-events-none absolute inset-x-10 bottom-0 h-20 rounded-full bg-[#7F56D9]/18 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_35%,rgba(255,255,255,0.02)_100%)]" />
 
         <div className="relative flex flex-col items-center text-center">
-          <h2 className="max-w-3xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02]">
+          <h2 className="max-w-3xl text-[1.9rem] font-semibold leading-[1.12] tracking-[-0.04em] text-white sm:text-[2.6rem] lg:text-[3rem]">
             Ready to choose a cleaner operating system for your team?
           </h2>
 
-          <p className="mt-4 max-w-2xl text-sm leading-8 text-[#94A3B8] sm:text-base">
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8">
             Bring your projects, execution, billing, and workspace coordination into one premium
             operating layer with OpsCore.
           </p>
 
-          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+          <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
             <Button
               asChild
               className={cn(
@@ -475,7 +470,7 @@ function CTASection({ ctaRef }: { ctaRef: React.RefObject<HTMLDivElement | null>
             </Button>
           </div>
         </div>
-      </div>
+      </GlassCard>
     </div>
   );
 }
@@ -483,105 +478,128 @@ function CTASection({ ctaRef }: { ctaRef: React.RefObject<HTMLDivElement | null>
 export default function FeatureComponents() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const heroRef = useRef<HTMLDivElement | null>(null);
-  const capabilitiesRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const automationLeftRef = useRef<HTMLDivElement | null>(null);
-  const automationRightRef = useRef<HTMLDivElement | null>(null);
-  const securityRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const capabilitiesRef = useRef<HTMLDivElement | null>(null);
+  const automationRef = useRef<HTMLDivElement | null>(null);
+  const securityRef = useRef<HTMLDivElement | null>(null);
   const ctaRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
 
-    const ctx = gsap.context(() => {
-      const startFloating = (node: Element, index: number) => {
-        gsap.to(node, {
-          y: index % 2 === 0 ? -5 : 5,
-          duration: 2.8 + index * 0.12,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          overwrite: "auto",
-        });
-      };
+      const mm = gsap.matchMedia();
 
-      const reveal = (trigger: HTMLElement | null, start: string = "top 84%") => {
-        if (!trigger) return;
-        const elements = Array.from(trigger.children);
+      mm.add(
+        {
+          desktop: "(min-width: 1024px)",
+          tablet: "(min-width: 768px) and (max-width: 1023px)",
+          mobile: "(max-width: 767px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { desktop, reduceMotion } = context.conditions ?? {};
 
-        gsap.fromTo(
-          elements,
-          { opacity: 0, y: 30, scale: 0.985 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1.05,
-            stagger: 0.1,
-            ease: "expo.out",
-            force3D: true,
-            overwrite: "auto",
-            scrollTrigger: {
-              trigger,
-              start,
-              once: true,
-            },
-            onComplete: () => {
-              elements.forEach((el, index) => {
-                if (el.hasAttribute("data-float")) {
-                  startFloating(el, index);
-                }
-                const floatingChildren = el.querySelectorAll("[data-float]");
-                floatingChildren.forEach((child, cIndex) => {
-                  startFloating(child, cIndex);
-                });
-              });
-            },
+          const revealSection = (node: HTMLElement | null, y = 24) => {
+            if (!node) return;
+
+            const elements = Array.from(node.children);
+
+            gsap.from(elements, {
+              opacity: 0,
+              y,
+              scale: 0.985,
+              duration: 0.85,
+              stagger: 0.08,
+              ease: "power3.out",
+              clearProps: "all",
+              scrollTrigger: {
+                trigger: node,
+                start: "top 84%",
+                once: true,
+              },
+            });
+          };
+
+          if (reduceMotion) {
+            gsap.set(
+              [
+                ...(heroRef.current ? Array.from(heroRef.current.children) : []),
+                ...(capabilitiesRef.current ? Array.from(capabilitiesRef.current.children) : []),
+                ...(automationRef.current ? Array.from(automationRef.current.children) : []),
+                ...(securityRef.current ? Array.from(securityRef.current.children) : []),
+                ...(ctaRef.current ? Array.from(ctaRef.current.children) : []),
+              ],
+              { opacity: 1, y: 0, scale: 1, clearProps: "all" }
+            );
+            return;
           }
-        );
-      };
 
-      reveal(heroRef.current);
-      reveal(
-        capabilitiesRefs.current[0]?.parentElement as HTMLElement | null,
-        "top 82%"
+          revealSection(heroRef.current, 26);
+          revealSection(capabilitiesRef.current, 28);
+          revealSection(automationRef.current, 28);
+          revealSection(securityRef.current, 28);
+          revealSection(ctaRef.current, 24);
+
+          if (desktop) {
+            const floatingNodes = gsap.utils.toArray<HTMLElement>("[data-float]", section);
+
+            floatingNodes.forEach((node, index) => {
+              gsap.to(node, {
+                y: index % 2 === 0 ? -6 : 6,
+                x: index % 2 === 0 ? 4 : -4,
+                duration: 3.2 + index * 0.18,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+              });
+            });
+
+            const glowEls = gsap.utils.toArray<HTMLElement>("[data-glow]", section);
+            if (glowEls.length) {
+              gsap.to(glowEls, {
+                opacity: 0.92,
+                scale: 1.06,
+                duration: 3.2,
+                repeat: -1,
+                yoyo: true,
+                stagger: 0.12,
+                ease: "sine.inOut",
+              });
+            }
+          }
+        }
       );
-      reveal(automationLeftRef.current?.parentElement as HTMLElement | null, "top 82%");
-      reveal(securityRefs.current[0]?.parentElement as HTMLElement | null, "top 84%");
-      reveal(ctaRef.current, "top 88%");
 
-      const glowEls = section.querySelectorAll("[data-glow]");
-      if (glowEls.length) {
-        gsap.to(glowEls, {
-          opacity: 0.95,
-          scale: 1.08,
-          duration: 3.1,
-          repeat: -1,
-          yoyo: true,
-          stagger: 0.12,
-          ease: "sine.inOut",
-          force3D: true,
-        });
-      }
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
+      return () => {
+        mm.revert();
+      };
+    },
+    { scope: sectionRef }
+  );
 
   return (
-    <SectionShell className="py-16 sm:py-20 lg:py-24">
+    <SectionShell className="py-16 sm:py-20 lg:py-24 xl:py-28">
       <div ref={sectionRef}>
         <div ref={heroRef}>
           <FeatureHero />
         </div>
 
-        <CoreCapabilitiesSection cardRefs={capabilitiesRefs} />
+        <div ref={capabilitiesRef}>
+          <CoreCapabilitiesSection />
+        </div>
 
-        <AutomationSection leftRef={automationLeftRef} rightRef={automationRightRef} />
+        <div ref={automationRef}>
+          <AutomationSection />
+        </div>
 
-        <SecuritySection refs={securityRefs} />
+        <div ref={securityRef}>
+          <SecuritySection />
+        </div>
 
-        <CTASection ctaRef={ctaRef} />
+        <div ref={ctaRef}>
+          <CTASection />
+        </div>
       </div>
     </SectionShell>
   );
