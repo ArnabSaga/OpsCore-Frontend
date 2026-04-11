@@ -8,9 +8,9 @@ import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAcceptInvitation } from "@/components/features/workspace/hooks/useAcceptInvitation";
-import { useDeclineInvitation } from "@/components/features/workspace/hooks/useDeclineInvitation";
-import { useInvitationDetails } from "@/components/features/workspace/hooks/useInvitationDetails";
+import { useAcceptInvitation } from "../hooks/useAcceptInvitation";
+import { useDeclineInvitation } from "../hooks/useDeclineInvitation";
+import { useInvitationDetails } from "../hooks/useInvitationDetails";
 import { useUser } from "@/hooks/useUser";
 
 type Props = {

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import WorkspaceCard from "./WorkspaceCard";
 import WorkspaceEmptyState from "./WorkspaceEmptyState";
 import WorkspaceListSkeleton from "./WorkspaceListSkeleton";
-import { PendingInvitationsBanner } from "./PendingInvitationsBanner";
+import { PendingInvitationsBanner } from "@/components/features/invitations/components/PendingInvitationsBanner";
 
 const WorkspaceListPageContent = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);

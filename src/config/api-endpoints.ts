@@ -31,6 +31,7 @@ export const API_ENDPOINTS = {
       `${API_PREFIX}/workspaces/${workspaceId}/members/${memberId}`,
     transferOwnership: (workspaceId: string, memberId: string) =>
       `${API_PREFIX}/workspaces/${workspaceId}/members/${memberId}/transfer-ownership`,
+
     invitations: (workspaceId: string) => `${API_PREFIX}/workspaces/${workspaceId}/invitations`,
     invitation: (workspaceId: string, invitationId: string) =>
       `${API_PREFIX}/workspaces/${workspaceId}/invitations/${invitationId}`,
@@ -38,6 +39,9 @@ export const API_ENDPOINTS = {
       `${API_PREFIX}/workspaces/${workspaceId}/invitations/${invitationId}/resend`,
     expireInvitation: (workspaceId: string, invitationId: string) =>
       `${API_PREFIX}/workspaces/${workspaceId}/invitations/${invitationId}/expire`,
+    hardDeleteInvitation: (workspaceId: string, invitationId: string) =>
+      `${API_PREFIX}/workspaces/${workspaceId}/invitations/${invitationId}/hard-delete`,
+
     generalSettings: (workspaceId: string) =>
       `${API_PREFIX}/workspaces/${workspaceId}/settings/general`,
     brandingSettings: (workspaceId: string) =>
@@ -52,9 +56,9 @@ export const API_ENDPOINTS = {
 
   invitation: {
     my: `${API_PREFIX}/invitations/my`,
+    details: (token: string) => `${API_PREFIX}/invitations/${token}`,
     accept: (token: string) => `${API_PREFIX}/invitations/${token}/accept`,
     decline: (token: string) => `${API_PREFIX}/invitations/${token}/decline`,
-    details: (token: string) => `${API_PREFIX}/invitations/${token}`,
   },
 
   billing: {

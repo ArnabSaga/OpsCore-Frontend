@@ -104,6 +104,25 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #7f56d9;
+
+  /* Unified Layout Tokens */
+  --section-py: 4rem;
+  --card-p: 1.25rem;
+  --glow-opacity: 0.14;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --section-py: 5rem;
+    --card-p: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --section-py: 7rem;
+    --card-p: 2.5rem;
+  }
 }
 
 @layer base {
@@ -114,11 +133,13 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* Lenis will handle smooth scroll, disabling native smooth scroll for better sync */
+    scroll-behavior: auto !important;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: hidden;
   }
 
   /* Custom Selection Color */
@@ -146,8 +167,25 @@
     background: rgba(255, 255, 255, 0.2);
   }
 
+  /* GPU Acceleration & Stability */
   [data-float],
   .animate-gpu {
     will-change: transform, opacity;
+  }
+
+  /* Reduced Motion Strategy */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    [data-reduced-only] {
+      display: none !important;
+    }
   }
 }

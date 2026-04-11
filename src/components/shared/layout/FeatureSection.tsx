@@ -1,5 +1,7 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -14,10 +16,9 @@ import {
   ShieldCheck,
   Sparkles,
   Users2,
-  Workflow,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef } from "react";
+import { useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ const featureCards: FeatureCard[] = [
       "Track priorities, detect blockers, and surface execution signals across projects, teams, and workflows from one secure command layer.",
     icon: BrainCircuit,
     size: "sm",
-    gradientClass: "from-[#7F56D9]/22 via-[#1D2939]/45 to-transparent",
+    gradientClass: "from-[#7F56D9]/20 via-[#1D2939]/40 to-transparent",
   },
   {
     id: "workflow-control",
@@ -60,7 +61,7 @@ const featureCards: FeatureCard[] = [
       "Handle invoices, payment flow, subscriptions, and operational finance with structured workflows that scale cleanly.",
     icon: CreditCard,
     size: "lg",
-    gradientClass: "from-[#7F56D9]/20 via-[#0F172A]/35 to-[#6941C6]/10",
+    gradientClass: "from-[#7F56D9]/18 via-[#0F172A]/30 to-[#6941C6]/10",
   },
   {
     id: "collaboration-layer",
@@ -69,467 +70,408 @@ const featureCards: FeatureCard[] = [
       "Keep members aligned with role-aware visibility, updates, shared execution context, and cleaner cross-team coordination.",
     icon: Users2,
     size: "sm",
-    gradientClass: "from-[#6941C6]/18 via-[#101828]/30 to-transparent",
+    gradientClass: "from-[#6941C6]/16 via-[#101828]/28 to-transparent",
+  },
+];
+
+const secondaryFeatures = [
+  {
+    title: "Multi-tenant workspaces",
+    text: "Structured workspace isolation for modern business teams.",
+    icon: Layers3,
+  },
+  {
+    title: "Execution-first automation",
+    text: "Workflows designed around real operational movement.",
+    icon: Blocks,
+  },
+  {
+    title: "Insight-ready architecture",
+    text: "Signals, analytics, and activity visibility that scale.",
+    icon: Activity,
   },
 ];
 
 export default function FeatureSection() {
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const secondaryGridRef = useRef<HTMLDivElement | null>(null);
 
-  //   const miniStack = useMemo(
-  //     () => [
-  //       { label: "Projects", icon: FolderKanban },
-  //       { label: "Tasks", icon: CheckCircle2 },
-  //       { label: "Invoices", icon: FileText },
-  //       { label: "Analytics", icon: BarChart3 },
-  //     ],
-  //     []
-  //   );
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
 
-  const opsSignals = useMemo(
-    () => [
-      { label: "Active workspaces", value: "12", icon: Layers3 },
-      { label: "Open tasks", value: "148", icon: Activity },
-      { label: "Monthly invoices", value: "86", icon: CreditCard },
-    ],
-    []
+      mm.add(
+        {
+          desktop: "(min-width: 1024px)",
+          tablet: "(min-width: 768px) and (max-width: 1023px)",
+          mobile: "(max-width: 767px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { desktop, reduceMotion } = context.conditions ?? {};
+
+          const headerItems = headerRef.current?.children
+            ? Array.from(headerRef.current.children)
+            : [];
+
+          const featureCardsEls = gsap.utils.toArray<HTMLElement>(
+            ".feature-card",
+            containerRef.current
+          );
+
+          const secondaryCardsEls = gsap.utils.toArray<HTMLElement>(
+            ".secondary-feature-card",
+            containerRef.current
+          );
+
+          if (reduceMotion) {
+            gsap.set([...headerItems, ...featureCardsEls, ...secondaryCardsEls], {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              clearProps: "all",
+            });
+            return;
+          }
+
+          gsap.from(headerItems, {
+            opacity: 0,
+            y: 24,
+            duration: 0.8,
+            stagger: 0.08,
+            ease: "power3.out",
+            clearProps: "all",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 88%",
+              once: true,
+            },
+          });
+
+          gsap.from(featureCardsEls, {
+            opacity: 0,
+            y: desktop ? 34 : 24,
+            scale: 0.985,
+            duration: 0.75,
+            stagger: 0.08,
+            ease: "power3.out",
+            clearProps: "all",
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: "top 82%",
+              once: true,
+            },
+          });
+
+          gsap.from(secondaryCardsEls, {
+            opacity: 0,
+            y: 20,
+            duration: 0.7,
+            stagger: 0.08,
+            ease: "power3.out",
+            clearProps: "all",
+            scrollTrigger: {
+              trigger: secondaryGridRef.current,
+              start: "top 88%",
+              once: true,
+            },
+          });
+
+          if (desktop) {
+            const glowTargets = gsap.utils.toArray<HTMLElement>(
+              "[data-card-glow]",
+              containerRef.current
+            );
+
+            const ambientTimeline = gsap.timeline({
+              repeat: -1,
+              yoyo: true,
+              paused: true,
+            });
+
+            ambientTimeline.to(glowTargets, {
+              opacity: 0.72,
+              scale: 1.05,
+              duration: 3.2,
+              ease: "sine.inOut",
+              stagger: 0.22,
+            });
+
+            ScrollTrigger.create({
+              trigger: gridRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              onToggle: (self) => {
+                if (self.isActive) ambientTimeline.play();
+                else ambientTimeline.pause();
+              },
+            });
+          }
+        }
+      );
+    },
+    { scope: containerRef }
   );
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const header = headerRef.current;
-    const grid = gridRef.current;
-    const cards = cardRefs.current.filter(Boolean);
-
-    if (!section || !header || !grid || cards.length === 0) return;
-
-    const ctx = gsap.context(() => {
-      gsap.set(header.children, { opacity: 0, y: 28 });
-      gsap.set(cards, { opacity: 0, y: 42, scale: 0.98 });
-
-      gsap.to(header.children, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        stagger: 0.12,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: header,
-          start: "top 82%",
-          once: true,
-        },
-      });
-
-      gsap.to(cards, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.95,
-        stagger: 0.14,
-        ease: "power4.out",
-        force3D: true,
-        scrollTrigger: {
-          trigger: grid,
-          start: "top 82%",
-          once: true,
-        },
-      });
-
-      cards.forEach((card) => {
-        const glow = card!.querySelector("[data-card-glow]");
-        const floating = card!.querySelectorAll("[data-float]");
-
-        if (glow) {
-          gsap.to(glow, {
-            opacity: 1,
-            scale: 1.08,
-            duration: 3.2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          });
-        }
-
-        if (floating.length) {
-          gsap.to(floating, {
-            yPercent: -6,
-            duration: 2.6,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            stagger: 0.12,
-            force3D: true,
-          });
-        }
-      });
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
 
   return (
     <section
-      ref={sectionRef}
+      ref={containerRef}
       id="features"
-      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
+      className="relative overflow-hidden bg-[#070910] py-20 text-white sm:py-24 lg:py-32"
     >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/15 blur-3xl" />
-        <div className="absolute -left-20 top-40 h-72 w-72 rounded-full bg-[#6941C6]/10 blur-3xl" />
-        <div className="absolute -right-20 bottom-20 h-72 w-72 rounded-full bg-[#7F56D9]/10 blur-3xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.9),rgba(0,0,0,0.55),transparent)]" />
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-1/2 top-0 h-96 w-[24rem] -translate-x-1/2 rounded-full bg-[#7F56D9]/6 blur-[90px] sm:h-128 sm:w-xl lg:h-152 lg:w-208 lg:blur-[120px]" />
+
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)",
+            backgroundSize: "72px 72px",
+          }}
+        />
+
+        <div className="absolute -left-16 top-32 h-56 w-56 rounded-full bg-[#6941C6]/10 blur-3xl opacity-50 sm:h-72 sm:w-72" />
+        <div className="absolute -right-16 bottom-16 h-56 w-56 rounded-full bg-[#7F56D9]/10 blur-3xl opacity-50 sm:h-72 sm:w-72" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headerRef}
-          className="mx-auto mb-14 flex max-w-4xl flex-col items-center text-center sm:mb-16"
+          className="mx-auto mb-14 flex max-w-4xl flex-col items-center text-center sm:mb-16 lg:mb-20"
         >
-          <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/4 px-4 py-2 text-sm font-medium text-[#E4DFFF] backdrop-blur-xl hover:bg-white/6">
-            <Sparkles className="mr-2 h-4 w-4 text-[#7F56D9]" />
+          <Badge className="rounded-full border border-[#7F56D9]/30 bg-[#7F56D9]/5 px-4 py-1.5 text-[11px] font-semibold text-[#C4B5FD] backdrop-blur-xl sm:text-xs">
+            <Sparkles className="mr-2 h-3.5 w-3.5 text-[#7F56D9]" />
             OpsCore Features
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02] lg:text-[4.8rem]">
-            Powerful infrastructure for
-            <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
-              modern business operations
-            </span>
+          <h2 className="mt-6 max-w-5xl text-[2rem] font-bold leading-[1.05] tracking-tight text-white sm:text-[3rem] lg:mt-8 lg:text-[4.75rem] xl:text-[5.5rem]">
+            Infrastructure for
+            <span className="block text-[#94A3B8]">modern operations.</span>
           </h2>
 
-          <p className="mt-6 max-w-3xl text-base leading-8 text-[#94A3B8] sm:text-lg">
+          <p className="mt-5 max-w-3xl text-sm leading-7 text-[#94A3B8] sm:mt-6 sm:text-base md:text-lg">
             OpsCore helps teams run projects, billing, execution, insights, and workspace governance
             from one premium operating layer designed for clarity, control, and scale.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-4">
             <Button
               asChild
-              className={cn(
-                "h-12 rounded-full border border-[#A78BFA]/35 bg-[linear-gradient(135deg,#7F56D9_0%,#6941C6_100%)] px-6 text-sm font-semibold text-white",
-                "shadow-[0_16px_40px_rgba(127,86,217,0.28)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_20px_44px_rgba(127,86,217,0.38)]"
-              )}
+              className="group h-12 rounded-full bg-[#7F56D9] px-6 text-sm font-bold text-white shadow-[0_18px_36px_rgba(127,86,217,0.28)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#6D4DC9] hover:shadow-[0_24px_46px_rgba(127,86,217,0.38)] sm:px-8"
             >
-              <Link href="/register" className="inline-flex items-center gap-2">
+              <Link href="/register" className="inline-flex items-center justify-center gap-2">
                 Explore OpsCore
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </Button>
 
             <Button
               asChild
               variant="outline"
-              className="h-12 rounded-full border-white/12 bg-white/4 px-6 text-sm text-white backdrop-blur-xl hover:bg-white/8 hover:text-white"
+              className="h-12 rounded-full border-white/10 bg-white/5 px-6 text-sm font-bold text-white transition-all duration-300 hover:bg-white/10 hover:text-white sm:px-8"
             >
-              <Link href="/pricing">See platform value</Link>
+              <Link href="/pricing" className="inline-flex items-center justify-center">
+                See platform value
+              </Link>
             </Button>
           </div>
         </div>
 
         <div
           ref={gridRef}
-          className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-12 lg:grid-rows-[minmax(320px,1fr)_minmax(320px,1fr)]"
+          className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-2 lg:gap-6"
         >
-          {featureCards.map((card, index) => {
+          {featureCards.map((card) => {
             const Icon = card.icon;
             const isLarge = card.size === "lg";
 
             return (
-              <div
+              <motion.article
                 key={card.id}
-                ref={(el) => {
-                  cardRefs.current[index] = el;
-                }}
                 className={cn(
-                  "group relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(16,24,40,0.66)] shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-2xl",
-                  "transition-[border-color,box-shadow,background-color] duration-300 will-change-[transform,opacity]",
-                  "hover:border-[#7F56D9]/25 hover:shadow-[0_36px_90px_rgba(0,0,0,0.45)]",
+                  "feature-card group relative overflow-hidden rounded-[24px] border border-white/10 bg-[#0F172A]/55 backdrop-blur-2xl transition-colors duration-500 hover:border-[#7F56D9]/40 sm:rounded-[28px] lg:rounded-[32px]",
                   isLarge ? "lg:col-span-8" : "lg:col-span-4"
                 )}
-                onMouseEnter={(e) => {
-                  gsap.killTweensOf(e.currentTarget);
-                  gsap.to(e.currentTarget, {
-                    y: -6,
-                    duration: 0.35,
-                    ease: "power3.out",
-                    force3D: true,
-                  });
-                }}
-                onMouseLeave={(e) => {
-                  gsap.killTweensOf(e.currentTarget);
-                  gsap.to(e.currentTarget, {
-                    y: 0,
-                    duration: 0.4,
-                    ease: "power3.out",
-                    force3D: true,
-                  });
-                }}
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 280, damping: 24 }}
               >
                 <div
                   data-card-glow
                   className={cn(
-                    "pointer-events-none absolute inset-x-0 bottom-0 h-32 opacity-70 blur-3xl",
-                    "bg-linear-to-r",
+                    "pointer-events-none absolute inset-x-0 bottom-0 h-40 opacity-40 blur-[72px] transition-opacity duration-500 sm:h-48 sm:blur-[80px]",
+                    "bg-linear-to-t",
                     card.gradientClass
                   )}
                 />
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_30%,rgba(255,255,255,0.02)_100%)]" />
-                <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
 
-                <div className="relative flex h-full flex-col justify-between p-4 sm:p-6 lg:p-7">
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.06),transparent_32%)]" />
+
+                <div className="relative flex h-full flex-col justify-between p-5 sm:p-7 lg:p-8">
                   <div>
-                    <div className="mb-5 flex items-center gap-3">
-                      <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-[#0F172A]">
-                        <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/15 blur-md" />
-                        <Icon className="relative h-5 w-5 text-[#D4C8FF]" />
-                      </div>
+                    <div className="mb-6 flex items-center justify-between gap-4 sm:mb-8">
+                      <motion.div
+                        className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-[#070910] text-[#C4B5FD] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] sm:h-14 sm:w-14"
+                        whileHover={{ rotate: 8, scale: 1.06 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                      >
+                        <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/10 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+                        <Icon className="relative h-5 w-5 sm:h-6 sm:w-6" />
+                      </motion.div>
 
-                      <div>
-                        <p className="text-sm font-medium uppercase tracking-[0.22em] text-[#C4B5FD]">
-                          OpsCore
-                        </p>
-                        <p className="text-sm text-white/60">Operational capability</p>
-                      </div>
+                      <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#7F56D9]/60 sm:text-[10px]">
+                        Operational Logic
+                      </span>
                     </div>
 
-                    <h3 className="max-w-xl text-[1.35rem] font-semibold leading-tight tracking-[-0.03em] text-white sm:text-[1.65rem] lg:text-[2rem]">
+                    <h3 className="max-w-xl text-xl font-bold tracking-tight text-white sm:text-2xl lg:text-[2rem]">
                       {card.title}
                     </h3>
 
-                    <p className="mt-4 max-w-2xl text-sm leading-7 text-[#94A3B8] sm:text-base">
+                    <p className="mt-3 text-sm leading-7 text-[#94A3B8] sm:mt-4 sm:text-base">
                       {card.description}
                     </p>
                   </div>
 
-                  {card.id === "workspace-intelligence" && (
-                    <div className="relative mt-8">
-                      <div className="absolute inset-x-0 bottom-0 h-24 rounded-full bg-[#8E72FF]/20 blur-3xl" />
-                      <div className="relative space-y-3">
+                  <div className="mt-8 overflow-hidden rounded-2xl border border-white/5 bg-black/20 p-4 sm:mt-10 sm:p-5 lg:p-6">
+                    {card.id === "workspace-intelligence" && (
+                      <div className="space-y-3 sm:space-y-4">
                         {[
                           {
-                            title: "AI signal",
-                            text: "Execution risk detected in one active workspace",
+                            label: "AI signal",
+                            val: "Execution risk detected",
+                            color: "text-red-400",
                           },
                           {
-                            title: "Ops insight",
-                            text: "Billing delay trend identified across current cycle",
-                          },
-                          {
-                            title: "Priority pulse",
-                            text: "3 projects need owner review this week",
+                            label: "Ops insight",
+                            val: "Billing delay trend",
+                            color: "text-amber-400",
                           },
                         ].map((item, i) => (
-                          <div
-                            key={item.title}
-                            data-float
-                            className={cn(
-                              "flex items-center justify-between rounded-2xl border border-white/10 bg-[rgba(18,25,42,0.78)] px-4 py-3 backdrop-blur-xl will-change-transform",
-                              i !== 0 && "opacity-55"
-                            )}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="rounded-full bg-[#7F56D9]/20 p-2 text-[#CFC4FF]">
-                                <Bot className="h-4 w-4" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-semibold text-white">{item.title}</p>
-                                <p className="text-xs text-[#94A3B8]">{item.text}</p>
-                              </div>
-                            </div>
-                            <BrainCircuit className="h-4 w-4 text-[#8E72FF]" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {card.id === "workflow-control" && (
-                    <div className="relative mt-8 min-h-[190px]">
-                      <div className="absolute inset-x-0 bottom-0 h-24 rounded-full bg-[#8E72FF]/20 blur-3xl" />
-                      <div className="relative ml-auto flex max-w-[380px] flex-col gap-4">
-                        {[
-                          { label: "Create project", active: false },
-                          { label: "Assign task owner", active: true },
-                          { label: "Track delivery stage", active: false },
-                        ].map((item) => (
-                          <div
+                          <motion.div
                             key={item.label}
-                            data-float
-                            className={cn(
-                              "flex items-center justify-between rounded-2xl border border-white/10 px-5 py-4 backdrop-blur-xl will-change-transform",
-                              item.active
-                                ? "bg-[linear-gradient(90deg,rgba(127,86,217,0.22),rgba(255,255,255,0.04))] shadow-[0_18px_40px_rgba(127,86,217,0.18)]"
-                                : "bg-[rgba(18,25,42,0.72)]"
-                            )}
+                            className="flex flex-col gap-2 rounded-xl bg-white/5 p-4 ring-1 ring-white/10 sm:flex-row sm:items-center sm:justify-between"
+                            animate={{ y: [0, -3, 0] }}
+                            transition={{
+                              duration: 3,
+                              repeat: Infinity,
+                              delay: i * 0.45,
+                              ease: "easeInOut",
+                            }}
                           >
                             <div className="flex items-center gap-3">
-                              <div className="rounded-xl border border-white/10 bg-white/5 p-2 text-white/80">
-                                <Workflow className="h-4 w-4" />
-                              </div>
-                              <span className="text-base font-medium text-white/85">
+                              <Bot className={cn("h-4 w-4", item.color)} />
+                              <span className="text-[10px] font-semibold uppercase tracking-wider text-white/50 sm:text-xs">
                                 {item.label}
                               </span>
                             </div>
-                            <div
-                              className={cn(
-                                "flex h-9 w-9 items-center justify-center rounded-full",
-                                item.active
-                                  ? "bg-[#8E72FF] text-white shadow-[0_10px_24px_rgba(142,114,255,0.4)]"
-                                  : "bg-white/8 text-white/60"
-                              )}
-                            >
-                              <ArrowRight className="h-4 w-4" />
-                            </div>
-                          </div>
+                            <span className="text-sm font-medium text-white">{item.val}</span>
+                          </motion.div>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {card.id === "billing-ops" && (
-                    <div className="relative mt-8 min-h-[200px]">
-                      <div className="absolute inset-x-0 top-5 h-24 rounded-full bg-[#8E72FF]/18 blur-3xl" />
-                      <div className="relative grid gap-4 md:grid-cols-2">
-                        <div className="rounded-[24px] border border-white/10 bg-[rgba(15,23,42,0.76)] p-5 backdrop-blur-xl">
-                          <div className="flex items-center gap-3">
-                            <div className="rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF]">
-                              <CreditCard className="h-5 w-5" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-semibold text-white">
-                                Revenue-ready billing
-                              </p>
-                              <p className="text-xs text-[#94A3B8]">
-                                Invoices, payments, subscriptions
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="mt-6 space-y-3">
-                            {opsSignals.map((item) => {
-                              const SignalIcon = item.icon;
-                              return (
-                                <div
-                                  key={item.label}
-                                  data-float
-                                  className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/3 px-4 py-3 will-change-transform"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <div className="rounded-xl bg-white/5 p-2 text-[#CFC4FF]">
-                                      <SignalIcon className="h-4 w-4" />
-                                    </div>
-                                    <span className="text-sm text-white/80">{item.label}</span>
-                                  </div>
-                                  <span className="text-sm font-semibold text-white">
-                                    {item.value}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
+                    {card.id === "workflow-control" && (
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-center justify-between rounded-full bg-[#7F56D9]/20 px-4 py-4 ring-1 ring-[#7F56D9]/40 sm:px-6">
+                          <span className="text-sm font-bold text-white">Assign task owner</span>
+                          <motion.div
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#7F56D9] text-white"
+                            animate={{ x: [0, 5, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                          >
+                            <ArrowRight className="h-4 w-4" />
+                          </motion.div>
                         </div>
 
-                        <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(127,86,217,0.14),rgba(16,24,40,0.42))] p-5 backdrop-blur-xl">
-                          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#C4B5FD]">
-                            OpsCore finance visibility
-                          </p>
-                          <h4 className="mt-3 text-xl font-semibold text-white">
-                            Built for reliable operational flow
-                          </h4>
-                          <p className="mt-3 text-sm leading-7 text-[#A6B0C3]">
-                            Connect execution with billing and keep operational finance cleaner with
-                            structured status, ownership, and lifecycle visibility.
-                          </p>
-
-                          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/8 px-4 py-3 text-sm text-emerald-300">
-                            <ShieldCheck className="h-4 w-4" />
-                            Workspace-secured billing orchestration
-                          </div>
+                        <div className="flex items-center gap-3 opacity-40 sm:gap-4">
+                          <div className="h-12 w-full rounded-full bg-white/5 ring-1 ring-white/10" />
+                          <div className="h-10 w-20 rounded-full bg-white/5 ring-1 ring-white/10 sm:w-24" />
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {card.id === "collaboration-layer" && (
-                    <div className="relative mt-8 min-h-[170px]">
-                      <div className="absolute inset-x-0 top-0 h-24 rounded-full bg-[#8E72FF]/20 blur-3xl" />
-                      <div className="relative space-y-4">
-                        <div
-                          data-float
-                          className="ml-0 max-w-[220px] rounded-2xl border border-white/10 bg-[rgba(127,86,217,0.18)] px-4 py-3 backdrop-blur-xl will-change-transform"
-                        >
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#C4B5FD]">
-                            Step 1
-                          </p>
-                          <p className="mt-1 text-sm text-white">Assign the right owner</p>
+                    {card.id === "billing-ops" && (
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                        <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
+                          <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-[#7F56D9]/20 text-[#C4B5FD]">
+                            <CreditCard className="h-5 w-5" />
+                          </div>
+                          <p className="text-sm font-bold text-white">Invoice ready</p>
+                          <p className="mt-1 text-xs text-white/40">Status: Confirmed</p>
                         </div>
 
-                        <div
-                          data-float
-                          className="ml-auto max-w-[250px] rounded-2xl border border-white/10 bg-[rgba(18,25,42,0.76)] px-4 py-3 backdrop-blur-xl will-change-transform"
-                        >
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#C4B5FD]">
-                            Step 2
-                          </p>
-                          <p className="mt-1 text-sm text-white">Keep workspace members aligned</p>
-                        </div>
-
-                        <div
-                          data-float
-                          className="ml-8 max-w-[220px] rounded-2xl border border-white/10 bg-[rgba(18,25,42,0.76)] px-4 py-3 backdrop-blur-xl will-change-transform"
-                        >
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#C4B5FD]">
-                            Step 3
-                          </p>
-                          <p className="mt-1 text-sm text-white">Execute with cleaner visibility</p>
+                        <div className="rounded-2xl border border-[#7F56D9]/30 bg-[#7F56D9]/10 p-4">
+                          <ShieldCheck className="mb-4 h-5 w-5 text-[#C4B5FD]" />
+                          <p className="text-sm font-bold text-white">Secure Flow</p>
+                          <p className="mt-1 text-xs text-white/60">Verified by OpsCore</p>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+
+                    {card.id === "collaboration-layer" && (
+                      <div className="relative flex justify-center py-4 sm:py-6">
+                        {[0, 1, 2].map((i) => (
+                          <motion.div
+                            key={i}
+                            className="-ml-4 h-11 w-11 rounded-full border-2 border-[#070910] bg-[#1D2939] first:ml-0 sm:h-12 sm:w-12"
+                            animate={{ y: [0, -4, 0] }}
+                            transition={{
+                              duration: 4,
+                              repeat: Infinity,
+                              delay: i * 0.35,
+                            }}
+                          />
+                        ))}
+
+                        <motion.div
+                          className="-ml-4 flex h-11 w-11 items-center justify-center rounded-full border-2 border-dashed border-white/20 bg-white/5 sm:h-12 sm:w-12"
+                          whileHover={{
+                            scale: 1.08,
+                            backgroundColor: "rgba(127,86,217,0.1)",
+                          }}
+                        >
+                          <Users2 className="h-4 w-4 text-white/40" />
+                        </motion.div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </motion.article>
             );
           })}
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {[
-            {
-              title: "Multi-tenant workspaces",
-              text: "Structured workspace isolation for modern business teams.",
-              icon: Layers3,
-            },
-            {
-              title: "Execution-first automation",
-              text: "Workflows designed around real operational movement.",
-              icon: Blocks,
-            },
-            {
-              title: "Insight-ready architecture",
-              text: "Signals, analytics, and activity visibility that scale.",
-              icon: Activity,
-            },
-          ].map((item) => {
+        <div
+          ref={secondaryGridRef}
+          className="mt-10 grid gap-5 md:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-6"
+        >
+          {secondaryFeatures.map((item) => {
             const Icon = item.icon;
+
             return (
-              <div
+              <motion.div
                 key={item.title}
-                className="rounded-[24px] border border-white/10 bg-white/3 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.25)] backdrop-blur-xl"
+                className="secondary-feature-card rounded-[24px] border border-white/10 bg-[#0F172A]/45 p-5 backdrop-blur-2xl transition-colors duration-300 hover:border-[#7F56D9]/40 hover:bg-[#0F172A]/60 sm:rounded-3xl sm:p-6"
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 260, damping: 22 }}
               >
-                <div className="flex items-start gap-3">
-                  <div className="rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF]">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#7F56D9]/10 text-[#C4B5FD] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] ring-1 ring-white/10 sm:h-12 sm:w-12">
                     <Icon className="h-5 w-5" />
                   </div>
+
                   <div>
-                    <p className="text-base font-semibold text-white">{item.title}</p>
-                    <p className="mt-2 text-sm leading-7 text-[#94A3B8]">{item.text}</p>
+                    <p className="text-base font-bold leading-snug text-white sm:text-lg">
+                      {item.title}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-[#94A3B8]">{item.text}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

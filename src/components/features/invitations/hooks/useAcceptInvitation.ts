@@ -1,7 +1,8 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { acceptInvitation } from "@/components/features/workspace/api/workspace.api";
+import { acceptInvitation } from "../api/invitation.api";
+import { invitationQueryKeys } from "./invitation.query-keys";
 import { workspaceQueryKeys } from "@/components/features/workspace/hooks/workspace.query-keys";
 import { authQueryKeys } from "@/components/features/auth/hooks/auth.query-keys";
 
@@ -13,7 +14,7 @@ export const useAcceptInvitation = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: workspaceQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: authQueryKeys.currentUser() });
-      await queryClient.invalidateQueries({ queryKey: workspaceQueryKeys.myInvitations() });
+      await queryClient.invalidateQueries({ queryKey: invitationQueryKeys.my() });
     },
   });
 };

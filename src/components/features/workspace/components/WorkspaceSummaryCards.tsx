@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, MailPlus, ShieldCheck, Users } from "lucide-react";
+import { CreditCard, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,15 +10,9 @@ type Props = {
   workspaceId: string;
   workspace: WorkspaceDetails;
   membersCount: number;
-  pendingInvitationsCount: number;
 };
 
-const WorkspaceSummaryCards = ({
-  workspaceId,
-  workspace,
-  membersCount,
-  pendingInvitationsCount,
-}: Props) => {
+const WorkspaceSummaryCards = ({ workspaceId, workspace, membersCount }: Props) => {
   const planLabel = workspace.planMeta?.effectivePlan
     ? workspace.planMeta.effectivePlan.charAt(0) +
       workspace.planMeta.effectivePlan.slice(1).toLowerCase()
@@ -30,12 +24,6 @@ const WorkspaceSummaryCards = ({
       value: String(membersCount),
       icon: Users,
       href: `/workspaces/${workspaceId}/members`,
-    },
-    {
-      title: "Pending Invitations",
-      value: String(pendingInvitationsCount),
-      icon: MailPlus,
-      href: `/workspaces/${workspaceId}/invitations`,
     },
     {
       title: "Effective Plan",
@@ -52,7 +40,7 @@ const WorkspaceSummaryCards = ({
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {cards.map((card) => {
         const Icon = card.icon;
 

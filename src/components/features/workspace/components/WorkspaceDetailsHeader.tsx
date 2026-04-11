@@ -21,8 +21,6 @@ type Props = {
   workspaceSummary: WorkspaceSummary | null;
   isActive: boolean;
   isSwitching: boolean;
-  canManageInvitations?: boolean;
-  onInviteClick?: () => void;
 };
 
 const formatPlan = (plan?: string) => {
@@ -40,8 +38,6 @@ const WorkspaceDetailsHeader = ({
   workspaceSummary,
   isActive,
   isSwitching,
-  canManageInvitations = false,
-  onInviteClick,
 }: Props) => {
   const { switchWorkspace } = useWorkspaceContext();
 
@@ -115,16 +111,6 @@ const WorkspaceDetailsHeader = ({
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row xl:justify-end">
-            {canManageInvitations ? (
-              <Button
-                type="button"
-                onClick={onInviteClick}
-                className="rounded-xl bg-[#7F56D9] text-white hover:bg-[#6941C6]"
-              >
-                Invite Member
-              </Button>
-            ) : null}
-
             {!isActive ? (
               <Button
                 onClick={() => switchWorkspace(workspace.id)}

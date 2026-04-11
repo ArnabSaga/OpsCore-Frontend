@@ -17,7 +17,7 @@ import ProtectedPageErrorState from "@/components/shared/error-state/ProtectedPa
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DashboardMetricsPeriod } from "@/types/dashboard.types";
-import { PendingInvitationsBanner } from "@/components/features/workspace/components/PendingInvitationsBanner";
+import { PendingInvitationsBanner } from "@/components/features/invitations/components/PendingInvitationsBanner";
 import { BarChart3, CreditCard, Layers3, Sparkles, TrendingUp } from "lucide-react";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";

@@ -1,5 +1,6 @@
 import Footer from "@/components/shared/layout/Footer";
 import Header from "@/components/shared/layout/Header";
+import SmoothScrollProvider from "@/providers/SmoothScrollProvider";
 
 export default function PublicLayout({
   children,
@@ -7,10 +8,10 @@ export default function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <SmoothScrollProvider>
       <Header />
-      {children}
+      <main>{children}</main>
       <Footer />
-    </>
+    </SmoothScrollProvider>
   );
 }

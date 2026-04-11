@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { declineInvitation } from "@/components/features/workspace/api/workspace.api";
+import { declineInvitation } from "../api/invitation.api";
 
 export const useDeclineInvitation = () => {
   return useMutation({

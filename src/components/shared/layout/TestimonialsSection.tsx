@@ -1,9 +1,11 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MessageSquareQuote } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { MessageSquareQuote, Quote } from "lucide-react";
+import { useMemo, useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -15,7 +17,6 @@ type Testimonial = {
   name: string;
   role: string;
   company: string;
-  avatar: string;
   quote: string;
   featured?: boolean;
 };
@@ -26,7 +27,6 @@ const testimonials: Testimonial[] = [
     name: "Nadia Rahman",
     role: "Operations Lead",
     company: "ScaleForge",
-    avatar: "/image/avatar-1.png",
     quote:
       "OpsCore gave our team the structure we were missing. Projects, ownership, and workflow visibility finally feel connected.",
   },
@@ -35,7 +35,6 @@ const testimonials: Testimonial[] = [
     name: "Arif Hossain",
     role: "Finance Manager",
     company: "PeakLedger",
-    avatar: "/image/avatar-2.png",
     quote:
       "The billing flow is cleaner, faster, and easier to manage. We now have more confidence in how operational activity connects to revenue.",
     featured: true,
@@ -45,7 +44,6 @@ const testimonials: Testimonial[] = [
     name: "Sadia Karim",
     role: "Head of Delivery",
     company: "NovaAxis",
-    avatar: "/image/avatar-3.png",
     quote:
       "We moved from scattered communication to coordinated execution. OpsCore helped us create a more disciplined operating rhythm.",
   },
@@ -54,7 +52,6 @@ const testimonials: Testimonial[] = [
     name: "Tanvir Alam",
     role: "Founder",
     company: "WorkPilot",
-    avatar: "/image/avatar-4.png",
     quote:
       "The workspace structure is excellent. It feels like our tasks, projects, and operational visibility now live in one real command center.",
   },
@@ -63,7 +60,6 @@ const testimonials: Testimonial[] = [
     name: "Maliha Sultana",
     role: "Business Analyst",
     company: "MetricLoop",
-    avatar: "/image/avatar-5.png",
     quote:
       "OpsCore made it easier to see blockers early. The operational clarity alone improved how quickly our team responds to change.",
   },
@@ -72,7 +68,6 @@ const testimonials: Testimonial[] = [
     name: "Fahim Chowdhury",
     role: "Team Manager",
     company: "CoreBridge",
-    avatar: "/image/avatar-6.png",
     quote:
       "The platform feels premium and practical. It gives us structure without adding friction, which is rare in operations software.",
     featured: true,
@@ -82,7 +77,6 @@ const testimonials: Testimonial[] = [
     name: "Raisa Mahjabin",
     role: "Program Coordinator",
     company: "FlowNest",
-    avatar: "/image/avatar-1.png",
     quote:
       "Assigning ownership and keeping work visible became far easier. OpsCore helped our team execute with more consistency.",
   },
@@ -91,7 +85,6 @@ const testimonials: Testimonial[] = [
     name: "Jamil Uddin",
     role: "COO",
     company: "VertexHub",
-    avatar: "/image/avatar-2.png",
     quote:
       "We needed more control across teams and operational layers. OpsCore gave us that without making the workflow feel heavy.",
   },
@@ -100,7 +93,6 @@ const testimonials: Testimonial[] = [
     name: "Nusrat Jahan",
     role: "Growth Operations",
     company: "PulseStack",
-    avatar: "/image/avatar-3.png",
     quote:
       "The biggest difference is visibility. We can now track execution, handoffs, and business flow with much more clarity.",
     featured: true,
@@ -110,7 +102,6 @@ const testimonials: Testimonial[] = [
     name: "Omar Faruk",
     role: "Strategic Lead",
     company: "AxisGrid",
-    avatar: "/image/avatar-4.png",
     quote:
       "OpsCore helped us replace fragmented systems with one smoother operational layer. That has been a major step forward for the team.",
   },
@@ -119,7 +110,6 @@ const testimonials: Testimonial[] = [
     name: "Lubna Akter",
     role: "Project Controller",
     company: "TaskSpring",
-    avatar: "/image/avatar-5.png",
     quote:
       "The project and task visibility feels much more mature now. It’s easier to drive work forward when the system itself supports clarity.",
   },
@@ -128,7 +118,6 @@ const testimonials: Testimonial[] = [
     name: "Mizanur Rahman",
     role: "Operations Director",
     company: "GridNova",
-    avatar: "/image/avatar-6.png",
     quote:
       "What impressed us most is how structured the platform feels. It supports serious operational work without becoming complicated.",
   },
@@ -142,194 +131,264 @@ function chunkTestimonials(items: Testimonial[]) {
   ];
 }
 
+function getInitials(name: string) {
+  const parts = name.trim().split(" ");
+  return `${parts[0]?.charAt(0) ?? ""}${parts[1]?.charAt(0) ?? ""}`;
+}
+
 function TestimonialCard({ item }: { item: Testimonial }) {
   return (
-    <div
+    <motion.article
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 260, damping: 22 }}
       className={cn(
-        "relative overflow-hidden rounded-[20px] border border-white/10 bg-[rgba(16,24,40,0.7)] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:rounded-[24px] sm:p-5",
-        "transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_30px_80px_rgba(0,0,0,0.36)]",
-        item.featured && "bg-[rgba(22,24,54,0.82)]"
+        "group relative overflow-hidden rounded-[22px] border border-white/10 bg-[#0F172A]/50 p-5 backdrop-blur-2xl transition-all duration-300 hover:border-[#7F56D9]/35 hover:bg-[#10192B]/70 sm:rounded-[24px] sm:p-6",
+        item.featured && "border-[#7F56D9]/20 bg-[#121A2E]/82"
       )}
     >
       <div
         className={cn(
-          "pointer-events-none absolute inset-x-8 bottom-0 h-20 rounded-full blur-3xl",
-          item.featured ? "bg-[#8E72FF]/28" : "bg-[#7F56D9]/14"
+          "pointer-events-none absolute inset-x-8 bottom-0 h-20 rounded-full opacity-20 blur-3xl transition-opacity duration-300 group-hover:opacity-35",
+          item.featured ? "bg-[#7F56D9]" : "bg-[#6366F1]"
         )}
       />
-      <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.06),transparent_30%,rgba(255,255,255,0.02)_100%)]" />
 
       <div className="relative">
-        <div className="mb-4 flex items-center gap-3">
-          <div className="relative h-11 w-11 overflow-hidden rounded-full border border-white/10 bg-white/5">
-            {/* <Image src={item.avatar} alt={item.name} fill className="object-cover" /> */}
+        <Quote className="mb-4 h-4 w-4 text-[#7F56D9]/40" />
+
+        <p className="mb-6 text-sm leading-7 text-[#D0D5DD] sm:text-[15px] sm:leading-relaxed">
+          {item.quote}
+        </p>
+
+        <div className="flex items-center gap-3 border-t border-white/5 pt-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#7F56D9]/10 text-[#C4B5FD] ring-1 ring-[#7F56D9]/20">
+            <span className="text-[10px] font-bold">{getInitials(item.name)}</span>
           </div>
 
-          <div>
-            <p className="text-sm font-semibold text-white">{item.name}</p>
-            <p className="text-xs text-[#94A3B8]">
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold text-white">{item.name}</p>
+            <p className="truncate text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7F56D9]/60">
               {item.role} • {item.company}
             </p>
           </div>
         </div>
-
-        <p className="text-[15px] leading-7 text-[#D0D5DD]">{item.quote}</p>
       </div>
-    </div>
+    </motion.article>
   );
 }
 
 export default function TestimonialsSection() {
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
-  const gridRef = useRef<HTMLDivElement | null>(null);
-  const leftColRef = useRef<HTMLDivElement | null>(null);
-  const centerColRef = useRef<HTMLDivElement | null>(null);
-  const rightColRef = useRef<HTMLDivElement | null>(null);
+  const desktopGridRef = useRef<HTMLDivElement | null>(null);
+  const mobileGridRef = useRef<HTMLDivElement | null>(null);
 
-  const [leftColumn, centerColumn, rightColumn] = useMemo(
-    () => chunkTestimonials(testimonials),
-    []
-  );
+  const colRef1 = useRef<HTMLDivElement | null>(null);
+  const colRef2 = useRef<HTMLDivElement | null>(null);
+  const colRef3 = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const header = headerRef.current;
-    const grid = gridRef.current;
-    const left = leftColRef.current;
-    const center = centerColRef.current;
-    const right = rightColRef.current;
+  const colRefs = [colRef1, colRef2, colRef3];
+  const chunks = useMemo(() => chunkTestimonials(testimonials), []);
 
-    if (!section || !header || !grid || !left || !center || !right) return;
+  useGSAP(
+    () => {
+      const cleanups: Array<() => void> = [];
+      const mm = gsap.matchMedia();
 
-    const mm = gsap.matchMedia();
-
-    const ctx = gsap.context(() => {
-      gsap.set(header.children, { opacity: 0, y: 26 });
-      gsap.set([left, center, right], { opacity: 0, y: 28 });
-
-      gsap.to(header.children, {
-        opacity: 1,
-        y: 0,
-        duration: 0.82,
-        stagger: 0.12,
-        ease: "power4.out",
-        force3D: true,
-        scrollTrigger: {
-          trigger: header,
-          start: "top 84%",
-          once: true,
+      mm.add(
+        {
+          desktop: "(min-width: 1024px)",
+          tablet: "(min-width: 768px) and (max-width: 1023px)",
+          mobile: "(max-width: 767px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
         },
-      });
+        (mediaContext) => {
+          const { desktop, reduceMotion } = mediaContext.conditions ?? {};
 
-      gsap.to([left, center, right], {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        stagger: 0.12,
-        ease: "power4.out",
-        force3D: true,
-        scrollTrigger: {
-          trigger: grid,
-          start: "top 82%",
-          once: true,
-        },
-      });
+          const headerItems = headerRef.current ? Array.from(headerRef.current.children) : [];
+          const mobileCards = gsap.utils.toArray<HTMLElement>(
+            ".testimonial-card-mobile",
+            containerRef.current
+          );
+          const desktopColumns = colRefs.map((ref) => ref.current).filter(Boolean) as HTMLElement[];
 
-      mm.add("(min-width: 1024px)", () => {
-        // Auto-scrolling infinite loops with 3x density for seamless coverage
-        gsap.to(left, {
-          yPercent: -33.3333,
-          duration: 32,
-          repeat: -1,
-          ease: "none",
-        });
-
-        gsap.fromTo(
-          center,
-          { yPercent: -33.3333 },
-          {
-            yPercent: 0,
-            duration: 38,
-            repeat: -1,
-            ease: "none",
+          if (reduceMotion) {
+            gsap.set([...headerItems, ...mobileCards, ...desktopColumns], {
+              opacity: 1,
+              y: 0,
+              clearProps: "all",
+            });
+            return;
           }
-        );
 
-        gsap.to(right, {
-          yPercent: -33.3333,
-          duration: 32,
-          repeat: -1,
-          ease: "none",
-        });
-      });
-    }, section);
+          gsap.from(headerItems, {
+            opacity: 0,
+            y: 24,
+            duration: 0.8,
+            stagger: 0.08,
+            ease: "power3.out",
+            clearProps: "all",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 88%",
+              once: true,
+            },
+          });
 
-    return () => {
-      mm.revert();
-      ctx.revert();
-    };
-  }, []);
+          if (!desktop) {
+            gsap.from(mobileCards, {
+              opacity: 0,
+              y: 26,
+              duration: 0.75,
+              stagger: 0.08,
+              ease: "power3.out",
+              clearProps: "all",
+              scrollTrigger: {
+                trigger: mobileGridRef.current,
+                start: "top 86%",
+                once: true,
+              },
+            });
+
+            return;
+          }
+
+          gsap.from(desktopColumns, {
+            opacity: 0,
+            y: 34,
+            duration: 0.9,
+            stagger: 0.1,
+            ease: "power3.out",
+            clearProps: "all",
+            scrollTrigger: {
+              trigger: desktopGridRef.current,
+              start: "top 82%",
+              once: true,
+            },
+          });
+
+          const animations = colRefs.map((ref, index) => {
+            if (!ref.current) return null;
+
+            const isCenter = index === 1;
+            const distancePercent = isCenter ? 33.333 : -33.333;
+            const duration = isCenter ? 40 : 34;
+
+            const tween = gsap.to(ref.current, {
+              yPercent: distancePercent,
+              duration,
+              repeat: -1,
+              ease: "none",
+              paused: true,
+            });
+
+            const slowDown = () => {
+              gsap.to(tween, { timeScale: 0.25, duration: 0.5, overwrite: "auto" });
+            };
+
+            const normalSpeed = () => {
+              gsap.to(tween, { timeScale: 1, duration: 0.5, overwrite: "auto" });
+            };
+
+            ref.current.addEventListener("mouseenter", slowDown);
+            ref.current.addEventListener("mouseleave", normalSpeed);
+
+            cleanups.push(() => {
+              ref.current?.removeEventListener("mouseenter", slowDown);
+              ref.current?.removeEventListener("mouseleave", normalSpeed);
+            });
+
+            return tween;
+          });
+
+          const activeTweens = animations.filter(Boolean) as gsap.core.Tween[];
+
+          ScrollTrigger.create({
+            trigger: desktopGridRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            onToggle: (self) => {
+              activeTweens.forEach((tween) => {
+                if (self.isActive) tween.play();
+                else tween.pause();
+              });
+            },
+          });
+        }
+      );
+
+      return () => {
+        cleanups.forEach((fn) => fn());
+        mm.revert();
+      };
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section
-      ref={sectionRef}
+      ref={containerRef}
       id="testimonials"
-      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
+      className="relative overflow-hidden bg-[#070910] py-20 text-white sm:py-24 lg:py-32"
     >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl" />
-        <div className="absolute -left-24 top-40 h-80 w-80 rounded-full bg-[#6941C6]/10 blur-3xl" />
-        <div className="absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-[#7F56D9]/10 blur-3xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.92),rgba(0,0,0,0.58),transparent)]" />
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-1/2 top-0 h-96 w-[24rem] -translate-x-1/2 rounded-full bg-[#7F56D9]/6 blur-[90px] sm:h-128 sm:w-xl lg:h-152 lg:w-208 lg:blur-[120px]" />
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headerRef}
-          className="mx-auto mb-12 flex max-w-4xl flex-col items-center text-center sm:mb-16"
+          className="mx-auto mb-14 flex max-w-4xl flex-col items-center text-center sm:mb-16 lg:mb-20"
         >
-          <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/4 px-4 py-2 text-sm font-medium text-[#E4DFFF] backdrop-blur-xl hover:bg-white/6">
-            <MessageSquareQuote className="mr-2 h-4 w-4 text-[#7F56D9]" />
+          <Badge className="rounded-full border border-[#7F56D9]/30 bg-[#7F56D9]/5 px-4 py-1.5 text-[11px] font-semibold text-[#C4B5FD] backdrop-blur-xl sm:text-xs">
+            <MessageSquareQuote className="mr-2 h-3.5 w-3.5 text-[#7F56D9]" />
             Testimonials
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02] lg:text-[4.5rem]">
-            What teams say after
-            <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
-              running operations with OpsCore
-            </span>
+          <h2 className="mt-6 text-[2rem] font-bold leading-[1.05] tracking-tight text-white sm:text-[3rem] lg:mt-8 lg:text-[4.75rem] xl:text-[5.5rem]">
+            What teams say about
+            <span className="block text-[#94A3B8]">running operations.</span>
           </h2>
 
-          <p className="mt-6 max-w-3xl text-base leading-8 text-[#94A3B8] sm:text-lg">
+          <p className="mt-5 max-w-3xl text-sm leading-7 text-[#94A3B8] sm:mt-6 sm:text-base md:text-lg">
             From cleaner execution to stronger billing visibility, teams use OpsCore to bring more
             structure, coordination, and confidence into day-to-day operations.
           </p>
         </div>
 
+        {/* Mobile / Tablet */}
+        <div ref={mobileGridRef} className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:hidden">
+          {testimonials.slice(0, 6).map((item) => (
+            <div key={item.id} className="testimonial-card-mobile">
+              <TestimonialCard item={item} />
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop */}
         <div
-          ref={gridRef}
-          className="grid gap-4 sm:gap-5 overflow-hidden lg:grid-cols-3 lg:items-start lg:mask-[linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]"
+          ref={desktopGridRef}
+          className="relative hidden overflow-hidden lg:grid lg:h-[760px] lg:grid-cols-3 lg:gap-6 lg:items-start lg:mask-[linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]"
         >
-          <div ref={leftColRef} className="space-y-5 will-change-[transform,opacity]">
-            {[...leftColumn, ...leftColumn, ...leftColumn].map((item, idx) => (
-              <TestimonialCard key={`${item.id}-l-${idx}`} item={item} />
-            ))}
-          </div>
-
-          <div ref={centerColRef} className="space-y-5 will-change-[transform,opacity]">
-            {[...centerColumn, ...centerColumn, ...centerColumn].map((item, idx) => (
-              <TestimonialCard key={`${item.id}-c-${idx}`} item={item} />
-            ))}
-          </div>
-
-          <div ref={rightColRef} className="space-y-5 will-change-[transform,opacity]">
-            {[...rightColumn, ...rightColumn, ...rightColumn].map((item, idx) => (
-              <TestimonialCard key={`${item.id}-r-${idx}`} item={item} />
-            ))}
-          </div>
+          {chunks.map((column, index) => (
+            <div
+              key={index}
+              ref={colRefs[index]}
+              className={cn("space-y-6 will-change-transform", index === 1 ? "lg:-mt-16" : "")}
+            >
+              {[...column, ...column, ...column].map((item, itemIndex) => (
+                <TestimonialCard key={`${item.id}-${index}-${itemIndex}`} item={item} />
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>

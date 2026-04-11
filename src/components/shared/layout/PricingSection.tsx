@@ -1,10 +1,12 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
+import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, CheckCircle2, CreditCard, Layers3, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -56,7 +58,7 @@ const pricingPlans: PricingPlan[] = [
     description:
       "For growing teams that need stronger collaboration, smarter visibility, and better operational control across workspaces.",
     monthlyPrice: 20,
-    yearlyPrice: 170,
+    yearlyPrice: 17,
     ctaLabel: "Get started",
     ctaHref: "/register",
     highlighted: true,
@@ -76,7 +78,7 @@ const pricingPlans: PricingPlan[] = [
     description:
       "Built for advanced teams that need dedicated support, stricter control, and enterprise-ready operational confidence.",
     monthlyPrice: 100,
-    yearlyPrice: 800,
+    yearlyPrice: 80,
     ctaLabel: "Contact sales",
     ctaHref: "/contact",
     icon: ShieldCheck,
@@ -91,368 +93,341 @@ const pricingPlans: PricingPlan[] = [
 ];
 
 function formatPrice(value: number) {
-  return `$${value.toFixed(2)}`;
+  return `$${value.toFixed(0)}`;
 }
 
 export default function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
 
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const toggleRef = useRef<HTMLDivElement | null>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const cardsContainerRef = useRef<HTMLDivElement | null>(null);
 
   const stats = useMemo(
     () => ["Projects", "Billing", "Analytics", "Workspaces", "Execution", "Visibility"],
     []
   );
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const header = headerRef.current;
-    const toggle = toggleRef.current;
-    const cards = cardsRef.current.filter(Boolean);
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
 
-    if (!section || !header || !toggle || cards.length === 0) return;
-
-    const ctx = gsap.context(() => {
-      gsap.set(header.children, { opacity: 0, y: 26 });
-      gsap.set(toggle, { opacity: 0, y: 20 });
-      gsap.set(cards, { opacity: 0, y: 42, scale: 0.985 });
-
-      gsap.to(header.children, {
-        opacity: 1,
-        y: 0,
-        duration: 0.82,
-        stagger: 0.12,
-        ease: "power4.out",
-        force3D: true,
-        scrollTrigger: {
-          trigger: header,
-          start: "top 84%",
-          once: true,
+      mm.add(
+        {
+          desktop: "(min-width: 1024px)",
+          tablet: "(min-width: 768px) and (max-width: 1023px)",
+          mobile: "(max-width: 767px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
         },
-      });
+        (context) => {
+          const { desktop, reduceMotion } = context.conditions ?? {};
 
-      gsap.to(toggle, {
-        opacity: 1,
-        y: 0,
-        duration: 0.75,
-        ease: "power4.out",
-        force3D: true,
-        scrollTrigger: {
-          trigger: toggle,
-          start: "top 90%",
-          once: true,
-        },
-      });
+          const headerItems = headerRef.current ? Array.from(headerRef.current.children) : [];
+          const pricingCards = gsap.utils.toArray<HTMLElement>(
+            ".pricing-card",
+            containerRef.current
+          );
 
-      gsap.to(cards, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.9,
-        stagger: 0.12,
-        ease: "power4.out",
-        force3D: true,
-        scrollTrigger: {
-          trigger: section,
-          start: "top 70%",
-          once: true,
-        },
-      });
-
-      cards.forEach((card) => {
-        const glow = card!.querySelector("[data-pricing-glow]");
-
-        if (glow) {
-          gsap.to(glow, {
-            opacity: 0.95,
-            scale: 1.08,
-            duration: 3.1,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            force3D: true,
-          });
-        }
-
-        const onEnter = () => {
-          gsap.killTweensOf(card);
-          gsap.to(card, {
-            y: -8,
-            duration: 0.35,
-            ease: "power3.out",
-            force3D: true,
-          });
-        };
-
-        const onLeave = () => {
-          gsap.killTweensOf(card);
-          gsap.to(card, {
-            y: 0,
-            duration: 0.42,
-            ease: "power3.out",
-            force3D: true,
-          });
-        };
-
-        (
-          card as HTMLDivElement & {
-            __enterHandler?: () => void;
-            __leaveHandler?: () => void;
+          if (reduceMotion) {
+            gsap.set([...headerItems, toggleRef.current, ...pricingCards], {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              clearProps: "all",
+            });
+            return;
           }
-        ).__enterHandler = onEnter;
-        (
-          card as HTMLDivElement & {
-            __enterHandler?: () => void;
-            __leaveHandler?: () => void;
+
+          const headerTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 88%",
+              once: true,
+            },
+          });
+
+          headerTl
+            .from(headerItems, {
+              y: 28,
+              opacity: 0,
+              stagger: 0.08,
+              duration: 0.8,
+              ease: "power3.out",
+              clearProps: "all",
+            })
+            .from(
+              toggleRef.current,
+              {
+                y: 18,
+                opacity: 0,
+                duration: 0.6,
+                ease: "power3.out",
+                clearProps: "all",
+              },
+              "-=0.45"
+            );
+
+          gsap.from(pricingCards, {
+            scrollTrigger: {
+              trigger: cardsContainerRef.current,
+              start: "top 82%",
+              once: true,
+            },
+            y: desktop ? 42 : 28,
+            opacity: 0,
+            scale: 0.985,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: "power3.out",
+            clearProps: "all",
+          });
+
+          if (desktop) {
+            const glowTargets = gsap.utils.toArray<HTMLElement>(
+              "[data-pricing-glow]",
+              containerRef.current
+            );
+
+            const glowAnim = gsap.to(glowTargets, {
+              opacity: 0.72,
+              scale: 1.05,
+              duration: 3.8,
+              repeat: -1,
+              yoyo: true,
+              stagger: {
+                each: 0.25,
+                from: "random",
+              },
+              ease: "sine.inOut",
+              paused: true,
+            });
+
+            ScrollTrigger.create({
+              trigger: containerRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              onToggle: (self) => {
+                if (self.isActive) glowAnim.play();
+                else glowAnim.pause();
+              },
+            });
           }
-        ).__leaveHandler = onLeave;
-
-        card!.addEventListener("mouseenter", onEnter);
-        card!.addEventListener("mouseleave", onLeave);
-      });
-    }, section);
-
-    return () => {
-      cards.forEach((card) => {
-        const typed = card as HTMLDivElement & {
-          __enterHandler?: () => void;
-          __leaveHandler?: () => void;
-        };
-
-        if (typed.__enterHandler) {
-          card!.removeEventListener("mouseenter", typed.__enterHandler);
         }
-        if (typed.__leaveHandler) {
-          card!.removeEventListener("mouseleave", typed.__leaveHandler);
-        }
-      });
-
-      ctx.revert();
-    };
-  }, []);
+      );
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section
-      ref={sectionRef}
+      ref={containerRef}
       id="pricing"
-      className="relative overflow-hidden bg-[#0C111D] py-16 text-white sm:py-20 lg:py-24"
+      className="relative overflow-hidden bg-[#070910] py-20 text-white sm:py-24 lg:py-32"
     >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl" />
-        <div className="absolute -left-24 top-56 h-80 w-80 rounded-full bg-[#6941C6]/10 blur-3xl" />
-        <div className="absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-[#7F56D9]/10 blur-3xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.92),rgba(0,0,0,0.6),transparent)]" />
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-1/2 top-0 h-96 w-[24rem] -translate-x-1/2 rounded-full bg-[#7F56D9]/6 blur-[90px] sm:h-128 sm:w-xl lg:h-152 lg:w-208 lg:blur-[120px]" />
+
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+          }}
+        />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           ref={headerRef}
-          className="mx-auto mb-10 flex max-w-4xl flex-col items-center text-center sm:mb-12"
+          className="mx-auto mb-14 flex max-w-4xl flex-col items-center text-center sm:mb-16 lg:mb-20"
         >
-          <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/4 px-4 py-2 text-sm font-medium text-[#E4DFFF] backdrop-blur-xl hover:bg-white/6">
-            <CreditCard className="mr-2 h-4 w-4 text-[#7F56D9]" />
-            Pricing
+          <Badge className="rounded-full border border-[#7F56D9]/30 bg-[#7F56D9]/5 px-4 py-1.5 text-[11px] font-semibold text-[#C4B5FD] backdrop-blur-xl sm:text-xs">
+            <CreditCard className="mr-2 h-3.5 w-3.5" />
+            Pricing Strategy
           </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02] lg:text-[4.5rem]">
+          <h2 className="mt-6 text-[2rem] font-bold leading-[1.05] tracking-tight sm:text-[3rem] lg:mt-8 lg:text-[4.75rem] xl:text-[5.5rem]">
             Flexible plans for
-            <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
-              modern business operations
-            </span>
+            <span className="block text-[#94A3B8]">modern business.</span>
           </h2>
 
-          <p className="mt-6 max-w-3xl text-base leading-8 text-[#94A3B8] sm:text-lg">
-            Choose the OpsCore plan that fits your team—from structured workspace setup to advanced
-            billing, execution, and operational visibility.
+          <p className="mt-5 max-w-2xl text-sm leading-7 text-[#94A3B8] sm:mt-6 sm:text-base md:text-lg">
+            Choose the alignment that fits your growth—from structured workspace setup to advanced
+            operational visibility.
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5 sm:mt-10 sm:gap-3">
             {stats.map((item) => (
-              <div
+              <motion.span
                 key={item}
-                className="rounded-full border border-white/10 bg-white/3 px-3 py-1.5 text-xs font-medium text-white/75 backdrop-blur-xl"
+                className="rounded-full border border-white/5 bg-white/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#94A3B8] transition-colors hover:border-[#7F56D9]/30 hover:text-white sm:px-4"
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
               >
                 {item}
-              </div>
+              </motion.span>
             ))}
           </div>
         </div>
 
+        {/* Toggle */}
         <div
           ref={toggleRef}
-          className="mb-10 flex items-center justify-center gap-4 text-sm sm:mb-12"
+          className="mb-10 flex flex-col items-center justify-center gap-3 sm:mb-12 sm:flex-row sm:gap-6"
         >
-          <span
+          <motion.span
             className={cn(
-              "font-medium transition-colors duration-300",
-              !isYearly ? "text-white" : "text-[#94A3B8]"
+              "text-sm font-semibold transition-colors duration-300",
+              !isYearly ? "text-white" : "text-white/40"
             )}
+            animate={{ opacity: !isYearly ? 1 : 0.4 }}
           >
-            Billed Monthly
-          </span>
+            Monthly
+          </motion.span>
 
           <Switch
             checked={isYearly}
             onCheckedChange={setIsYearly}
-            className="data-[state=checked]:bg-[#7F56D9] data-[state=unchecked]:bg-white/10"
+            className="scale-110 data-[state=checked]:bg-[#7F56D9] sm:scale-125"
           />
 
-          <span
-            className={cn(
-              "font-medium transition-colors duration-300",
-              isYearly ? "text-white" : "text-[#94A3B8]"
-            )}
-          >
-            Billed Yearly
-            <span className="ml-1 text-[#C4B5FD]">(save up to 20%)</span>
-          </span>
+          <div className="flex items-center gap-3">
+            <motion.span
+              className={cn(
+                "text-sm font-semibold transition-colors duration-300",
+                isYearly ? "text-white" : "text-white/40"
+              )}
+              animate={{ opacity: isYearly ? 1 : 0.4 }}
+            >
+              Yearly
+            </motion.span>
+
+            <motion.span
+              initial={false}
+              animate={{ scale: isYearly ? 1.04 : 1 }}
+              className="rounded-full bg-[#7F56D9]/20 px-3 py-1.5 text-[10px] font-bold text-[#C4B5FD] ring-1 ring-[#7F56D9]/30"
+            >
+              SAVE 20%
+            </motion.span>
+          </div>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {pricingPlans.map((plan, index) => {
+        {/* Cards */}
+        <div
+          ref={cardsContainerRef}
+          className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8"
+        >
+          {pricingPlans.map((plan) => {
             const Icon = plan.icon;
             const currentPrice = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
 
             return (
               <div
                 key={plan.id}
-                ref={(el) => {
-                  cardsRef.current[index] = el;
-                }}
                 className={cn(
-                  "group relative overflow-hidden rounded-[22px] border border-white/10 bg-[rgba(16,24,40,0.72)] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl sm:rounded-[26px] sm:p-5 lg:rounded-[30px] lg:p-6",
-                  "transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/28 hover:shadow-[0_34px_90px_rgba(0,0,0,0.38)]",
-                  plan.highlighted && "border-[#8B6CFF]/25 bg-[rgba(25,22,52,0.8)]"
+                  "pricing-card group relative h-full",
+                  plan.highlighted && "lg:-translate-y-2"
                 )}
               >
-                <div
-                  data-pricing-glow
+                <motion.div
                   className={cn(
-                    "pointer-events-none absolute inset-x-10 top-0 h-40 rounded-full opacity-80 blur-3xl",
-                    plan.highlighted ? "bg-[#8E72FF]/28" : "bg-[#7F56D9]/14"
+                    "relative flex h-full flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[#0F172A]/50 p-5 backdrop-blur-2xl transition-all duration-500 hover:border-[#7F56D9]/40 hover:shadow-[0_28px_80px_rgba(0,0,0,0.36)] sm:rounded-[28px] sm:p-7 lg:rounded-[32px] lg:p-8",
+                    plan.highlighted &&
+                      "border-[#7F56D9]/30 bg-[#121A2E]/88 shadow-[0_18px_60px_-15px_rgba(127,86,217,0.18)]"
                   )}
-                />
-                <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/8" />
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/50 to-transparent" />
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.08),transparent_30%,rgba(255,255,255,0.02)_100%)]" />
+                  whileHover={{ y: -6 }}
+                  transition={{ type: "spring", stiffness: 280, damping: 24 }}
+                >
+                  <div
+                    data-pricing-glow
+                    className={cn(
+                      "pointer-events-none absolute inset-x-10 top-0 h-28 rounded-full opacity-35 blur-[72px] transition-colors duration-500 sm:h-32 sm:blur-[80px]",
+                      plan.highlighted
+                        ? "bg-[#7F56D9]"
+                        : "bg-[#7F56D9]/35 group-hover:bg-[#7F56D9]/55"
+                    )}
+                  />
 
-                <div className="relative">
-                  <div className="mb-6 flex items-start justify-between gap-4">
-                    <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[#0F172A] shadow-[0_10px_24px_rgba(0,0,0,0.2)]">
-                      <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/18 blur-md" />
-                      <Icon className="relative h-6 w-6 text-[#DCCFFF]" />
+                  <div className="relative flex flex-1 flex-col">
+                    <div className="mb-6 flex items-start justify-between gap-4 sm:mb-8">
+                      <motion.div
+                        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#7F56D9]/10 text-[#C4B5FD] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] ring-1 ring-white/10 sm:h-16 sm:w-16"
+                        whileHover={{ rotate: 8, scale: 1.06 }}
+                        transition={{ type: "spring", stiffness: 240, damping: 18 }}
+                      >
+                        <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
+                      </motion.div>
+
+                      {plan.badge ? (
+                        <span className="rounded-full border border-[#7F56D9]/40 bg-[#7F56D9]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#C4B5FD]">
+                          {plan.badge}
+                        </span>
+                      ) : null}
                     </div>
 
-                    {plan.badge ? (
-                      <div className="rounded-full border border-white/10 bg-[rgba(255,255,255,0.08)] px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-xl">
-                        {plan.badge}
-                      </div>
-                    ) : null}
-                  </div>
+                    <h3 className="text-2xl font-bold text-white sm:text-3xl">{plan.name}</h3>
 
-                  <h3 className="text-[2rem] font-semibold tracking-[-0.03em] text-white">
-                    {plan.name}
-                  </h3>
-
-                  <p className="mt-4 min-h-[72px] text-sm leading-7 text-[#94A3B8]">
-                    {plan.description}
-                  </p>
-
-                  <div className="mt-6 flex items-end gap-2">
-                    <span className="text-[3rem] font-semibold leading-none tracking-[-0.04em] text-white">
-                      {formatPrice(currentPrice)}
-                    </span>
-                    <span className="pb-1 text-sm text-[#94A3B8]">
-                      {currentPrice === 0 ? "/ forever" : "/ month"}
-                    </span>
-                  </div>
-
-                  {isYearly && currentPrice !== 0 ? (
-                    <p className="mt-2 text-sm text-[#C4B5FD]">
-                      Annual billing, lower effective monthly rate.
+                    <p className="mt-3 text-sm leading-7 text-[#94A3B8] sm:mt-4">
+                      {plan.description}
                     </p>
-                  ) : (
-                    <p className="mt-2 text-sm text-[#667085]">
-                      Built for clean operational growth.
-                    </p>
-                  )}
 
-                  <Button
-                    asChild
-                    className={cn(
-                      "mt-8 h-14 w-full rounded-full text-base font-semibold",
-                      plan.highlighted
-                        ? "border border-[#A78BFA]/35 bg-[linear-gradient(135deg,#7F56D9_0%,#6D5AE6_45%,#8E72FF_100%)] text-white shadow-[0_16px_40px_rgba(127,86,217,0.28)] hover:opacity-95"
-                        : "border border-white/10 bg-[rgba(12,17,29,0.38)] text-white hover:bg-white/6"
-                    )}
-                  >
-                    <Link
-                      href={plan.ctaHref}
-                      className="inline-flex items-center justify-center gap-2"
+                    <div className="mb-7 mt-8 flex items-end gap-2 sm:mb-8 sm:mt-10">
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={`${plan.id}-${currentPrice}`}
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={{ duration: 0.22 }}
+                          className="text-[2.8rem] font-bold leading-none tracking-tight text-white sm:text-[3.5rem]"
+                        >
+                          {formatPrice(currentPrice)}
+                        </motion.span>
+                      </AnimatePresence>
+
+                      <span className="pb-1 text-sm font-medium text-[#94A3B8]">
+                        /{isYearly ? "year" : "mo"}
+                      </span>
+                    </div>
+
+                    <Button
+                      asChild
+                      className={cn(
+                        "h-12 w-full rounded-full text-sm font-bold transition-all duration-300 sm:h-14 sm:text-base",
+                        plan.highlighted
+                          ? "bg-[#7F56D9] text-white hover:bg-[#6D4DC9] shadow-[0_18px_36px_rgba(127,86,217,0.28)] hover:shadow-[0_24px_46px_rgba(127,86,217,0.38)]"
+                          : "border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                      )}
                     >
-                      {plan.ctaLabel}
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
+                      <Link
+                        href={plan.ctaHref}
+                        className="inline-flex items-center justify-center gap-2"
+                      >
+                        {plan.ctaLabel}
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
 
-                  <div className="mt-8 flex items-center gap-4">
-                    <div className="h-px flex-1 bg-linear-to-r from-transparent to-white/10" />
-                    <span className="text-sm font-medium text-white/75">Features +</span>
-                    <div className="h-px flex-1 bg-linear-to-l from-transparent to-white/10" />
+                    <div className="mt-8 space-y-4 sm:mt-10 sm:space-y-5">
+                      {plan.features.map((feature) => (
+                        <motion.div
+                          key={feature.label}
+                          className="group/item flex items-start gap-3"
+                          whileHover={{ x: 4 }}
+                          transition={{ type: "spring", stiffness: 360, damping: 24 }}
+                        >
+                          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#7F56D9] opacity-80 transition-opacity group-hover/item:opacity-100" />
+                          <span className="text-sm leading-relaxed text-[#D0D5DD] transition-colors group-hover/item:text-white">
+                            {feature.label}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
-
-                  <ul className="mt-6 space-y-4">
-                    {plan.features.map((feature) => (
-                      <li key={feature.label} className="flex items-start gap-3">
-                        <div className="mt-0.5 rounded-full bg-white/8 p-1 text-white/85">
-                          <CheckCircle2 className="h-3.5 w-3.5" />
-                        </div>
-                        <span className="text-sm leading-7 text-[#D0D5DD]">{feature.label}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {[
-            {
-              title: "Structured workspace growth",
-              text: "Start simple and scale cleanly as your operations expand.",
-              icon: Layers3,
-            },
-            {
-              title: "Execution-ready pricing",
-              text: "Plans designed around projects, billing, and visibility.",
-              icon: Sparkles,
-            },
-            {
-              title: "Operational confidence",
-              text: "Security, control, and support for serious business teams.",
-              icon: ShieldCheck,
-            },
-          ].map((item) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={item.title}
-                className="rounded-[24px] border border-white/10 bg-white/3 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="rounded-2xl bg-[#7F56D9]/15 p-3 text-[#D5CCFF]">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-base font-semibold text-white">{item.title}</p>
-                    <p className="mt-2 text-sm leading-7 text-[#94A3B8]">{item.text}</p>
-                  </div>
-                </div>
+                </motion.div>
               </div>
             );
           })}

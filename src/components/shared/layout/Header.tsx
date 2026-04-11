@@ -1,19 +1,21 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
+import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
-import { ArrowRight, Menu } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Features", href: "/features" },
   { label: "How it works", href: "/how-it-works" },
-  { label: "Price", href: "/pricing" },
+  { label: "Pricing", href: "/pricing" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -23,88 +25,192 @@ export default function Header() {
   const shellRef = useRef<HTMLDivElement | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
   const logoRef = useRef<HTMLAnchorElement | null>(null);
-  const actionsRef = useRef<HTMLDivElement | null>(null);
+  const desktopActionsRef = useRef<HTMLDivElement | null>(null);
+  const mobileActionsRef = useRef<HTMLDivElement | null>(null);
+  const mobileDrawerRef = useRef<HTMLDivElement | null>(null);
+
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  const pathname = usePathname();
+
+  const activeHref = useMemo(() => {
+    const matched = navItems.find((item) => pathname === item.href);
+    return matched?.href ?? null;
+  }, [pathname]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setOpen(false);
-      }
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    document.addEventListener("keydown", handleKeyDown);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const navTarget = gsap.utils.toArray(navRef.current?.children || []);
-      const actionsTarget = gsap.utils.toArray(actionsRef.current?.children || []);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
-      });
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
 
-      tl.fromTo(
-        shellRef.current,
-        { y: -24, opacity: 0, scale: 0.985 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.75 }
-      )
-        .fromTo(
-          navTarget,
-          { x: -20, opacity: 0 },
-          { x: 0, opacity: 1, stagger: 0.08, duration: 0.45 },
-          "-=0.4"
-        )
-        .fromTo(
-          logoRef.current,
-          { y: -12, opacity: 0, scale: 0.96 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.5 },
-          "-=0.3"
-        )
-        .fromTo(
-          actionsTarget,
-          { x: 16, opacity: 0 },
-          { x: 0, opacity: 1, stagger: 0.08, duration: 0.4 },
-          "-=0.35"
-        );
-    }, headerRef);
+      mm.add(
+        {
+          desktop: "(min-width: 1200px)",
+          tablet: "(min-width: 768px) and (max-width: 1199px)",
+          mobile: "(max-width: 767px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const { desktop, reduceMotion } = context.conditions ?? {};
 
-    return () => ctx.revert();
-  }, []);
+          const navChildren = navRef.current ? Array.from(navRef.current.children) : [];
+          const actionChildren = desktop
+            ? desktopActionsRef.current
+              ? Array.from(desktopActionsRef.current.children)
+              : []
+            : mobileActionsRef.current
+              ? Array.from(mobileActionsRef.current.children)
+              : [];
+
+          if (reduceMotion) {
+            gsap.set([shellRef.current, logoRef.current, ...navChildren, ...actionChildren], {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              scale: 1,
+              clearProps: "all",
+            });
+            return;
+          }
+
+          const tl = gsap.timeline({
+            defaults: { ease: "power3.out" },
+          });
+
+          tl.from(shellRef.current, {
+            y: -22,
+            opacity: 0,
+            scale: 0.985,
+            duration: 0.85,
+            clearProps: "all",
+          })
+            .from(
+              logoRef.current,
+              {
+                x: -12,
+                opacity: 0,
+                duration: 0.5,
+                clearProps: "all",
+              },
+              "-=0.45"
+            )
+            .from(
+              navChildren,
+              {
+                y: -8,
+                opacity: 0,
+                stagger: 0.05,
+                duration: 0.42,
+                clearProps: "all",
+              },
+              "-=0.35"
+            )
+            .from(
+              actionChildren,
+              {
+                x: 10,
+                opacity: 0,
+                stagger: 0.08,
+                duration: 0.42,
+                clearProps: "all",
+              },
+              "-=0.35"
+            );
+
+          gsap.to(shellRef.current, {
+            backgroundColor: "rgba(12,17,29,0.92)",
+            borderColor: "rgba(255,255,255,0.14)",
+            boxShadow: "0 16px 40px rgba(0,0,0,0.28)",
+            ease: "none",
+            scrollTrigger: {
+              trigger: document.documentElement,
+              start: "top top",
+              end: "+=120",
+              scrub: true,
+            },
+          });
+        }
+      );
+    },
+    { scope: headerRef }
+  );
 
   return (
     <header
       ref={headerRef}
       className="sticky top-0 z-50 w-full px-3 pt-3 sm:px-4 sm:pt-4 md:px-6 lg:px-8"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 sm:h-40 bg-[radial-gradient(circle_at_top,rgba(127,86,217,0.18),transparent_65%)] blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28 bg-[radial-gradient(circle_at_top,rgba(127,86,217,0.14),transparent_72%)] blur-3xl" />
 
       <div
         ref={shellRef}
         className={cn(
-          "relative mx-auto flex w-full max-w-7xl items-center justify-between gap-2 sm:gap-3 lg:gap-4 overflow-hidden rounded-[18px] sm:rounded-[22px] lg:rounded-[24px]",
-          "border border-white/10 bg-[rgba(12,17,29,0.78)] px-3 py-2 sm:px-4 sm:py-3 lg:px-5",
-          "shadow-[0_18px_50px_rgba(0,0,0,0.38)] backdrop-blur-2xl",
-          "supports-backdrop-filter:bg-[rgba(12,17,29,0.72)]"
+          "relative mx-auto flex w-full max-w-7xl items-center justify-between gap-3 overflow-hidden rounded-[22px] border border-white/10 bg-[#0C111D]/80 px-3 py-2.5 shadow-2xl backdrop-blur-2xl transition-colors duration-300 sm:gap-4 sm:px-4 md:px-5 lg:px-6",
+          "hover:bg-[#0C111D]/88"
         )}
       >
-        <div className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit] bg-[linear-gradient(135deg,rgba(127,86,217,0.14),rgba(105,65,198,0.04)_35%,rgba(255,255,255,0.02)_100%)]" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/45 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/40 to-transparent" />
 
         {/* Left */}
         <div className="flex min-w-0 flex-1 items-center">
-          <nav ref={navRef} className="hidden items-center gap-1 lg:flex">
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="rounded-full px-3 xl:px-4 py-2 text-sm font-medium text-[#94A3B8] transition-all duration-300 hover:bg-white/5 hover:text-white whitespace-nowrap"
-              >
-                {item.label}
-              </Link>
-            ))}
+          <nav
+            ref={navRef}
+            className="hidden items-center gap-1 xl:flex"
+            aria-label="Primary navigation"
+          >
+            {navItems.map((item) => {
+              const isActive = mounted && activeHref === item.href;
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={cn(
+                    "relative whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
+                    isActive ? "text-white" : "text-[#94A3B8] hover:text-white"
+                  )}
+                >
+                  {isActive ? (
+                    <motion.span
+                      layoutId="header-nav-pill"
+                      className="absolute inset-0 -z-10 rounded-full border border-white/10 bg-white/5 shadow-[0_0_18px_rgba(255,255,255,0.05)]"
+                      transition={{ type: "spring", stiffness: 360, damping: 30 }}
+                    />
+                  ) : null}
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
@@ -112,176 +218,176 @@ export default function Header() {
         <Link
           ref={logoRef}
           href="/"
-          className="group flex shrink-0 items-center justify-center gap-2 sm:gap-3 rounded-2xl outline-none transition-transform duration-300 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-[#7F56D9]/70"
+          className="group flex shrink-0 items-center justify-center gap-3 rounded-2xl outline-none transition-transform duration-300 hover:scale-[1.015]"
+          aria-label="OpsCore home"
         >
-          <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 items-center justify-center rounded-2xl border border-white/10 bg-[#0F172A] shadow-[0_16px_32px_rgba(0,0,0,0.28)]">
-            <div className="absolute inset-0 rounded-2xl bg-[#7F56D9]/20 blur-lg" />
+          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-[#0F172A] shadow-xl">
+            <div className="absolute inset-0 bg-[#7F56D9]/10 transition-colors duration-300 group-hover:bg-[#7F56D9]/18" />
             <Image
               src="/icons/logo.svg"
               alt="OpsCore logo"
               width={22}
               height={22}
-              className="relative h-5 w-5 sm:h-[22px] sm:w-[22px]"
+              className="relative transition-transform duration-500 group-hover:rotate-12"
               priority
             />
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 min-w-0">
-            <p className="shrink-0 text-sm sm:text-base font-semibold tracking-tight text-white">
-              OpsCore
-            </p>
-            <p className="truncate text-[10px] sm:text-[11px] font-medium text-[#94A3B8]">
-              Business Operations Platform
+          <div className="min-w-0 leading-none">
+            <p className="text-sm font-bold tracking-tight text-white sm:text-base">OpsCore</p>
+            <p className="hidden text-[10px] font-bold uppercase tracking-[0.22em] text-[#7F56D9]/80 lg:block xl:hidden 2xl:block">
+              Operations Platform
             </p>
           </div>
         </Link>
 
         {/* Right */}
         <div className="flex min-w-0 flex-1 items-center justify-end">
-          {/* Tablet Actions */}
-          <div ref={actionsRef} className="hidden md:flex lg:hidden items-center justify-end gap-2">
+          {/* Desktop */}
+          <div ref={desktopActionsRef} className="hidden items-center justify-end gap-5 xl:flex">
+            <Link
+              href="/login"
+              className="text-sm font-medium text-[#94A3B8] transition-colors hover:text-white"
+            >
+              Log in
+            </Link>
+
+            <Button
+              asChild
+              className="h-11 rounded-full bg-[#7F56D9] px-6 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(127,86,217,0.28)] transition-all duration-300 hover:scale-[1.03] hover:bg-[#6941C6]"
+            >
+              <Link href="/register" className="inline-flex items-center gap-2">
+                Start for Free
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+
+          {/* Tablet / Mobile */}
+          <div
+            ref={mobileActionsRef}
+            className="flex items-center justify-end gap-2 sm:gap-3 xl:hidden"
+          >
             <Button
               asChild
               variant="ghost"
               size="sm"
-              className="rounded-full px-4 text-sm font-medium text-[#94A3B8] hover:bg-white/5 hover:text-white"
+              className="hidden rounded-full text-[#94A3B8] hover:bg-white/5 hover:text-white md:inline-flex"
             >
               <Link href="/login">Log in</Link>
             </Button>
 
             <Button
               asChild
-              size="sm"
-              className={cn(
-                "rounded-full border border-[#8B6CFF]/40 bg-[linear-gradient(135deg,#7F56D9_0%,#6941C6_100%)]",
-                "px-4 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(127,86,217,0.35)]",
-                "transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_14px_30px_rgba(127,86,217,0.45)]"
-              )}
+              className="h-9 rounded-full bg-[#7F56D9] px-4 text-xs font-semibold text-white transition-all duration-300 hover:bg-[#6941C6] sm:h-10 sm:px-5 sm:text-sm"
             >
-              <Link href="/register" className="inline-flex items-center gap-2">
-                Sign Up
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-
-          {/* Desktop Actions */}
-          <div ref={actionsRef} className="hidden lg:flex items-center justify-end gap-2">
-            <Button
-              asChild
-              variant="ghost"
-              className="rounded-full px-5 text-sm font-medium text-[#94A3B8] hover:bg-white/5 hover:text-white"
-            >
-              <Link href="/login">Log in</Link>
+              <Link href="/register">Sign Up</Link>
             </Button>
 
-            <Button
-              asChild
-              className={cn(
-                "rounded-full border border-[#8B6CFF]/40 bg-[linear-gradient(135deg,#7F56D9_0%,#6941C6_100%)]",
-                "px-5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(127,86,217,0.35)]",
-                "transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_14px_30px_rgba(127,86,217,0.45)]"
-              )}
+            <button
+              type="button"
+              onClick={() => setOpen((prev) => !prev)}
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white outline-none transition-colors duration-300 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-[#7F56D9]/50 sm:h-10 sm:w-10"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-nav-drawer"
             >
-              <Link href="/register" className="inline-flex items-center gap-2">
-                Sign Up
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-
-          {/* Mobile Menu */}
-          <div className="flex md:hidden items-center justify-end">
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10"
-                  aria-label="Open navigation menu"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-
-              <SheetContent
-                side="right"
-                className="flex w-[88vw] max-w-[320px] flex-col border-l border-white/10 bg-[#0C111D] p-0 text-white sm:max-w-[360px]"
+              <motion.span
+                key={open ? "close" : "open"}
+                initial={{ opacity: 0, rotate: -20, scale: 0.9 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                transition={{ duration: 0.18 }}
+                className="flex items-center justify-center"
               >
-                <div className="flex h-full flex-col">
-                  <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-                    <SheetTitle className="text-left text-base font-semibold text-white">
-                      OpsCore
-                    </SheetTitle>
-                  </div>
-
-                  <div className="px-5 py-6">
-                    <div className="mb-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
-                      <div className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                        <div className="absolute inset-0 rounded-xl bg-[#7F56D9]/20 blur-md" />
-                        <Image
-                          src="/icons/logo.svg"
-                          alt="OpsCore logo"
-                          width={22}
-                          height={22}
-                          className="relative"
-                        />
-                      </div>
-
-                      <div>
-                        <p className="text-sm font-semibold text-white">OpsCore</p>
-                        <p className="text-xs text-[#94A3B8]">Business Operations Platform</p>
-                      </div>
-                    </div>
-
-                    <nav className="flex flex-col gap-2">
-                      {navItems.map((item) => (
-                        <Link
-                          key={item.label}
-                          href={item.href}
-                          onClick={() => setOpen(false)}
-                          className="rounded-xl border border-transparent px-4 py-3 text-sm font-medium text-[#94A3B8] transition-all duration-300 hover:border-white/10 hover:bg-white/5 hover:text-white"
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
-                    </nav>
-
-                    <div className="mt-6 grid gap-3">
-                      <Button
-                        asChild
-                        variant="ghost"
-                        className="justify-center rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10"
-                      >
-                        <Link href="/login" onClick={() => setOpen(false)}>
-                          Log in
-                        </Link>
-                      </Button>
-
-                      <Button
-                        asChild
-                        className={cn(
-                          "justify-center rounded-xl border border-[#8B6CFF]/40 bg-[linear-gradient(135deg,#7F56D9_0%,#6941C6_100%)]",
-                          "text-white shadow-[0_10px_24px_rgba(127,86,217,0.35)]"
-                        )}
-                      >
-                        <Link
-                          href="/register"
-                          onClick={() => setOpen(false)}
-                          className="inline-flex items-center gap-2"
-                        >
-                          Sign Up
-                          <ArrowRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </motion.span>
+            </button>
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {open ? (
+          <>
+            <motion.div
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm xl:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setOpen(false)}
+            />
+
+            <motion.div
+              id="mobile-nav-drawer"
+              ref={mobileDrawerRef}
+              className="fixed inset-x-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-50 mx-auto max-w-3xl rounded-[28px] border border-white/10 bg-[#0C111D]/96 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:inset-x-4 md:inset-x-6"
+              initial={{ opacity: 0, y: -18, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.985 }}
+              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/40 to-transparent" />
+
+              <div className="flex flex-col px-5 pb-6 pt-20 sm:px-6 sm:pb-8 sm:pt-24">
+                <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
+                  {navItems.map((item, index) => {
+                    const isActive = pathname === item.href;
+
+                    return (
+                      <motion.div
+                        key={item.label}
+                        initial={{ opacity: 0, x: -18 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -12 }}
+                        transition={{ delay: 0.04 + index * 0.04, duration: 0.22 }}
+                      >
+                        <Link
+                          href={item.href}
+                          onClick={() => setOpen(false)}
+                          className={cn(
+                            "flex items-center rounded-2xl px-3 py-3.5 text-base font-medium transition-colors duration-300",
+                            isActive
+                              ? "bg-white/5 text-white"
+                              : "text-[#94A3B8] hover:bg-white/5 hover:text-white"
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </nav>
+
+                <div className="mt-6 flex flex-col gap-3">
+                  <Button
+                    asChild
+                    className="h-13 w-full rounded-2xl bg-[#7F56D9] text-sm font-semibold text-white shadow-xl hover:bg-[#6941C6] sm:h-14 sm:text-base"
+                  >
+                    <Link
+                      href="/register"
+                      onClick={() => setOpen(false)}
+                      className="inline-flex items-center justify-center gap-2"
+                    >
+                      Start for Free
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="h-13 w-full rounded-2xl text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white sm:h-14 sm:text-base"
+                  >
+                    <Link href="/login" onClick={() => setOpen(false)}>
+                      Log in
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        ) : null}
+      </AnimatePresence>
     </header>
   );
 }

@@ -2,15 +2,15 @@
 
 import { Bell, CheckCircle2, Clock3, ExternalLink, XCircle } from "lucide-react";
 import Link from "next/link";
-import { useAcceptInvitation } from "@/components/features/workspace/hooks/useAcceptInvitation";
-import { useDeclineInvitation } from "@/components/features/workspace/hooks/useDeclineInvitation";
-import { useMyInvitations } from "@/components/features/workspace/hooks/useMyInvitations";
+import { useAcceptInvitation } from "../hooks/useAcceptInvitation";
+import { useDeclineInvitation } from "../hooks/useDeclineInvitation";
+import { useMyInvitations } from "../hooks/useMyInvitations";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { WorkspaceInvitation } from "@/types/workspace.types";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { workspaceQueryKeys } from "@/components/features/workspace/hooks/workspace.query-keys";
+import { invitationQueryKeys } from "../hooks/invitation.query-keys";
 
 const InvitationCard = ({ invitation }: { invitation: WorkspaceInvitation }) => {
   const router = useRouter();
@@ -20,13 +20,13 @@ const InvitationCard = ({ invitation }: { invitation: WorkspaceInvitation }) => 
 
   const handleAccept = async () => {
     await accept(invitation.token);
-    await queryClient.invalidateQueries({ queryKey: workspaceQueryKeys.myInvitations() });
+    await queryClient.invalidateQueries({ queryKey: invitationQueryKeys.my() });
     router.push("/dashboard");
   };
 
   const handleDecline = async () => {
     await decline(invitation.token);
-    await queryClient.invalidateQueries({ queryKey: workspaceQueryKeys.myInvitations() });
+    await queryClient.invalidateQueries({ queryKey: invitationQueryKeys.my() });
   };
 
   return (

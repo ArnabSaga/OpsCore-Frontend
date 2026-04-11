@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DashboardMetricsPeriod } from "@/types/dashboard.types";
 import { CalendarRange, Sparkles, Target, Zap } from "lucide-react";
-import { PendingInvitationsBanner } from "@/components/features/workspace/components/PendingInvitationsBanner";
+import { PendingInvitationsBanner } from "@/components/features/invitations/components/PendingInvitationsBanner";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 

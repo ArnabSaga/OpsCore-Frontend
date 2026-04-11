@@ -13,6 +13,7 @@ import {
   Users,
   CreditCard,
   BriefcaseBusiness,
+  Mail,
   type LucideIcon,
 } from "lucide-react";
 
@@ -42,6 +43,7 @@ export type RouteMeta = {
 export const APP_ROUTES = {
   dashboard: "/dashboard",
   workspaces: "/workspaces",
+  invitations: "/invitations",
   projects: "/projects",
   tasks: "/tasks",
   invoices: "/invoices",
@@ -75,6 +77,13 @@ export const DASHBOARD_NAV_GROUPS: NavGroup[] = [
         title: "Workspaces",
         href: APP_ROUTES.workspaces,
         icon: Users,
+        matchStartsWith: true,
+      },
+      {
+        title: "Invitations",
+        href: APP_ROUTES.invitations,
+        icon: Mail,
+        roles: ["OWNER", "ADMIN"],
         matchStartsWith: true,
       },
       {

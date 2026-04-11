@@ -1,11 +1,13 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, BrainCircuit, Play, ShieldCheck, Sparkles, Workflow } from "lucide-react";
+import { ArrowRight, BrainCircuit, ShieldCheck, Sparkles, Workflow } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,7 +33,7 @@ type ProcessStep = {
 const processSteps: ProcessStep[] = [
   {
     id: "intelligence",
-    step: "Step 01",
+    step: "01",
     title: "Input Intelligence",
     description:
       "Connect your tools, teams, and workflows into one structured workspace. OpsCore turns scattered operational signals into a clearer execution foundation.",
@@ -42,7 +44,7 @@ const processSteps: ProcessStep[] = [
   },
   {
     id: "execution",
-    step: "Step 02",
+    step: "02",
     title: "Autonomous Execution",
     description:
       "Turn planning into movement with coordinated tasks, ownership, and operational flow. OpsCore helps teams execute with more consistency and visibility.",
@@ -53,7 +55,7 @@ const processSteps: ProcessStep[] = [
   },
   {
     id: "optimization",
-    step: "Step 03",
+    step: "03",
     title: "Smart Optimization",
     description:
       "Refine workflows with better visibility across performance, blockers, and business flow. OpsCore helps teams improve execution with more operational clarity.",
@@ -65,228 +67,340 @@ const processSteps: ProcessStep[] = [
 ];
 
 export default function WorkProcessSection() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const headerRef = useRef<HTMLDivElement | null>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLElement | null>(null);
+  const sectionHeaderRef = useRef<HTMLDivElement | null>(null);
+  const pinWrapperRef = useRef<HTMLDivElement | null>(null);
+  const horizontalRef = useRef<HTMLDivElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const header = headerRef.current;
-    const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+  useGSAP(
+    () => {
+      const section = containerRef.current;
+      const header = sectionHeaderRef.current;
+      const pinWrapper = pinWrapperRef.current;
+      const horizontal = horizontalRef.current;
 
-    if (!header || !cards.length) return;
+      if (!section || !header || !pinWrapper || !horizontal) return;
 
-    const ctx = gsap.context(() => {
-      // 1. Header Animation
-      gsap.fromTo(
-        header.children,
-        { opacity: 0, y: 30 },
+      const cleanups: Array<() => void> = [];
+      const mm = gsap.matchMedia();
+
+      mm.add(
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: "power4.out",
-          scrollTrigger: {
-            trigger: header,
-            start: "top 85%",
-            once: true,
-          },
+          desktop: "(min-width: 1024px)",
+          mobile: "(max-width: 1023px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (mediaContext) => {
+          const { desktop, reduceMotion } = mediaContext.conditions ?? {};
+
+          const headerItems = Array.from(header.children);
+          const cards = gsap.utils.toArray<HTMLElement>(".process-card", section);
+
+          if (reduceMotion) {
+            gsap.set([...headerItems, ...cards], {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              clearProps: "all",
+            });
+            if (progressBarRef.current) {
+              gsap.set(progressBarRef.current, { scaleX: 1 });
+            }
+            return;
+          }
+
+          gsap.from(headerItems, {
+            scrollTrigger: {
+              trigger: header,
+              start: "top 88%",
+              once: true,
+            },
+            y: 24,
+            opacity: 0,
+            stagger: 0.08,
+            duration: 0.8,
+            ease: "power3.out",
+            clearProps: "all",
+          });
+
+          if (!desktop) {
+            gsap.from(cards, {
+              scrollTrigger: {
+                trigger: pinWrapper,
+                start: "top 86%",
+                once: true,
+              },
+              y: 28,
+              opacity: 0,
+              stagger: 0.1,
+              duration: 0.75,
+              ease: "power3.out",
+              clearProps: "all",
+            });
+            return;
+          }
+
+          const getMetrics = () => {
+            const viewportWidth = pinWrapper.clientWidth || window.innerWidth;
+            const rawOverflow = horizontal.scrollWidth - viewportWidth;
+            const overflow = Math.max(0, rawOverflow);
+
+            if (overflow <= 0) {
+              return {
+                hasOverflow: false,
+                endX: 0,
+                travel: 0,
+              };
+            }
+
+            const breathingRoom = gsap.utils.clamp(64, 120, viewportWidth * 0.08);
+            const endX = -(overflow - breathingRoom);
+            const pacing = viewportWidth >= 1536 ? 2.1 : 1.9;
+            const travel = overflow * pacing;
+
+            return {
+              hasOverflow: true,
+              endX,
+              travel,
+            };
+          };
+
+          const metrics = getMetrics();
+
+          if (!metrics.hasOverflow) {
+            gsap.from(cards, {
+              scrollTrigger: {
+                trigger: pinWrapper,
+                start: "top 82%",
+                once: true,
+              },
+              y: 30,
+              opacity: 0,
+              stagger: 0.1,
+              duration: 0.75,
+              ease: "power3.out",
+              clearProps: "all",
+            });
+
+            if (progressBarRef.current) {
+              gsap.set(progressBarRef.current, { scaleX: 1 });
+            }
+
+            return;
+          }
+
+          const horizontalTween = gsap.to(horizontal, {
+            x: () => getMetrics().endX,
+            ease: "none",
+            overwrite: "auto",
+            scrollTrigger: {
+              trigger: pinWrapper,
+              pin: true,
+              start: "center center",
+              end: () => `+=${getMetrics().travel}`,
+              scrub: 1,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                if (!progressBarRef.current) return;
+
+                gsap.to(progressBarRef.current, {
+                  scaleX: self.progress,
+                  duration: 0.12,
+                  ease: "power1.out",
+                  overwrite: "auto",
+                });
+              },
+            },
+          });
+
+          cards.forEach((card) => {
+            gsap.from(card, {
+              opacity: 0,
+              y: 36,
+              scale: 0.975,
+              duration: 0.75,
+              ease: "power3.out",
+              clearProps: "all",
+              scrollTrigger: {
+                trigger: card,
+                containerAnimation: horizontalTween,
+                start: "left 88%",
+                toggleActions: "play none none reverse",
+              },
+            });
+          });
+
+          let ticking = false;
+
+          const handleResize = () => {
+            if (ticking) return;
+
+            ticking = true;
+            requestAnimationFrame(() => {
+              ScrollTrigger.refresh();
+              ticking = false;
+            });
+          };
+
+          window.addEventListener("resize", handleResize);
+          window.addEventListener("orientationchange", handleResize);
+
+          cleanups.push(() => {
+            window.removeEventListener("resize", handleResize);
+            window.removeEventListener("orientationchange", handleResize);
+          });
         }
       );
 
-      // 2. Cards Scroll-Reveal Animation
-      cards.forEach((card, index) => {
-        gsap.fromTo(
-          card,
-          { opacity: 0, y: 50, scale: 0.98 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1,
-            ease: "power3.out",
-            force3D: true,
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              toggleActions: "play none none none",
-              once: true,
-            },
-          }
-        );
-
-        // Ambient elements within the card
-        const glow = card.querySelector("[data-step-glow]");
-        const preview = card.querySelector("[data-step-preview]");
-
-        if (glow) {
-          gsap.to(glow, {
-            opacity: 0.95,
-            scale: 1.06,
-            duration: 3 + index * 0.15,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          });
-        }
-
-        if (preview) {
-          gsap.to(preview, {
-            yPercent: -2.5,
-            duration: 2.8 + index * 0.18,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          });
-        }
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+      return () => {
+        cleanups.forEach((fn) => fn());
+        mm.revert();
+      };
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section
-      ref={sectionRef}
+      ref={containerRef}
       id="how-it-works"
-      className="relative my-10 overflow-hidden bg-[#0C111D] py-16 text-white sm:my-12 sm:py-20 lg:my-14 lg:py-24"
+      className="relative overflow-hidden bg-[#070910] text-white"
     >
-      {/* ── Background decorations ── */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-[#7F56D9]/14 blur-3xl" />
-        <div className="absolute -left-24 top-48 h-80 w-80 rounded-full bg-[#6941C6]/10 blur-3xl" />
-        <div className="absolute -right-20 bottom-12 h-80 w-80 rounded-full bg-[#7F56D9]/10 blur-3xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-size-[120px_120px] mask-[linear-gradient(to_bottom,rgba(0,0,0,0.92),rgba(0,0,0,0.6),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute right-[-8%] top-[18%] h-80 w-80 rounded-full bg-[#7F56D9]/6 blur-[90px] sm:h-104 sm:w-104 lg:h-128 lg:w-lg lg:blur-[120px]" />
+        <div className="absolute left-[-6%] bottom-[8%] h-64 w-64 rounded-full bg-[#6941C6]/6 blur-[80px] sm:h-88 sm:w-88 lg:h-104 lg:w-104 lg:blur-[100px]" />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* ── Section header ── */}
-        <div
-          ref={headerRef}
-          className="mx-auto mb-20 flex max-w-4xl flex-col items-center text-center sm:mb-24"
-        >
-          <Badge className="rounded-full border border-[#8B6CFF]/30 bg-white/4 px-4 py-2 text-sm font-medium text-[#E4DFFF] backdrop-blur-xl hover:bg-white/6">
-            <Sparkles className="mr-2 h-4 w-4 text-[#7F56D9]" />
-            Work Process
-          </Badge>
+      <div className="relative pt-20 sm:pt-24 lg:pt-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div
+            ref={sectionHeaderRef}
+            className="mb-12 flex flex-col items-start gap-5 sm:mb-14 sm:gap-6 lg:mb-20"
+          >
+            <Badge className="rounded-full border border-[#7F56D9]/30 bg-[#7F56D9]/5 px-4 py-1.5 text-[11px] font-semibold text-[#C4B5FD] backdrop-blur-xl sm:text-xs">
+              <Sparkles className="mr-2 h-3.5 w-3.5" />
+              Operational Framework
+            </Badge>
 
-          <h2 className="mt-6 max-w-5xl text-[2rem] font-semibold leading-[1.15] tracking-[-0.04em] text-white sm:text-[3rem] sm:leading-[1.02] lg:text-[4.6rem]">
-            From setup to execution
-            <span className="block bg-[linear-gradient(135deg,#FFFFFF_10%,#D8CCFF_42%,#8E72FF_100%)] bg-clip-text text-transparent">
-              in one premium operational flow
-            </span>
-          </h2>
+            <h2 className="max-w-5xl text-[2rem] font-bold leading-[1.05] tracking-tight sm:text-[3rem] lg:text-[4.75rem] xl:text-[5.5rem]">
+              From setup to execution
+              <span className="block text-[#94A3B8]">in one premium flow.</span>
+            </h2>
 
-          <p className="mt-6 max-w-3xl text-base leading-8 text-[#94A3B8] sm:text-lg">
-            OpsCore helps teams structure workspaces, coordinate execution, and improve operational
-            clarity through a smoother workflow system.
-          </p>
+            <div className="flex w-full flex-col items-start justify-between gap-5 sm:gap-6 lg:flex-row lg:items-end">
+              <p className="max-w-2xl text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8 lg:text-lg">
+                OpsCore helps teams structure workspaces, coordinate execution, and improve
+                operational clarity through a high-performance system.
+              </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button
-              asChild
-              className={cn(
-                "h-12 rounded-full border border-[#A78BFA]/35 bg-[linear-gradient(135deg,#7F56D9_0%,#6941C6_100%)] px-6 text-sm font-semibold text-white",
-                "shadow-[0_16px_40px_rgba(127,86,217,0.28)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_20px_44px_rgba(127,86,217,0.38)]"
-              )}
-            >
-              <Link href="/register" className="inline-flex items-center gap-2">
-                Start with OpsCore
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+              <div className="group flex items-center gap-4">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="rounded-full px-0 text-white/60 hover:bg-transparent hover:text-white"
+                >
+                  <Link href="/how-it-works">Learn more</Link>
+                </Button>
 
-            <Button
-              asChild
-              variant="outline"
-              className="h-12 rounded-full border-white/12 bg-white/4 px-6 text-sm text-white backdrop-blur-xl hover:bg-white/8 hover:text-white"
-            >
-              <Link href="/features" className="inline-flex items-center gap-2">
-                <Play className="h-4 w-4" />
-                Explore workflow
-              </Link>
-            </Button>
+                <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 group-hover:translate-x-1 group-hover:border-[#7F56D9]/50 sm:h-12 sm:w-12">
+                  <ArrowRight className="h-5 w-5" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* ── Vertical Card Stack ── */}
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 sm:gap-14 lg:gap-24">
-          {processSteps.map((item, index) => {
-            const Icon = item.icon;
+        <div className="pointer-events-none absolute bottom-10 left-1/2 z-30 hidden w-48 -translate-x-1/2 lg:block xl:w-64">
+          <div className="h-1 w-full overflow-hidden rounded-full bg-white/5">
+            <div ref={progressBarRef} className="h-full origin-left scale-x-0 bg-[#7F56D9]" />
+          </div>
+        </div>
 
-            return (
-              <div
-                key={item.id}
-                ref={(el) => {
-                  cardRefs.current[index] = el;
-                }}
-                className={cn(
-                  "relative w-full rounded-[22px] border border-white/10 bg-[rgba(16,24,40,0.6)] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.25)] backdrop-blur-2xl sm:rounded-[28px] sm:p-6 lg:rounded-[32px] lg:p-10",
-                  "transition-[border-color,box-shadow,background-color] duration-300 hover:border-[#7F56D9]/30 hover:shadow-[0_30px_80px_rgba(0,0,0,0.35)]",
-                  "max-w-4xl mx-auto"
-                )}
-              >
-                {/* Glow + decorative overlays */}
-                <div
-                  data-step-glow
-                  className="pointer-events-none absolute inset-x-12 bottom-0 h-24 rounded-full bg-[#8E72FF]/18 opacity-80 blur-3xl"
-                />
-                <div className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/10" />
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#7F56D9]/40 to-transparent" />
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(127,86,217,0.06),transparent_40%,rgba(255,255,255,0.01)_100%)]" />
+        <div
+          ref={pinWrapperRef}
+          className="flex min-h-176 flex-col items-center justify-center lg:min-h-screen"
+        >
+          <div className="relative w-full overflow-hidden px-4 sm:px-6 lg:px-0">
+            <div
+              ref={horizontalRef}
+              className={cn(
+                "flex flex-col gap-6 sm:gap-8 lg:w-max lg:flex-row lg:gap-10 xl:gap-12",
+                "lg:px-[max(3rem,calc((100vw-1280px)/2))]"
+              )}
+            >
+              {processSteps.map((item) => {
+                const Icon = item.icon;
 
-                <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-12">
-                  {/* Left: Content Area */}
-                  <div className="flex-1">
-                    <div className="mb-6 flex items-center justify-between">
-                      <div className="rounded-2xl bg-white/4 p-4 text-[#DCCFFF] shadow-inner ring-1 ring-white/10">
-                        <Icon className="h-7 w-7" />
-                      </div>
-                      <div className="rounded-full border border-[#7F56D9]/50 bg-[#0C111D]/60 px-5 py-2 text-sm font-bold tracking-wide text-white uppercase backdrop-blur-md">
-                        {item.step}
-                      </div>
-                    </div>
-
-                    <h3 className="text-[1.5rem] font-bold leading-tight tracking-tight text-white sm:text-[1.9rem] lg:text-[2.2rem]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-4 text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8 lg:text-lg">
-                      {item.description}
-                    </p>
-
-                    {/* Tags */}
-                    <div className="mt-8 flex flex-wrap gap-3 border-t border-white/5 pt-7">
-                      <div className="rounded-full border border-white/10 bg-white/4 px-5 py-2 text-sm font-medium text-white/90 shadow-sm backdrop-blur-sm">
-                        {item.tagA}
-                      </div>
-                      <div className="rounded-full border border-white/10 bg-white/4 px-5 py-2 text-sm font-medium text-white/90 shadow-sm backdrop-blur-sm">
-                        {item.tagB}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right: Premium Image Preview */}
-                  <div
-                    data-step-preview
-                    className="group relative flex-1 overflow-hidden rounded-[20px] border border-white/10 bg-[#0B1220] shadow-2xl sm:rounded-[24px]"
+                return (
+                  <article
+                    key={item.id}
+                    className="process-card group relative w-full shrink-0 lg:w-[560px] xl:w-[660px]"
                   >
-                    <div className="relative min-h-[220px] sm:min-h-[280px] lg:min-h-[340px]">
-                      <Image
-                        src={item.imageSrc}
-                        alt={item.title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
-                      />
-                      {/* Subtle Overlay Gradients */}
-                      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(7,10,18,0.05),transparent_20%,rgba(7,10,18,0.3))]" />
-                      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-[#0C111D]/60 to-transparent" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                    <motion.div
+                      className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#0F172A]/50 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.26)] backdrop-blur-2xl transition-all duration-500 hover:border-[#7F56D9]/35 sm:rounded-[28px] sm:p-7 lg:rounded-[32px] lg:p-10"
+                      whileHover={{ y: -4 }}
+                      transition={{ type: "spring", stiffness: 280, damping: 24 }}
+                    >
+                      <div className="absolute right-0 top-0 h-40 w-40 bg-[radial-gradient(circle_at_top_right,rgba(127,86,217,0.14),transparent_72%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100 sm:h-48 sm:w-48" />
+
+                      <div className="relative flex flex-col gap-6 sm:gap-8">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#7F56D9]/10 text-[#C4B5FD] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] ring-1 ring-white/10 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-105 sm:h-16 sm:w-16">
+                            <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
+                          </div>
+
+                          <span className="text-[3.25rem] font-black leading-none text-white/5 transition-all duration-700 group-hover:text-[#7F56D9]/20 sm:text-[4rem] lg:text-[4.5rem]">
+                            {item.step}
+                          </span>
+                        </div>
+
+                        <div className="space-y-3 sm:space-y-4">
+                          <h3 className="text-xl font-bold text-white sm:text-2xl lg:text-3xl xl:text-4xl">
+                            {item.title}
+                          </h3>
+                          <p className="text-sm leading-7 text-[#94A3B8] sm:text-base sm:leading-8 lg:text-lg">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        <div className="relative mt-1 aspect-16/10 w-full overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-inner">
+                          <Image
+                            src={item.imageSrc}
+                            alt={item.title}
+                            fill
+                            className="object-cover opacity-45 transition-all duration-1000 group-hover:scale-[1.03] group-hover:opacity-100"
+                            sizes="(max-width: 1023px) 100vw, (max-width: 1440px) 560px, 660px"
+                          />
+                          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(7,9,16,0.55))] transition-opacity duration-500 group-hover:opacity-30" />
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {[item.tagA, item.tagB].map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#94A3B8] transition-all duration-300 group-hover:border-[#7F56D9]/30 group-hover:bg-[#7F56D9]/10 group-hover:text-white sm:px-4"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>
