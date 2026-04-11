@@ -6,7 +6,6 @@ export const AUTH_ROUTES = [
   "/forgot-password",
   "/reset-password",
   "/verify-email",
-  "/change-password",
   "/resend-verification",
 ];
 
@@ -21,6 +20,7 @@ export const PROTECTED_ROUTES = [
   "/activity-logs",
   "/automation",
   "/notifications",
+  "/change-password",
 ];
 
 export const isAuthRoute = (pathname: string) => {
