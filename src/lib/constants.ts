@@ -7,7 +7,7 @@ import {
   Home,
   Receipt,
   ScrollText,
-  Settings,
+  // Settings,
   Shield,
   UserCircle2,
   Users,
@@ -54,7 +54,7 @@ export const APP_ROUTES = {
   automations: "/automations",
   accountProfile: "/account",
   accountSecurity: "/account/security",
-  settingsGeneral: "/settings/general",
+  // settingsGeneral: "/settings/general",
   billing: "/billing",
 } as const;
 
@@ -161,13 +161,13 @@ export const DASHBOARD_NAV_GROUPS: NavGroup[] = [
         icon: Shield,
         matchStartsWith: true,
       },
-      {
-        title: "Settings",
-        href: APP_ROUTES.settingsGeneral,
-        icon: Settings,
-        roles: ["OWNER", "ADMIN"],
-        matchStartsWith: true,
-      },
+      // {
+      //   title: "Settings",
+      //   href: APP_ROUTES.settingsGeneral,
+      //   icon: Settings,
+      //   roles: ["OWNER", "ADMIN"],
+      //   matchStartsWith: true,
+      // },
     ],
   },
 ];
