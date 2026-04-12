@@ -1,102 +1,242 @@
-# OpsCore - Unified Operations Platform
+# OpsCore — Unified Operations Platform
 
-![OpsCore Thumbnail](./public/image/hero-section.png)
+### Seamless Multi-tenant SaaS Orchestration for Modern Enterprises
 
-A multi-tenant SaaS platform where businesses create private workspaces to manage products, customers, orders, and analytics with strict data isolation.
+**A production-grade multi-tenant SaaS platform built to simulate real-world business operations at scale.**
 
-[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)](https://www.prisma.io/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![GSAP](https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=Greensock&logoColor=white)](https://greensock.com/gsap/)
-[![Stripe](https://img.shields.io/badge/Stripe-626CD9?style=for-the-badge&logo=Stripe&logoColor=white)](https://stripe.com/)
-[![TanStack Form](https://img.shields.io/badge/TanStack_Form-FF4154?style=for-the-badge&logo=React%20Query&logoColor=white)](https://tanstack.com/form/latest)
-[![TanStack Query](https://img.shields.io/badge/TanStack_Query-FF4154?style=for-the-badge&logo=React%20Query&logoColor=white)](https://tanstack.com/query/latest)
-[![Better-Auth](https://img.shields.io/badge/Better--Auth-111111?style=for-the-badge&logo=betterauth&logoColor=white)](https://better-auth.com/)
+![OpsCore Hero](./public/image/hero-section.png)
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Better Auth](https://img.shields.io/badge/Better_Auth-Validated-111111?style=for-the-badge&logo=betterauth&logoColor=white)](https://better-auth.com/)
+[![GSAP](https://img.shields.io/badge/GSAP-Premium-88CE02?style=for-the-badge&logo=Greensock&logoColor=white)](https://greensock.com/gsap/)
+[![Stripe](https://img.shields.io/badge/Stripe-Integrated-626CD9?style=for-the-badge&logo=Stripe&logoColor=white)](https://stripe.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://opscore-frontend.vercel.app)
 
 ---
 
-## 📌 Project Overview
-OpsCore is a powerful, multi-tenant operations platform designed to help businesses scale efficiently. It provides a shared SaaS infrastructure where each organization gets its own secure, sandboxed workspace. From team management to billing, automation, and real-time analytics, OpsCore acts as the central command hub for business operations.
+### ✨ Key Highlights
 
-## 💻 Tech Stack
-- **Framework:** Next.js (App Router) for server-side rendering, routing, and optimal performance.
-- **Language:** TypeScript for type safety and developer productivity.
-- **Styling:** Tailwind CSS & Shadcn UI for a sleek, responsive, and accessible user interface.
-- **State Management & Fetching:** TanStack React Query for efficient data synchronization, caching, and background updates.
-- **Authentication:** Better-Auth for secure, session-based authentication (including multi-tenant logic).
-- **Forms & Validation:** TanStack Form and Zod for robust form state management and schema validation.
-- **Animations:** GSAP and tw-animate-css for fluid, professional micro-animations and scroll transitions.
-- **Data Visualization:** Recharts for dynamic and interactive analytics dashboards.
+- **Multi-tenant Architecture** with strict workspace data isolation.
+- **Enterprise RBAC** (Owner, Admin, Member) with granular permissions.
+- **Secure Session Management** powered by Better Auth & HTTP-only cookies.
+- **Full Billing Lifecycle** integrated with Stripe and automated invoicing.
+- **Business Intelligence** interactive dashboards for real-time analytics.
 
-## 🏗 Project Architecture & Workflow
-The application follows a modular and scalable approach:
-- **Route Groups:** Separated route blocks for `(authRouteGroup)`, `(publicLayout)`, and `(dashboardLayout)` to manage layout states completely independently.
-- **Strict Data Isolation:** Multi-tenancy is baked into the UI where all dashboard views dynamically adjust based on the selected workspace context.
-- **Reusable UI Library:** Shadcn UI powers the core visuals (in `src/components/ui/`), while complex domain logic is encapsulated inside `src/components/features/`.
-- **Custom Hooks & Services:** Core logic like querying API endpoints and tracking container dimensions is abstracted into `src/hooks/` and `src/lib/`.
+---
 
-## 🔄 API Endpoints & Data Flow
-Although this is a frontend repository, it heavily interacts with a centralized backend API:
-- **Authentication Flow:** Better-Auth interfaces with `/api/auth` seamlessly to handle cookies, sessions, and third-party OAuth. 
-- **Data Fetching:** Standardized fetch utilities (`lib/fetcher.ts`) are hooked onto TanStack React Query. This manages caching, refetching on window focus, and optimistic UI updates.
-- **Tenant Context:** API requests automatically carry the Workspace ID via headers or route parameters to ensure the backend only returns data scoped to the active tenant.
+## 🚀 Why OpsCore?
 
-## ✨ Features
-- **Multi-tenant Architecture:** Completely isolated workspaces for different organizations.
-- **Live Analytics Dashboard:** Track active users, workspace growth, and estimated revenue. 
-- **Role-based Access Control:** Super-Admin vs Workspace Admin views with constrained permissions.
-- **Interactive Visualizations:** Stunning Recharts-based revenue and growth trend charts.
-- **Fluid UI Animations:** Custom GSAP micro-interactions on charts and data cards for a premium feel.
-- **Responsive Design:** Operates perfectly on desktop, tablet, and mobile browsers.
+OpsCore was engineered to bridge the gap between "simple dashboards" and **production-grade SaaS architecture**. It simulates the complex challenges faced by modern platforms:
+- **Tenant Isolation**: Ensuring zero data leakage between organizations at the database level.
+- **Scalable State**: Managing complex, cross-component business logic with TanStack Query.
+- **Premium UX**: Implementing high-performance animations (GSAP) that remain fluid under load.
 
-## 🛠 Installation & Setup
+The goal was not just to build a UI, but to design a resilient, secure system capable of handling real-world business operations.
 
-1. **Clone the repository:**
-   ```bash
-   git clone <repository_url>
-   cd opscore-frontend
-   ```
+---
 
-2. **Install dependencies:**
-   ```bash
-   pnpm install
-   ```
+## 🌐 Live Demo
 
-3. **Set up Environment Variables:**
-   Create a `.env.local` file in the root directory and add to it:
-   ```env
-   NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api/v1
-   BETTER_AUTH_URL=http://localhost:3000
-   ```
-   *(Update the backend URL to match your running instance).*
+Explore the platform in a live production environment:
 
-4. **Run the development server:**
-   ```bash
-   pnpm run dev
-   ```
+- **Frontend Application:** [https://opscore-frontend.vercel.app](https://opscore-frontend.vercel.app)
+- **Backend API:** [https://opscore-backend.onrender.com](https://opscore-backend.onrender.com)
 
-5. Visit `http://localhost:3000` to preview the application.
+---
 
-## 📂 Folder Structure
-```text
-src/
-├── app/                  # Next.js pages organized by Route Groups
-│   ├── (authRouteGroup)/ # Login, registration, password recovery pages
-│   ├── (dashboardLayout)/# Authenticated workspace and admin pages
-│   └── (publicLayout)/   # Landing pages and marketing site
-├── components/           
-│   ├── charts/           # Recharts visualization wrappers
-│   ├── features/         # Complex, domain-specific UI (Dashboard, Pricing)
-│   ├── form/             # Form wrapper components using TanStack Form
-│   ├── shared/           # Cross-app shared components (Empty state, errors)
-│   └── ui/               # Reusable Atomic UI elements (Shadcn + Radix)
-├── hooks/                # Specialized logic (e.g. useContainerDimensions)
-├── lib/                  # Auth clients, API fetchers, and utilities
-└── providers/            # React Query & Theme contextual wrappers
+## 🧠 Architecture Highlights
+
+- **Tenant Isolation**: Robust isolation strategy using the `x-workspace-id` header to scope all backend requests.
+- **Role-Based Access Control (RBAC)**: Secure access patterns for `OWNER`, `ADMIN`, and `MEMBER` roles.
+- **Soft-Delete System**: Critical production feature ensuring data recoverability across all core entities.
+- **Prisma Relational Modeling**: Complex database schema design optimized for multi-tenant querying.
+- **Service-Layer Architecture**: Decoupled backend design ensuring clean business logic separation from the API layer.
+
+---
+
+## 🔐 Technical Workflows
+
+### Authentication Flow (Session-Based)
+
+The system implements a secure authentication flow using **Better Auth**, leveraging encrypted session tokens stored in HTTP-only cookies for maximum security.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant BetterAuth
+    participant API
+    participant DB
+
+    User->>Frontend: Submit credentials
+    Frontend->>BetterAuth: Authenticate()
+    BetterAuth->>API: Proxy Request
+    API->>DB: Verify & Create Session
+    DB-->>API: Session ID
+    API-->>BetterAuth: Return Session Cookie
+    BetterAuth-->>Frontend: Set HttpOnly Cookie
+    Frontend-->>User: Redirect to Dashboard
 ```
 
-## 🚀 Future Improvements
-- Implement comprehensive **End-to-End (E2E) testing** with Playwright.
-- Integrate **AI-powered business insights** straight into the dashboard.
-- More granular **business automation workflows** and webhooks integration interface.
-- Deeper internationalization (i18n) support for global scaling.
+### Multi-tenant Data Flow (Isolation)
+
+Data isolation is enforced via a specialized middleware layer that extracts the workspace context and applies it to every database operation.
+
+```mermaid
+graph LR
+    subgraph "Client Layer"
+    UI[Frontend UI] --> Req[HTTP Request + x-workspace-id]
+    end
+
+    subgraph "Backend Engine"
+    Req --> Middleware[Tenant Validation]
+    Middleware --> Service[Business Logic Layer]
+    Service --> Prisma[Prisma Client]
+    end
+
+    subgraph "Data Layer"
+    Prisma --> DB[(Tenant Isolated DB)]
+    end
+```
+
+---
+
+## 💻 Tech Stack Reasoning
+
+| Technology | Purpose | Strategic Reasoning |
+| :--- | :--- | :--- |
+| **Next.js 16** | Core Framework | Leverages App Router for optimized SSR and scalable frontend architecture. |
+| **TypeScript** | Type Safety | Enforces strict contracts between internal modules, reducing production errors. |
+| **Better Auth** | Authentication | Comprehensive, secure session-based auth with native multi-tenant support. |
+| **TanStack Query** | Data Sync | Advanced caching and background synchronization for a "live" feel. |
+| **GSAP** | Animations | Industry-standard for complex, high-performance micro-interactions. |
+| **Prisma** | ORM | Type-safe database access with elegant relational modeling and migrations. |
+| **Stripe** | Billing | Production-grade payment processing and automated subscription management. |
+
+---
+
+## 🔌 API Overview
+
+OpsCore interacts with a centralized REST API tailored for multi-tenant operations. All requests are strictly validated against session integrity and tenant context.
+
+### Auth Module
+- `POST /api/v1/auth/register` — Create new organization and user accounts.
+- `POST /api/v1/auth/login` — Authenticate and establish secure sessions.
+
+**Example Request:** `POST /api/v1/auth/login`
+```json
+{
+  "email": "arnab@opscore.dev",
+  "password": "••••••••"
+}
+```
+
+### Workspace Module
+- `GET /api/v1/workspaces` — Retrieve all workspaces associated with the current user.
+- `POST /api/v1/workspaces/create` — Initialize a new tenant with default branding.
+
+### Billing & Invoices
+- `POST /api/v1/billing/checkout` — Generate Stripe checkout sessions.
+- `GET /api/v1/invoices` — List organization billing history and PDF links.
+
+---
+
+## 📸 Screenshots
+
+### Dashboard Overview
+Real-time insights into projects, tasks, and billing performance across the organization.
+
+![Dashboard](./public/github/1.png)
+
+### Advanced Project Management
+Collaborative workspace for tracking product lifecycles and team productivity.
+
+![Projects](./public/github/2.png)
+
+### Billing & Subscription Suite
+Integrated Stripe billing for managing subscriptions, methods, and invoices.
+
+![Billing](./public/github/3.png)
+
+---
+
+## 📂 Folder Structure
+
+```bash
+opscore-frontend/
+├── src/
+│   ├── app/           # Next.js App Router (Grouped by layout)
+│   ├── components/    # Feature-driven UI components
+│   ├── hooks/         # Custom business logic hooks
+│   └── lib/           # Auth clients and fetcher utilities
+opscore-backend/
+├── prisma/            # Relational database schema & migrations
+└── src/
+    ├── app/ modules/  # Domain-specific services and controllers
+    └── server.ts      # Server initialization & middleware
+```
+
+---
+
+## 🛠 Installation & Local Setup
+
+> [!IMPORTANT]
+> This project uses a **decoupled architecture**. The frontend and backend are independent repositories and must be running simultaneously to function.
+
+### 1. Prerequisites
+- Node.js 18+ & PNPM
+- PostgreSQL Database
+- Stripe Account (for billing features)
+
+### 2. Implementation
+```bash
+# Clone the repository
+git clone https://github.com/ArnabSaga/opscore-frontend.git
+cd opscore-frontend
+
+# Install dependencies
+pnpm install
+
+# Configure environment
+cp .env.example .env.local
+```
+
+### 3. Environment Configuration
+Ensure your `.env.local` contains the following:
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+BETTER_AUTH_URL=http://localhost:3000
+```
+
+### 4. Running the App
+```bash
+pnpm run dev
+```
+The application will be available at `http://localhost:3000`.
+
+---
+
+## 🔮 Future Roadmap
+
+- [ ] **Advanced AI Insights**: Predictive analytics for project completion and revenue.
+- [ ] **Real-time Notifications**: Webhook-integrated notification engine for team actions.
+- [ ] **Granular Audit Logs**: Enhanced activity tracking for compliance and security.
+- [ ] **Mobile Optimization**: Dedicated responsive views for on-the-go management.
+
+---
+
+## 👤 Author
+
+**Arnab Dey**  
+*Full Stack Engineer • System Designer • Performance Architect*
+
+- **GitHub:** [@ArnabSaga](https://github.com/ArnabSaga)
+- **LinkedIn:** [Arnab Dey](https://linkedin.com/in/arnabdey)
+
+---
+
+## 📄 License
+
+This project is currently not licensed for public use.
