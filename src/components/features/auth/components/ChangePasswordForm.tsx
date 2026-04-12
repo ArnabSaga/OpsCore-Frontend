@@ -5,8 +5,7 @@ import { useForm } from "@tanstack/react-form";
 import { gsap } from "gsap";
 import { Eye, EyeOff, LockKeyhole, ShieldCheck } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import Link from "next/link";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -16,7 +15,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useChangePassword } from "../hooks/useChangePassword";
 
 const ChangePasswordForm = () => {
-  const router = useRouter();
   const cardRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const infoRef = useRef<HTMLDivElement | null>(null);
@@ -139,7 +137,6 @@ const ChangePasswordForm = () => {
 
         toast.success("Password updated successfully");
         form.reset();
-        router.push("/dashboard");
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -348,12 +345,12 @@ const ChangePasswordForm = () => {
       >
         <p className="text-center text-[13px] leading-6 text-[#94A3B8] sm:text-sm">
           Need help with account access?
-          <Link
+          {/* <Link
             href="/forgot-password"
             className="ml-2 font-semibold text-white underline-offset-4 transition-colors hover:text-[#CBB5FF] hover:underline"
           >
-            Forgot-Password
-          </Link>
+            Reset instead
+          </Link> */}
         </p>
       </CardFooter>
     </Card>
